@@ -47,9 +47,7 @@ export function Header() {
                 alt={FIRM_NAME}
                 width={140}
                 height={48}
-                className={`h-9 w-auto object-contain transition-all duration-300 ${
-                  scrolled ? "" : "brightness-0 invert"
-                }`}
+                className="h-9 w-auto object-contain"
                 priority
               />
             </Link>
