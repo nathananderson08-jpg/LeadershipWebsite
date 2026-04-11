@@ -24,8 +24,8 @@ export function VantaClouds({ className = "" }: VantaCloudsProps) {
       try {
         // Load Three.js first
         const THREE = await import("three")
-        // @ts-expect-error - Vanta needs THREE on window
-        window.THREE = THREE
+        // Vanta needs THREE on window
+        ;(window as unknown as { THREE: typeof THREE }).THREE = THREE
 
         // Load Vanta clouds effect
         const VANTA = await import("vanta/dist/vanta.clouds.min")
