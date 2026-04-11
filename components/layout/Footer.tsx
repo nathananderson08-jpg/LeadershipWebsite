@@ -21,7 +21,7 @@ const FOOTER_COLUMNS = [
       { label: "The Lifecycle", href: "/lifecycle" },
       { label: "Assessment & Diagnostics", href: "/solutions/assessment" },
       { label: "Executive Coaching", href: "/solutions/coaching" },
-      { label: "Development Programs", href: "/solutions/programs" },
+      { label: "Leadership Development Programs", href: "/solutions/programs" },
       { label: "Transformation", href: "/solutions/transformation" },
       { label: "Succession Planning", href: "/solutions/succession" },
       { label: "AI Transformation", href: "/solutions/ai-transformation" },
@@ -68,7 +68,7 @@ export function Footer() {
               />
             </Link>
             <p className="text-sm text-white/50 leading-relaxed mb-6">
-              The only leadership company delivering end-to-end solutions across the entire development lifecycle.
+              The only leadership company delivering end-to-end solutions across the entire leadership development lifecycle.
             </p>
             {/* Trust signal */}
             <p className="text-xs text-forest-400 font-600 tracking-wide" style={{ fontWeight: 600 }}>

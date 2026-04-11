@@ -543,7 +543,7 @@ export function HomepageClient() {
                     />
                   </motion.svg>
                 </span>{" "}
-                across the entire development lifecycle.
+                across the entire leadership development lifecycle.
               </motion.h1>
 
               {/* Subheadline */}

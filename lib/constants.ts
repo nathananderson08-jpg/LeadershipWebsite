@@ -232,7 +232,7 @@ export const INDUSTRIES = [
 
 // ── Key messaging ────────────────────────────────────────────
 export const MESSAGING = {
-  primaryClaim: "The only leadership company delivering end-to-end solutions across the entire development lifecycle.",
+  primaryClaim: "The only leadership company delivering end-to-end solutions across the entire leadership development lifecycle.",
   integrationMessage: "One partner, one methodology, one outcome.",
   lifecycleSpan: "From the first assessment to the last succession plan.",
   audienceSpan: "From first-time managers to the boardroom.",
@@ -282,7 +282,7 @@ export const SAMPLE_ARTICLES = [
   {
     slug: "engineer-to-executive",
     title: "From Engineer to Executive: Why Technical Leaders Need a Different Development Path",
-    category: "Leader Development",
+    category: "Leadership Development",
     readTime: "9 min read",
     date: "2026-02-10",
     excerpt:
