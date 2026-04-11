@@ -22,17 +22,17 @@ export default function AboutPage() {
       {/* Hero */}
       <section
         className="pt-40 pb-24 relative"
-        style={{ background: "linear-gradient(160deg, var(--color-forest-900) 0%, var(--color-forest-800) 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-forest-100) 100%)" }}
       >
-        <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(at 60% 30%, rgba(79,154,106,0.08) 0px, transparent 50%)" }} />
+        <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(at 60% 30%, rgba(93,171,121,0.12) 0px, transparent 50%)" }} />
         <div className="container-content relative z-10 max-w-4xl">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <p className="text-xs font-700 tracking-widest uppercase text-forest-300 mb-5" style={{ fontWeight: 700 }}>Our Story</p>
-            <h1 className="display-lg text-white mb-6">
+            <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-5" style={{ fontWeight: 700 }}>Our Story</p>
+            <h1 className="display-lg text-forest-950 mb-6">
               Built to Solve Leadership&apos;s Biggest Problem:{" "}
-              <span style={{ color: "var(--color-forest-300)" }}>Fragmentation.</span>
+              <span style={{ color: "var(--color-forest-600)" }}>Fragmentation.</span>
             </h1>
-            <p className="text-xl text-white/60 leading-relaxed max-w-2xl">
+            <p className="text-xl text-forest-800/70 leading-relaxed max-w-2xl">
               Every great organization needs leadership that works at every level. We built the firm that makes that possible.
             </p>
           </motion.div>
@@ -69,9 +69,9 @@ export default function AboutPage() {
                     <p className="text-3xl font-800 text-forest-900 mb-2" style={{ fontWeight: 800 }}>Our Mission</p>
                     <p className="text-neutral-600 leading-relaxed">To develop leaders who can navigate complexity, inspire performance, and build organizations that last — at every level, across the entire leadership lifecycle.</p>
                   </div>
-                  <div className="p-6 rounded-2xl" style={{ background: "var(--color-forest-900)", border: "1px solid rgba(79,154,106,0.2)" }}>
-                    <p className="text-3xl font-800 text-white mb-2" style={{ fontWeight: 800 }}>Our Vision</p>
-                    <p className="leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>A world where every organization has access to the complete leadership development infrastructure it needs to build lasting capability.</p>
+                  <div className="p-6 rounded-2xl" style={{ background: "var(--color-forest-100)", border: "1px solid var(--color-forest-200)" }}>
+                    <p className="text-3xl font-800 text-forest-900 mb-2" style={{ fontWeight: 800 }}>Our Vision</p>
+                    <p className="leading-relaxed text-forest-800/70">A world where every organization has access to the complete leadership development infrastructure it needs to build lasting capability.</p>
                   </div>
                 </div>
               </motion.div>
@@ -81,13 +81,13 @@ export default function AboutPage() {
       </section>
 
       {/* Scale metrics */}
-      <section className="section-padding" style={{ background: "var(--color-forest-900)" }}>
+      <section className="section-padding" style={{ background: "var(--color-forest-100)" }}>
         <div className="container-content">
-          <SectionHeading eyebrow="Our Scale" title="Built to serve the most demanding organizations." light className="mb-14" />
+          <SectionHeading eyebrow="Our Scale" title="Built to serve the most demanding organizations." className="mb-14" />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
             {SCALE_METRICS.map((metric, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
-                <MetricCounter value={metric.value} suffix={metric.suffix} label={metric.label} light />
+                <MetricCounter value={metric.value} suffix={metric.suffix} label={metric.label} />
               </motion.div>
             ))}
           </div>

@@ -62,17 +62,16 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
 
       {/* Drawer */}
       <div
-        className="relative ml-auto w-full max-w-sm h-full flex flex-col overflow-y-auto"
-        style={{ background: "var(--color-forest-900)" }}
+        className="relative ml-auto w-full max-w-sm h-full flex flex-col overflow-y-auto bg-white shadow-2xl"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-white/10">
-          <span className="font-700 text-white text-base" style={{ fontWeight: 700 }}>
+        <div className="flex items-center justify-between p-6 border-b border-forest-100">
+          <span className="font-700 text-forest-900 text-base" style={{ fontWeight: 700 }}>
             {FIRM_NAME}
           </span>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-colors"
+            className="p-2 rounded-lg text-forest-600 hover:text-forest-900 hover:bg-forest-50 transition-colors"
             aria-label="Close menu"
           >
             <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -85,7 +84,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
         <div className="flex-1 p-6 space-y-6">
           {MOBILE_SECTIONS.map((section) => (
             <div key={section.heading}>
-              <p className="text-xs font-700 tracking-widest uppercase text-forest-400 mb-3" style={{ fontWeight: 700 }}>
+              <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-3" style={{ fontWeight: 700 }}>
                 {section.heading}
               </p>
               <ul className="space-y-1">
@@ -94,7 +93,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                     <Link
                       href={link.href}
                       onClick={onClose}
-                      className="block px-3 py-2.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                      className="block px-3 py-2.5 rounded-lg text-sm text-forest-800 hover:text-forest-950 hover:bg-forest-50 transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -106,7 +105,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
         </div>
 
         {/* Bottom CTA */}
-        <div className="p-6 border-t border-white/10 space-y-3">
+        <div className="p-6 border-t border-forest-100 space-y-3">
           <Button href="/contact" variant="primary" className="w-full justify-center" onClick={onClose}>
             Contact Us
           </Button>

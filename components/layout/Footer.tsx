@@ -58,14 +58,13 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
           {/* Brand column */}
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center mb-6 group" aria-label={`${FIRM_NAME} - Home`}>
+            <Link href="/" className="inline-flex items-center mb-6 group rounded-lg overflow-hidden" aria-label={`${FIRM_NAME} - Home`}>
               <Image
                 src="/logo.png"
                 alt={`${FIRM_NAME} - Leadership Development`}
                 width={180}
                 height={65}
                 className="h-14 w-auto object-contain transition-opacity duration-200 group-hover:opacity-100"
-                style={{ opacity: 0.95 }}
               />
             </Link>
             <p className="text-sm text-white/50 leading-relaxed mb-6">

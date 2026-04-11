@@ -34,8 +34,8 @@ export function Header() {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-forest-900/95 backdrop-blur-md shadow-lg shadow-black/20"
-            : "bg-transparent"
+            ? "bg-white/95 backdrop-blur-md shadow-lg shadow-black/5"
+            : "bg-white/80 backdrop-blur-sm"
         }`}
         style={{ fontFamily: "var(--font-plus-jakarta)" }}
       >
@@ -61,17 +61,17 @@ export function Header() {
                     key={item.label}
                     onMouseEnter={() => setMegaOpen(true)}
                     onMouseLeave={() => setMegaOpen(false)}
-                    className="px-4 py-2 text-sm font-600 text-white/80 hover:text-white transition-colors rounded-lg hover:bg-white/5 relative"
+                    className="px-4 py-2 text-sm font-600 text-forest-800 hover:text-forest-950 transition-colors rounded-lg hover:bg-forest-50 relative"
                     style={{ fontWeight: 600 }}
                   >
                     {item.label}
-                    <span className="ml-1 text-white/40">▾</span>
+                    <span className="ml-1 text-forest-400">▾</span>
                   </button>
                 ) : (
                   <Link
                     key={item.label}
                     href={item.href}
-                    className="px-4 py-2 text-sm font-600 text-white/80 hover:text-white transition-colors rounded-lg hover:bg-white/5"
+                    className="px-4 py-2 text-sm font-600 text-forest-800 hover:text-forest-950 transition-colors rounded-lg hover:bg-forest-50"
                     style={{ fontWeight: 600 }}
                   >
                     {item.label}
@@ -84,20 +84,10 @@ export function Header() {
             <div className="flex items-center gap-3">
               <Link
                 href="/portal"
-                className="hidden md:inline-flex items-center px-4 py-2 rounded-lg text-xs font-600 transition-colors"
+                className="hidden md:inline-flex items-center px-4 py-2 rounded-lg text-xs font-600 transition-colors text-forest-700 border border-forest-200 hover:border-forest-400 hover:text-forest-900 hover:bg-forest-50"
                 style={{
                   fontWeight: 600,
-                  color: "rgba(255,255,255,0.55)",
-                  border: "1px solid rgba(255,255,255,0.12)",
                   letterSpacing: "0.04em",
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.85)"
-                  ;(e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(61,122,84,0.5)"
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.55)"
-                  ;(e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.12)"
                 }}
               >
                 Practitioner Hub
@@ -108,7 +98,7 @@ export function Header() {
 
               {/* Mobile hamburger */}
               <button
-                className="lg:hidden flex flex-col gap-1.5 p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/5 transition-colors"
+                className="lg:hidden flex flex-col gap-1.5 p-2 rounded-lg text-forest-700 hover:text-forest-900 hover:bg-forest-50 transition-colors"
                 onClick={() => setMobileOpen(true)}
                 aria-label="Open menu"
               >

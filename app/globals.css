@@ -10,19 +10,19 @@
   --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "Courier New", monospace;
 
-  /* Color Palette - Nature-Inspired, Professional */
-  /* Forest/Sage Greens - Primary brand color evoking nature and growth */
-  --color-forest-950: #0a1410;
-  --color-forest-900: #132419;
-  --color-forest-800: #1a3324;
-  --color-forest-700: #234430;
-  --color-forest-600: #2d5a3e;
-  --color-forest-500: #3d7a54;
-  --color-forest-400: #4f9a6a;
-  --color-forest-300: #7ab892;
-  --color-forest-200: #a8d4b9;
-  --color-forest-100: #d4ebdc;
-  --color-forest-50: #eef7f1;
+  /* Color Palette - Nature-Inspired, Light & Airy */
+  /* Sage/Forest Greens - Primary brand color evoking nature and growth */
+  --color-forest-950: #1a3324;
+  --color-forest-900: #234430;
+  --color-forest-800: #2d5a3e;
+  --color-forest-700: #3d7a54;
+  --color-forest-600: #4f9a6a;
+  --color-forest-500: #5dab79;
+  --color-forest-400: #7ab892;
+  --color-forest-300: #9dcbab;
+  --color-forest-200: #c5e0cf;
+  --color-forest-100: #e3f2e8;
+  --color-forest-50: #f3faf5;
 
   /* Warm Earth Tones - Secondary accent */
   --color-earth-900: #5c4033;
@@ -69,11 +69,11 @@
   --color-ai-glow: rgba(20, 163, 163, 0.25);
 
   /* Warm whites - Airy, natural feel */
-  --color-warm-white: #faf9f7;
-  --color-warm-50: #fcfbf9;
-  --color-warm-100: #f5f3ef;
-  --color-warm-200: #e8e4dc;
-  --color-warm-300: #d4cfc3;
+  --color-warm-white: #fcfcfb;
+  --color-warm-50: #fefefe;
+  --color-warm-100: #f8f8f6;
+  --color-warm-200: #f0efeb;
+  --color-warm-300: #e5e3dd;
 
   /* Neutrals */
   --color-neutral-950: #0a0a0a;
