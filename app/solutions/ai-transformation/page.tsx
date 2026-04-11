@@ -103,8 +103,8 @@ function AIParticles() {
             top: `${p.y}%`,
             width: p.size,
             height: p.size,
-            background: "#00d4ff",
-            boxShadow: `0 0 ${p.size * 4}px #00d4ff`,
+            background: "var(--color-ai-400)",
+            boxShadow: `0 0 ${p.size * 4}px var(--color-ai-400)`,
           }}
           animate={{
             opacity: [0, 0.6, 0],
@@ -128,8 +128,7 @@ export default function AITransformationPage() {
     <>
       {/* ── HERO — DARK + FUTURISTIC ───────────────────────── */}
       <section
-        className="relative min-h-screen flex items-center overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #010610 0%, #020c1a 40%, #030e20 70%, #010610 100%)" }}
+        className="relative min-h-screen flex items-center overflow-hidden bg-gradient-ai"
       >
         <AIParticles />
 
@@ -142,7 +141,7 @@ export default function AITransformationPage() {
             maxWidth: 1000,
             maxHeight: 1000,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(0,212,255,0.06) 0%, transparent 60%)",
+            background: "radial-gradient(circle, var(--color-ai-glow) 0%, transparent 60%)",
             top: "-30%",
             right: "-20%",
           }}
@@ -157,7 +156,7 @@ export default function AITransformationPage() {
             maxWidth: 800,
             maxHeight: 800,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(0,212,255,0.04) 0%, transparent 60%)",
+            background: "radial-gradient(circle, rgba(20, 163, 163, 0.1) 0%, transparent 60%)",
             bottom: "-20%",
             left: "-10%",
           }}
@@ -169,7 +168,7 @@ export default function AITransformationPage() {
         <div
           className="absolute inset-0 opacity-[0.015]"
           style={{
-            backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,212,255,0.8) 3px, rgba(0,212,255,0.8) 4px)",
+            backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(20,163,163,0.8) 3px, rgba(20,163,163,0.8) 4px)",
             backgroundSize: "100% 60px",
           }}
         />
@@ -179,7 +178,7 @@ export default function AITransformationPage() {
           className="absolute inset-0 opacity-[0.025]"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(0,212,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.4) 1px, transparent 1px)",
+              "linear-gradient(rgba(20,163,163,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(20,163,163,0.4) 1px, transparent 1px)",
             backgroundSize: "80px 80px",
           }}
         />
@@ -201,13 +200,13 @@ export default function AITransformationPage() {
               className="display-xl text-white mb-6"
               style={{
                 lineHeight: 1.05,
-                textShadow: "0 0 80px rgba(0,212,255,0.08)",
+                textShadow: "0 0 80px var(--color-ai-glow)",
               }}
             >
               AI Isn&apos;t Just Changing Business.{" "}
               <span
                 style={{
-                  background: "linear-gradient(135deg, #00d4ff 0%, #00b3d9 100%)",
+                  background: "linear-gradient(135deg, var(--color-ai-400) 0%, var(--color-ai-500) 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -219,7 +218,7 @@ export default function AITransformationPage() {
 
             <p
               className="text-lg leading-relaxed mb-3 max-w-2xl font-500"
-              style={{ color: "rgba(0,212,255,0.7)", fontWeight: 500 }}
+              style={{ color: "var(--color-ai-400)", fontWeight: 500 }}
             >
               {MESSAGING.aiUrgency}
             </p>
@@ -243,8 +242,8 @@ export default function AITransformationPage() {
             <div
               className="mt-16 grid grid-cols-3 gap-6 p-6 rounded-2xl"
               style={{
-                background: "rgba(0,212,255,0.04)",
-                border: "1px solid rgba(0,212,255,0.12)",
+                background: "var(--color-ai-glow)",
+                border: "1px solid rgba(20,163,163,0.25)",
               }}
             >
               {[
@@ -255,11 +254,11 @@ export default function AITransformationPage() {
                 <div key={item.stat} className="text-center">
                   <div
                     className="text-2xl font-800 mb-1"
-                    style={{ color: "#00d4ff", fontWeight: 800 }}
+                    style={{ color: "var(--color-ai-400)", fontWeight: 800 }}
                   >
                     {item.stat}
                   </div>
-                  <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.35)" }}>
+                  <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
                     {item.label}
                   </p>
                 </div>
@@ -272,7 +271,7 @@ export default function AITransformationPage() {
       {/* ── THE AI LEADERSHIP GAP ─────────────────────────── */}
       <section
         className="section-padding"
-        style={{ background: "linear-gradient(180deg, #020c1a 0%, #030f1e 100%)" }}
+        style={{ background: "linear-gradient(180deg, var(--color-forest-950) 0%, var(--color-navy-900) 100%)" }}
       >
         <div className="container-content">
           <div className="max-w-3xl mx-auto text-center mb-16">
@@ -282,7 +281,7 @@ export default function AITransformationPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <p className="text-xs font-700 tracking-widest uppercase mb-4" style={{ color: "#00d4ff", fontWeight: 700 }}>
+              <p className="text-xs font-700 tracking-widest uppercase mb-4" style={{ color: "var(--color-ai-400)", fontWeight: 700 }}>
                 The Gap
               </p>
               <h2 className="display-md text-white mb-6">
@@ -344,7 +343,7 @@ export default function AITransformationPage() {
       <section
         id="framework"
         className="section-padding"
-        style={{ background: "#020a14" }}
+        style={{ background: "var(--color-forest-950)" }}
       >
         <div className="container-content">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -353,7 +352,7 @@ export default function AITransformationPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <p className="text-xs font-700 tracking-widest uppercase mb-4" style={{ color: "#00d4ff", fontWeight: 700 }}>
+              <p className="text-xs font-700 tracking-widest uppercase mb-4" style={{ color: "var(--color-ai-400)", fontWeight: 700 }}>
                 Proprietary Framework
               </p>
               <h2 className="display-md text-white mb-6">
@@ -376,8 +375,8 @@ export default function AITransformationPage() {
                 whileHover={{ y: -4, transition: { duration: 0.2 } }}
                 className={`p-7 rounded-2xl group cursor-default ${i === 4 ? "md:col-span-2 lg:col-span-1" : ""}`}
                 style={{
-                  background: "linear-gradient(135deg, rgba(0,212,255,0.06) 0%, rgba(0,212,255,0.02) 100%)",
-                  border: "1px solid rgba(0,212,255,0.12)",
+                  background: "linear-gradient(135deg, var(--color-ai-glow) 0%, rgba(20,163,163,0.05) 100%)",
+                  border: "1px solid rgba(20,163,163,0.2)",
                   transition: "border-color 0.3s",
                 }}
               >
@@ -385,13 +384,13 @@ export default function AITransformationPage() {
                 <div className="flex items-start justify-between mb-5">
                   <div
                     className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0"
-                    style={{ background: "rgba(0,212,255,0.08)" }}
+                    style={{ background: "var(--color-ai-glow)" }}
                   >
                     {pillar.icon}
                   </div>
                   <span
                     className="text-xs font-700 tracking-widest"
-                    style={{ color: "rgba(0,212,255,0.35)", fontWeight: 700 }}
+                    style={{ color: "var(--color-ai-400)", fontWeight: 700, opacity: 0.5 }}
                   >
                     {pillar.number}
                   </span>
@@ -400,16 +399,16 @@ export default function AITransformationPage() {
                 <h3 className="font-700 text-white text-lg mb-3 group-hover:text-ai-300 transition-colors" style={{ fontWeight: 700 }}>
                   {pillar.title}
                 </h3>
-                <p className="text-sm leading-relaxed mb-4" style={{ color: "rgba(255,255,255,0.5)" }}>
+                <p className="text-sm leading-relaxed mb-4" style={{ color: "rgba(255,255,255,0.6)" }}>
                   {pillar.description}
                 </p>
 
                 {/* Detail — secondary text with top border */}
                 <div
                   className="pt-4 mt-auto"
-                  style={{ borderTop: "1px solid rgba(0,212,255,0.08)" }}
+                  style={{ borderTop: "1px solid rgba(20,163,163,0.15)" }}
                 >
-                  <p className="text-xs leading-relaxed" style={{ color: "rgba(0,212,255,0.45)" }}>
+                  <p className="text-xs leading-relaxed" style={{ color: "var(--color-ai-400)", opacity: 0.7 }}>
                     {pillar.detail}
                   </p>
                 </div>
@@ -422,7 +421,7 @@ export default function AITransformationPage() {
       {/* ── LIFECYCLE INTEGRATION ─────────────────────────── */}
       <section
         className="section-padding"
-        style={{ background: "linear-gradient(180deg, #020a14 0%, #010610 100%)" }}
+        style={{ background: "linear-gradient(180deg, var(--color-forest-950) 0%, var(--color-navy-950) 100%)" }}
       >
         <div className="container-content">
           <div className="text-center max-w-3xl mx-auto mb-14">
@@ -431,7 +430,7 @@ export default function AITransformationPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <p className="text-xs font-700 tracking-widest uppercase mb-4" style={{ color: "#00d4ff", fontWeight: 700 }}>
+              <p className="text-xs font-700 tracking-widest uppercase mb-4" style={{ color: "var(--color-ai-400)", fontWeight: 700 }}>
                 AI Across the Lifecycle
               </p>
               <h2 className="display-md text-white mb-5">
@@ -456,17 +455,17 @@ export default function AITransformationPage() {
                   href={item.href}
                   className="flex flex-col md:flex-row md:items-center gap-5 p-6 rounded-2xl transition-all duration-300 group hover:translate-y-[-2px]"
                   style={{
-                    background: "rgba(0,212,255,0.03)",
-                    border: "1px solid rgba(0,212,255,0.1)",
+                    background: "var(--color-ai-glow)",
+                    border: "1px solid rgba(20,163,163,0.2)",
                   }}
                 >
                   <span
                     className="text-xs font-700 px-4 py-1.5 rounded-full shrink-0 tracking-wider"
                     style={{
-                      background: "rgba(0,212,255,0.1)",
-                      color: "#00d4ff",
+                      background: "rgba(20,163,163,0.15)",
+                      color: "var(--color-ai-400)",
                       fontWeight: 700,
-                      border: "1px solid rgba(0,212,255,0.2)",
+                      border: "1px solid rgba(20,163,163,0.3)",
                     }}
                   >
                     {item.phase}
@@ -493,11 +492,11 @@ export default function AITransformationPage() {
       {/* ── WHO NEEDS THIS ────────────────────────────────── */}
       <section
         className="section-padding"
-        style={{ background: "#010610" }}
+        style={{ background: "var(--color-navy-950)" }}
       >
         <div className="container-content">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <p className="text-xs font-700 tracking-widest uppercase mb-4" style={{ color: "#00d4ff", fontWeight: 700 }}>
+            <p className="text-xs font-700 tracking-widest uppercase mb-4" style={{ color: "var(--color-ai-400)", fontWeight: 700 }}>
               Who It&apos;s For
             </p>
             <h2 className="display-md text-white">
@@ -520,7 +519,7 @@ export default function AITransformationPage() {
                 }}
               >
                 <div className="flex items-center gap-4 mb-4">
-                  <span className="text-2xl" style={{ color: "#00d4ff" }}>{person.icon}</span>
+                  <span className="text-2xl" style={{ color: "var(--color-ai-400)" }}>{person.icon}</span>
                   <h3 className="font-700 text-white text-xl" style={{ fontWeight: 700 }}>
                     {person.role}
                   </h3>
@@ -536,13 +535,12 @@ export default function AITransformationPage() {
 
       {/* ── FINAL CTA ─────────────────────────────────────── */}
       <section
-        className="py-24 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #010610 0%, #020c1a 50%, #010610 100%)" }}
+        className="py-24 relative overflow-hidden bg-gradient-ai"
       >
         <motion.div
           className="absolute inset-0 pointer-events-none"
           style={{
-            backgroundImage: "radial-gradient(at 50% 50%, rgba(0,212,255,0.08) 0px, transparent 60%)",
+            backgroundImage: "radial-gradient(at 50% 50%, var(--color-ai-glow) 0px, transparent 60%)",
           }}
           animate={{ opacity: [0.5, 1, 0.5] }}
           transition={{ duration: 4, repeat: Infinity }}
