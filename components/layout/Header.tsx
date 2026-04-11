@@ -57,22 +57,15 @@ export function Header() {
             <nav className="hidden lg:flex items-center gap-1">
               {NAV_ITEMS.map((item) =>
                 item.hasMega ? (
-                  <div
+                  <button
                     key={item.label}
-                    className="relative"
                     onMouseEnter={() => setMegaOpen(true)}
-                    onMouseLeave={() => setMegaOpen(false)}
+                    className="px-4 py-2 text-sm font-600 text-forest-800 hover:text-forest-950 transition-colors rounded-lg hover:bg-forest-50 relative"
+                    style={{ fontWeight: 600 }}
                   >
-                    <button
-                      className="px-4 py-2 text-sm font-600 text-forest-800 hover:text-forest-950 transition-colors rounded-lg hover:bg-forest-50 relative"
-                      style={{ fontWeight: 600 }}
-                    >
-                      {item.label}
-                      <span className="ml-1 text-forest-400">▾</span>
-                    </button>
-                    {/* Invisible bridge to prevent gap when moving to dropdown */}
-                    {megaOpen && <div className="absolute left-0 right-0 h-6 top-full" />}
-                  </div>
+                    {item.label}
+                    <span className="ml-1 text-forest-400">▾</span>
+                  </button>
                 ) : (
                   <Link
                     key={item.label}
@@ -116,15 +109,15 @@ export function Header() {
           </div>
         </div>
 
-        {/* Mega Menu */}
-        {megaOpen && (
-          <div
-            onMouseEnter={() => setMegaOpen(true)}
-            onMouseLeave={() => setMegaOpen(false)}
-          >
-            <MegaMenu onClose={() => setMegaOpen(false)} />
-          </div>
-        )}
+        {/* Mega Menu with hover zone */}
+        <div
+          className={`absolute left-0 right-0 transition-all duration-200 ${megaOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
+          style={{ top: 'calc(100% - 12px)', paddingTop: '12px' }}
+          onMouseEnter={() => setMegaOpen(true)}
+          onMouseLeave={() => setMegaOpen(false)}
+        >
+          <MegaMenu onClose={() => setMegaOpen(false)} />
+        </div>
       </header>
 
       {/* Mobile Nav */}
