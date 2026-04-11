@@ -1,4 +1,3 @@
-import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
@@ -10,34 +9,19 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const response = NextResponse.next();
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            request.cookies.set(name, value);
-            response.cookies.set(name, value, options);
-          });
-        },
-      },
-    }
+  // Check for Supabase auth cookies
+  // Supabase stores auth in cookies with names starting with 'sb-'
+  const authCookies = request.cookies.getAll().filter(
+    cookie => cookie.name.startsWith('sb-') && cookie.name.includes('auth-token')
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
+  // If no auth token cookie exists, redirect to login
+  if (authCookies.length === 0) {
     const loginUrl = new URL('/portal/login', request.url);
     return NextResponse.redirect(loginUrl);
   }
 
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {

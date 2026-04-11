@@ -8,6 +8,8 @@ import { MetricCounter } from "@/components/ui/MetricCounter"
 import { SectionHeading } from "@/components/ui/SectionHeading"
 import { AIBadge } from "@/components/ui/AIBadge"
 import { CTABanner } from "@/components/sections/CTABanner"
+import { VantaClouds } from "@/components/ui/VantaClouds"
+import { ParticleField } from "@/components/ui/ParticleField"
 import { METRICS, LIFECYCLE_PHASES, SOLUTIONS, SAMPLE_ARTICLES, MESSAGING, LIFECYCLE_FRAMEWORK_NAME } from "@/lib/constants"
 
 // ── Living gradient mesh background ─────────────────────────
@@ -233,6 +235,14 @@ function AISpotlight() {
         style={{
           background: "linear-gradient(135deg, #e3f2e8 0%, #c5e0cf 40%, #e3f2e8 100%)",
         }}
+      />
+      {/* Particle network animation */}
+      <ParticleField 
+        particleCount={60}
+        particleColor="rgba(93, 171, 121, 0.5)"
+        lineColor="rgba(93, 171, 121, 0.12)"
+        maxDistance={150}
+        speed={0.25}
       />
       {/* Animated AI background */}
       <motion.div
@@ -480,7 +490,7 @@ export function HomepageClient() {
     <>
       {/* ── HERO ──────────────────────────────────────────── */}
       <section className="relative min-h-screen flex items-center" style={{ paddingTop: "5rem" }}>
-        <HeroBackground />
+        <VantaClouds />
 
         <div className="container-content relative z-10 py-24">
           <div className="max-w-4xl">
@@ -533,7 +543,7 @@ export function HomepageClient() {
                     />
                   </motion.svg>
                 </span>{" "}
-                across the entire development lifecycle.
+                across the entire leadership development lifecycle.
               </motion.h1>
 
               {/* Subheadline */}
@@ -712,7 +722,7 @@ export function HomepageClient() {
       {/* ── INSIGHTS ─────────────────────────────���────────── */}
       <InsightsPreview />
 
-      {/* ── CTA BANNER ────────────────────────────────────── */}
+      {/* ���─ CTA BANNER ────────────────────────────────────── */}
       <CTABanner />
     </>
   )

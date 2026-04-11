@@ -232,7 +232,7 @@ export const INDUSTRIES = [
 
 // ── Key messaging ────────────────────────────────────────────
 export const MESSAGING = {
-  primaryClaim: "The only leadership company delivering end-to-end solutions across the entire development lifecycle.",
+  primaryClaim: "The only leadership company delivering end-to-end solutions across the entire leadership development lifecycle.",
   integrationMessage: "One partner, one methodology, one outcome.",
   lifecycleSpan: "From the first assessment to the last succession plan.",
   audienceSpan: "From first-time managers to the boardroom.",
@@ -251,7 +251,7 @@ export const SAMPLE_ARTICLES = [
     title: "The End-to-End Imperative: Why Fragmented Leadership Development Is Failing",
     category: "Leadership Strategy",
     readTime: "8 min read",
-    date: "2025-03-20",
+    date: "2026-03-20",
     excerpt:
       "Organizations that use one vendor for assessment, another for coaching, and another for training are wasting money and getting worse outcomes. The lack of integration is costing them more than they realize.",
     author: "Dr. Marcus Webb",
@@ -262,7 +262,7 @@ export const SAMPLE_ARTICLES = [
     title: "5 Leadership Capabilities AI Can't Replace — And the 3 It Already Has",
     category: "AI & Leadership",
     readTime: "6 min read",
-    date: "2025-03-10",
+    date: "2026-03-10",
     excerpt:
       "AI is already better than humans at pattern recognition, information synthesis, and routine decisions. But judgment, trust, vision, and meaning-making remain irreducibly human. Here's the distinction that matters.",
     author: "Sarah Lindström",
@@ -273,7 +273,7 @@ export const SAMPLE_ARTICLES = [
     title: "The Succession Planning Paradox: Why Most Companies Plan for the CEO but Forget Everyone Else",
     category: "Succession",
     readTime: "7 min read",
-    date: "2025-02-28",
+    date: "2026-02-28",
     excerpt:
       "CEO succession gets the boardroom attention. But organizational resilience depends on leadership continuity at every critical level. The companies that build deep pipelines consistently outperform those that don't.",
     author: "Diana Torres",
@@ -282,9 +282,9 @@ export const SAMPLE_ARTICLES = [
   {
     slug: "engineer-to-executive",
     title: "From Engineer to Executive: Why Technical Leaders Need a Different Development Path",
-    category: "Leader Development",
+    category: "Leadership Development",
     readTime: "9 min read",
-    date: "2025-02-10",
+    date: "2026-02-10",
     excerpt:
       "The skills that make someone a brilliant engineer are often the exact opposite of what makes them an effective executive. The transition requires unlearning as much as learning. Most companies get this wrong.",
     author: "Dr. Thomas Park",
@@ -295,7 +295,7 @@ export const SAMPLE_ARTICLES = [
     title: "The Board's Blind Spot: Why Governance Needs a Leadership Development Strategy",
     category: "Governance & Board",
     readTime: "7 min read",
-    date: "2025-01-30",
+    date: "2026-01-30",
     excerpt:
       "Most boards oversee leadership development with a 30-minute quarterly update. But leadership capability is the single biggest determinant of strategy execution. Boards that treat it as HR are exposed.",
     author: "Diana Torres",

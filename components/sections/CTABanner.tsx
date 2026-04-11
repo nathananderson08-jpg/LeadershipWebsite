@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/Button"
+import { ParticleField } from "@/components/ui/ParticleField"
 
 interface CTABannerProps {
   headline?: string
@@ -22,6 +23,14 @@ export function CTABanner({
 }: CTABannerProps) {
   return (
     <section className="py-24 relative overflow-hidden" style={{ background: "var(--color-forest-100)" }}>
+      {/* Particle animation background */}
+      <ParticleField 
+        particleCount={35}
+        particleColor="rgba(93, 171, 121, 0.4)"
+        lineColor="rgba(93, 171, 121, 0.08)"
+        maxDistance={100}
+        speed={0.2}
+      />
       {/* Background decoration */}
       <div
         className="absolute inset-0 opacity-40"
