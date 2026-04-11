@@ -60,7 +60,6 @@ export function Header() {
                   <button
                     key={item.label}
                     onMouseEnter={() => setMegaOpen(true)}
-                    onMouseLeave={() => setMegaOpen(false)}
                     className="px-4 py-2 text-sm font-600 text-forest-800 hover:text-forest-950 transition-colors rounded-lg hover:bg-forest-50 relative"
                     style={{ fontWeight: 600 }}
                   >
@@ -110,15 +109,15 @@ export function Header() {
           </div>
         </div>
 
-        {/* Mega Menu */}
-        {megaOpen && (
-          <div
-            onMouseEnter={() => setMegaOpen(true)}
-            onMouseLeave={() => setMegaOpen(false)}
-          >
-            <MegaMenu onClose={() => setMegaOpen(false)} />
-          </div>
-        )}
+        {/* Mega Menu with hover zone */}
+        <div
+          className={`absolute left-0 right-0 transition-all duration-200 ${megaOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
+          style={{ top: 'calc(100% - 12px)', paddingTop: '12px' }}
+          onMouseEnter={() => setMegaOpen(true)}
+          onMouseLeave={() => setMegaOpen(false)}
+        >
+          <MegaMenu onClose={() => setMegaOpen(false)} />
+        </div>
       </header>
 
       {/* Mobile Nav */}

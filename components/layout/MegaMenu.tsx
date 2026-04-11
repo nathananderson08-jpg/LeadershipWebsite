@@ -20,7 +20,7 @@ const AUDIENCE_SOLUTIONS = [
 export function MegaMenu({ onClose }: { onClose: () => void }) {
   return (
     <div
-      className="absolute top-full left-0 right-0 border-t border-forest-100 shadow-xl shadow-black/5"
+      className="border-t border-forest-100 shadow-xl shadow-black/5"
       style={{ background: "rgba(255,255,255,0.98)", backdropFilter: "blur(16px)" }}
     >
       <div className="container-content py-8">
