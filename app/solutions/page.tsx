@@ -96,12 +96,12 @@ export default function SolutionsPage() {
                 onClick={() => setActiveTab(tab)}
                 className={`px-5 py-2.5 rounded-full text-sm font-600 transition-all ${
                   activeTab === tab
-                    ? "text-navy-900"
-                    : "text-neutral-500 hover:text-navy-900 bg-white border border-neutral-200"
+                    ? "text-forest-950"
+                    : "text-neutral-500 hover:text-forest-900 bg-white border border-neutral-200"
                 }`}
                 style={{
                   fontWeight: 600,
-                  background: activeTab === tab ? "var(--color-gold-500)" : undefined,
+                  background: activeTab === tab ? "var(--color-forest-400)" : undefined,
                 }}
               >
                 {tab === "all" ? "All Solutions" : tab === "lifecycle" ? "By Lifecycle Phase" : "By Audience Level"}
@@ -130,9 +130,9 @@ export default function SolutionsPage() {
                       style={
                         sol.featured
                           ? {
-                              background: "linear-gradient(135deg, #020c1a 0%, #030f20 100%)",
-                              border: "1px solid rgba(0,212,255,0.25)",
-                              boxShadow: "0 0 30px rgba(0,212,255,0.06)",
+                              background: "linear-gradient(135deg, var(--color-forest-950) 0%, var(--color-navy-900) 100%)",
+                              border: "1px solid var(--color-ai-glow)",
+                              boxShadow: "0 0 30px var(--color-ai-glow)",
                             }
                           : { background: "white", border: "1px solid var(--color-warm-100)" }
                       }
@@ -142,8 +142,8 @@ export default function SolutionsPage() {
                         <span
                           className="text-xs font-700 px-3 py-1 rounded-full"
                           style={{
-                            background: sol.featured ? "rgba(0,212,255,0.1)" : "var(--color-gold-100)",
-                            color: sol.featured ? "#00d4ff" : "var(--color-gold-700)",
+                            background: sol.featured ? "var(--color-ai-glow)" : "var(--color-gold-100)",
+                            color: sol.featured ? "var(--color-ai-400)" : "var(--color-gold-700)",
                             fontWeight: 700,
                           }}
                         >
@@ -191,13 +191,13 @@ export default function SolutionsPage() {
                   >
                     <Link
                       href={level.href}
-                      className="block h-full p-7 rounded-2xl border border-warm-100 bg-white hover:border-gold-300 hover:shadow-md transition-all duration-300 hover:translate-y-[-3px] group"
+                      className="block h-full p-7 rounded-2xl border border-warm-100 bg-white hover:border-forest-300 hover:shadow-md transition-all duration-300 hover:translate-y-[-3px] group"
                     >
-                      <h3 className="font-700 text-navy-900 text-xl mb-3 group-hover:text-gold-700 transition-colors" style={{ fontWeight: 700 }}>
+                      <h3 className="font-700 text-forest-900 text-xl mb-3 group-hover:text-forest-600 transition-colors" style={{ fontWeight: 700 }}>
                         {level.title}
                       </h3>
                       <p className="text-sm text-neutral-500 leading-relaxed mb-5">{level.description}</p>
-                      <span className="text-sm font-600 text-gold-600 flex items-center gap-1" style={{ fontWeight: 600 }}>
+                      <span className="text-sm font-600 text-forest-600 flex items-center gap-1" style={{ fontWeight: 600 }}>
                         Explore →
                       </span>
                     </Link>
@@ -210,9 +210,9 @@ export default function SolutionsPage() {
           {/* Not sure CTA */}
           <div
             className="mt-16 p-8 rounded-2xl text-center"
-            style={{ background: "var(--color-gold-50)", border: "1px solid var(--color-gold-200)" }}
+            style={{ background: "var(--color-forest-50)", border: "1px solid var(--color-forest-200)" }}
           >
-            <p className="font-700 text-navy-900 text-lg mb-2" style={{ fontWeight: 700 }}>
+            <p className="font-700 text-forest-900 text-lg mb-2" style={{ fontWeight: 700 }}>
               Not sure where to start?
             </p>
             <p className="text-neutral-600 text-sm mb-5">

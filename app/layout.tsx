@@ -1,9 +1,10 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
 import { FIRM_NAME, FIRM_DOMAIN } from "@/lib/constants"
+import { JsonLd } from "@/components/ui/JsonLd"
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -81,6 +82,43 @@ export const metadata: Metadata = {
   category: "Business",
 }
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f3faf5" },
+    { media: "(prefers-color-scheme: dark)", color: "#1a3324" },
+  ],
+}
+
+// Organization JSON-LD schema
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: FIRM_NAME,
+  url: FIRM_DOMAIN,
+  logo: `${FIRM_DOMAIN}/logo.png`,
+  description: "The only leadership company delivering end-to-end solutions across the entire development lifecycle.",
+  sameAs: [
+    "https://linkedin.com",
+    "https://twitter.com",
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: "+1-800-555-0100",
+    contactType: "customer service",
+    areaServed: "Worldwide",
+    availableLanguage: ["English"],
+  },
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "New York",
+    addressRegion: "NY",
+    addressCountry: "US",
+  },
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${plusJakarta.variable} ${jetbrainsMono.variable} h-full scroll-smooth`}>
@@ -88,6 +126,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className="min-h-full flex flex-col antialiased"
         style={{ fontFamily: "var(--font-plus-jakarta), system-ui, sans-serif" }}
       >
+        <JsonLd data={organizationSchema} />
         <a href="#main-content" className="skip-nav">
           Skip to main content
         </a>
