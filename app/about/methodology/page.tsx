@@ -48,15 +48,15 @@ export default function MethodologyPage() {
     <>
       <section
         className="pt-40 pb-24 relative"
-        style={{ background: "linear-gradient(160deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}
       >
         <div className="container-content relative z-10">
           <Breadcrumbs crumbs={[{ label: "About", href: "/about" }, { label: "Our Methodology" }]} />
           <div className="max-w-3xl mt-8">
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-              <p className="text-xs font-700 tracking-widest uppercase text-gold-400 mb-4" style={{ fontWeight: 700 }}>Our Methodology</p>
-              <h1 className="display-lg text-white mb-5">A Research-Backed Methodology for Complete Leadership Development.</h1>
-              <p className="text-xl text-white/60 leading-relaxed">We don&apos;t develop leaders through instinct or intuition. Every program, assessment, and coaching engagement is grounded in validated evidence about how adults develop, how behavior changes, and how organizations transform.</p>
+              <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-4" style={{ fontWeight: 700 }}>Our Methodology</p>
+              <h1 className="display-lg text-forest-950 mb-5">A Research-Backed Methodology for Complete Leadership Development.</h1>
+              <p className="text-xl text-forest-800/70 leading-relaxed">We don&apos;t develop leaders through instinct or intuition. Every program, assessment, and coaching engagement is grounded in validated evidence about how adults develop, how behavior changes, and how organizations transform.</p>
             </motion.div>
           </div>
         </div>
@@ -89,18 +89,18 @@ export default function MethodologyPage() {
               </div>
             </div>
             <div className="lg:sticky lg:top-28">
-              <div className="p-8 rounded-2xl" style={{ background: "var(--color-navy-900)", border: "1px solid rgba(193,154,91,0.15)" }}>
-                <p className="text-xs font-700 tracking-widest uppercase text-gold-500 mb-6" style={{ fontWeight: 700 }}>Research Foundations</p>
-                <p className="text-white/60 text-sm mb-6 leading-relaxed">Our methodology draws from the leading research programs in leadership, organizational psychology, adult development, and AI strategy.</p>
+              <div className="p-8 rounded-2xl" style={{ background: "var(--color-forest-100)", border: "1px solid var(--color-forest-200)" }}>
+                <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-6" style={{ fontWeight: 700 }}>Research Foundations</p>
+                <p className="text-forest-700 text-sm mb-6 leading-relaxed">Our methodology draws from the leading research programs in leadership, organizational psychology, adult development, and AI strategy.</p>
                 <ul className="space-y-3">
                   {RESEARCH_FOUNDATIONS.map((ref) => (
-                    <li key={ref} className="flex items-start gap-3 text-sm text-white/60">
-                      <span className="text-gold-500 shrink-0 mt-0.5">◈</span>
+                    <li key={ref} className="flex items-start gap-3 text-sm text-forest-700">
+                      <span className="text-forest-500 shrink-0 mt-0.5">◈</span>
                       {ref}
                     </li>
                   ))}
                 </ul>
-                <div className="mt-8 pt-6 border-t border-white/10">
+                <div className="mt-8 pt-6 border-t border-forest-200">
                   <Button href="/lifecycle" variant="primary" className="w-full justify-center">
                     See It in Action →
                   </Button>

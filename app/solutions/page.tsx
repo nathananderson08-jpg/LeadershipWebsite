@@ -64,21 +64,21 @@ export default function SolutionsPage() {
       {/* Hero */}
       <section
         className="pt-40 pb-20 relative"
-        style={{ background: "linear-gradient(160deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}
       >
         <div
           className="absolute inset-0"
-          style={{ backgroundImage: "radial-gradient(at 70% 30%, rgba(193,154,91,0.08) 0px, transparent 50%)" }}
+          style={{ backgroundImage: "radial-gradient(at 70% 30%, rgba(93,171,121,0.12) 0px, transparent 50%)" }}
         />
         <div className="container-content relative z-10 text-center max-w-4xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <p className="text-sm font-700 tracking-[0.15em] uppercase text-gold-400 mb-5" style={{ fontWeight: 700 }}>
+            <p className="text-sm font-700 tracking-[0.15em] uppercase text-forest-600 mb-5" style={{ fontWeight: 700 }}>
               Complete Solutions Suite
             </p>
-            <h1 className="display-lg text-white mb-6">
+            <h1 className="display-lg text-forest-950 mb-6">
               Solutions for every phase, every level, every scale
             </h1>
-            <p className="text-xl text-white/60 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-xl text-forest-800/70 leading-relaxed max-w-2xl mx-auto">
               Browse our complete suite of leadership development solutions — organized by lifecycle phase, audience level, or both.
             </p>
           </motion.div>

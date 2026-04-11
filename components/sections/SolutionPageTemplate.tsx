@@ -65,11 +65,11 @@ export function SolutionPageTemplate({
       {/* Hero */}
       <section
         className="pt-40 pb-24 relative"
-        style={{ background: "linear-gradient(160deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}
       >
         <div
-          className="absolute inset-0 opacity-50"
-          style={{ backgroundImage: "radial-gradient(at 60% 30%, rgba(193,154,91,0.08) 0px, transparent 50%)" }}
+          className="absolute inset-0"
+          style={{ backgroundImage: "radial-gradient(at 60% 30%, rgba(93,171,121,0.12) 0px, transparent 50%)" }}
         />
         <div className="container-content relative z-10">
           <Breadcrumbs crumbs={[{ label: "Solutions", href: "/solutions" }, { label: breadcrumb }]} />
@@ -79,11 +79,11 @@ export function SolutionPageTemplate({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
-              <p className="text-xs font-700 tracking-widest uppercase text-gold-400 mb-4" style={{ fontWeight: 700 }}>
+              <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-4" style={{ fontWeight: 700 }}>
                 {phase}
               </p>
-              <h1 className="display-lg text-white mb-5">{heroTitle}</h1>
-              <p className="text-xl text-white/60 leading-relaxed">{heroSubtitle}</p>
+              <h1 className="display-lg text-forest-950 mb-5">{heroTitle}</h1>
+              <p className="text-xl text-forest-800/70 leading-relaxed">{heroSubtitle}</p>
             </motion.div>
           </div>
         </div>
@@ -128,14 +128,13 @@ export function SolutionPageTemplate({
       </section>
 
       {/* Our Approach */}
-      <section className="section-padding" style={{ background: "var(--color-navy-900)" }}>
+      <section className="section-padding" style={{ background: "var(--color-forest-100)" }}>
         <div className="container-content">
           <div className="max-w-3xl mx-auto text-center mb-14">
             <SectionHeading
               eyebrow="Our Approach"
               title={approachTitle}
               subtitle={approachBody}
-              light
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -146,18 +145,19 @@ export function SolutionPageTemplate({
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="card-dark card-base p-7 group"
+                className="card-base p-7 group bg-white"
+                style={{ border: "1px solid var(--color-forest-200)" }}
               >
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-5"
-                  style={{ background: "rgba(193,154,91,0.1)" }}
+                  style={{ background: "var(--color-forest-100)" }}
                 >
                   {feature.icon}
                 </div>
-                <h3 className="font-700 text-white text-lg mb-3" style={{ fontWeight: 700 }}>
+                <h3 className="font-700 text-forest-900 text-lg mb-3" style={{ fontWeight: 700 }}>
                   {feature.title}
                 </h3>
-                <p className="text-sm text-white/55 leading-relaxed">{feature.description}</p>
+                <p className="text-sm text-forest-700 leading-relaxed">{feature.description}</p>
               </motion.div>
             ))}
           </div>

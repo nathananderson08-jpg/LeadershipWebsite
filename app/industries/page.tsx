@@ -26,13 +26,13 @@ export default function IndustriesPage() {
     <>
       <section
         className="pt-40 pb-24"
-        style={{ background: "linear-gradient(160deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}
       >
         <div className="container-content">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
-            <p className="text-xs font-700 tracking-widest uppercase text-gold-400 mb-5" style={{ fontWeight: 700 }}>Industries</p>
-            <h1 className="display-lg text-white mb-5">Leadership challenges are universal. Industry context is not.</h1>
-            <p className="text-xl text-white/60 leading-relaxed">Our lifecycle methodology adapts to the specific pressures, regulatory environments, and cultural norms of your sector — because great leadership development is always contextual.</p>
+            <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-5" style={{ fontWeight: 700 }}>Industries</p>
+            <h1 className="display-lg text-forest-950 mb-5">Leadership challenges are universal. Industry context is not.</h1>
+            <p className="text-xl text-forest-800/70 leading-relaxed">Our lifecycle methodology adapts to the specific pressures, regulatory environments, and cultural norms of your sector — because great leadership development is always contextual.</p>
           </motion.div>
         </div>
       </section>

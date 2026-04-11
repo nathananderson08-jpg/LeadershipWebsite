@@ -9,14 +9,14 @@ import { CTABanner } from "@/components/sections/CTABanner"
 export default function SeniorLeadersPage() {
   return (
     <>
-      <section className="pt-40 pb-24" style={{ background: "linear-gradient(160deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%)" }}>
+      <section className="pt-40 pb-24" style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}>
         <div className="container-content">
           <Breadcrumbs crumbs={[{ label: "Solutions", href: "/solutions" }, { label: "Senior Leaders" }]} />
           <div className="max-w-3xl mt-8">
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-              <p className="text-xs font-700 tracking-widest uppercase text-gold-400 mb-4" style={{ fontWeight: 700 }}>Audience — Senior Leaders</p>
-              <h1 className="display-lg text-white mb-5">Strategic leadership at the point where it matters most.</h1>
-              <p className="text-xl text-white/60 leading-relaxed">Senior leaders operate at the intersection of strategy and execution, influencing across functions and preparing for the C-suite. We develop the capabilities that separate the good from the exceptional.</p>
+              <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-4" style={{ fontWeight: 700 }}>Audience — Senior Leaders</p>
+              <h1 className="display-lg text-forest-950 mb-5">Strategic leadership at the point where it matters most.</h1>
+              <p className="text-xl text-forest-800/70 leading-relaxed">Senior leaders operate at the intersection of strategy and execution, influencing across functions and preparing for the C-suite. We develop the capabilities that separate the good from the exceptional.</p>
             </motion.div>
           </div>
         </div>
