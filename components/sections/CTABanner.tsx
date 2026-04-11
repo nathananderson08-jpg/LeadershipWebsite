@@ -14,19 +14,19 @@ interface CTABannerProps {
 
 export function CTABanner({
   headline = "Ready to build leadership at every level?",
-  subtext = "From assessment to succession, we cover the entire lifecycle. Let's design the right solution for your organization.",
+  subtext = "From assessment to succession, we cover the entire lifecycle. Let&apos;s design the right solution for your organization.",
   primaryLabel = "Contact Us",
   primaryHref = "/contact",
   secondaryLabel = "Explore Solutions",
   secondaryHref = "/solutions",
 }: CTABannerProps) {
   return (
-    <section className="py-24 relative overflow-hidden" style={{ background: "var(--color-navy-900)" }}>
+    <section className="py-20 lg:py-24 relative overflow-hidden bg-primary-900">
       {/* Background decoration */}
       <div
-        className="absolute inset-0 opacity-30"
+        className="absolute inset-0 opacity-20"
         style={{
-          backgroundImage: "radial-gradient(at 30% 50%, rgba(193,154,91,0.12) 0px, transparent 60%), radial-gradient(at 70% 50%, rgba(0,212,255,0.05) 0px, transparent 60%)",
+          backgroundImage: "radial-gradient(at 30% 50%, rgba(95,184,139,0.2) 0px, transparent 60%), radial-gradient(at 70% 50%, rgba(13,148,136,0.15) 0px, transparent 60%)",
         }}
       />
       <div className="container-content relative z-10">
@@ -37,10 +37,10 @@ export function CTABanner({
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="text-center max-w-3xl mx-auto"
         >
-          <h2 className="display-md text-white mb-5">{headline}</h2>
-          <p className="text-lg text-white/60 mb-10 leading-relaxed">{subtext}</p>
+          <h2 className="display-md text-white mb-5 text-balance">{headline}</h2>
+          <p className="text-lg text-white/70 mb-10 leading-relaxed">{subtext}</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button href={primaryHref} variant="primary" size="lg">
+            <Button href={primaryHref} variant="primary" size="lg" className="bg-white text-primary-900 hover:bg-neutral-100">
               {primaryLabel}
             </Button>
             <Button href={secondaryHref} variant="outline-white" size="lg">

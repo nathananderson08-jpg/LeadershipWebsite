@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/Button"
 import { MetricCounter } from "@/components/ui/MetricCounter"
@@ -10,39 +11,19 @@ import { AIBadge } from "@/components/ui/AIBadge"
 import { CTABanner } from "@/components/sections/CTABanner"
 import { METRICS, LIFECYCLE_PHASES, SOLUTIONS, SAMPLE_ARTICLES, MESSAGING, LIFECYCLE_FRAMEWORK_NAME } from "@/lib/constants"
 
-// ── Living gradient mesh background ─────────────────────────
+// ── Hero Background — Light, airy with subtle depth ─────────────────────────
 function HeroBackground() {
   return (
     <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-      {/* Base layer */}
+      {/* Base gradient — light warm background */}
       <div
         className="absolute inset-0"
-        style={{ background: "linear-gradient(160deg, #080d1a 0%, #0c1428 55%, #07101e 100%)" }}
+        style={{ 
+          background: "linear-gradient(180deg, #0f2e1e 0%, #14432c 50%, #1a5839 100%)" 
+        }}
       />
 
-      {/* Mesh orb 1 — gold top-right, slow drift */}
-      <motion.div
-        className="absolute"
-        style={{
-          width: "80vw",
-          height: "80vw",
-          maxWidth: 1000,
-          maxHeight: 1000,
-          borderRadius: "50%",
-          background: "radial-gradient(circle at 50% 50%, rgba(193,154,91,0.10) 0%, rgba(193,154,91,0.04) 35%, transparent 65%)",
-          top: "-25%",
-          right: "-20%",
-          willChange: "transform",
-        }}
-        animate={{
-          x: [0, 40, -20, 0],
-          y: [0, -30, 20, 0],
-          scale: [1, 1.06, 0.97, 1],
-        }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-      />
-
-      {/* Mesh orb 2 — cyan bottom-left, counter-drift */}
+      {/* Subtle organic shapes for growth feeling */}
       <motion.div
         className="absolute"
         style={{
@@ -51,66 +32,42 @@ function HeroBackground() {
           maxWidth: 800,
           maxHeight: 800,
           borderRadius: "50%",
-          background: "radial-gradient(circle at 50% 50%, rgba(0,212,255,0.055) 0%, rgba(0,180,220,0.02) 40%, transparent 65%)",
-          bottom: "-20%",
-          left: "-15%",
-          willChange: "transform",
+          background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.04) 0%, transparent 60%)",
+          top: "-10%",
+          right: "-15%",
         }}
         animate={{
-          x: [0, -35, 25, 0],
-          y: [0, 25, -15, 0],
-          scale: [1, 1.1, 0.95, 1],
+          scale: [1, 1.05, 1],
+          opacity: [0.5, 0.7, 0.5],
         }}
-        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* Mesh orb 3 — gold mid-center, subtle pulse */}
       <motion.div
         className="absolute"
         style={{
-          width: "45vw",
-          height: "45vw",
-          maxWidth: 600,
-          maxHeight: 600,
+          width: "40vw",
+          height: "40vw",
+          maxWidth: 500,
+          maxHeight: 500,
           borderRadius: "50%",
-          background: "radial-gradient(circle at 50% 50%, rgba(193,154,91,0.06) 0%, transparent 60%)",
-          top: "30%",
-          left: "30%",
-          willChange: "transform",
+          background: "radial-gradient(circle at 50% 50%, rgba(196, 167, 106, 0.06) 0%, transparent 60%)",
+          bottom: "10%",
+          left: "-10%",
         }}
         animate={{
-          x: [0, 20, -30, 10, 0],
-          y: [0, -20, 10, 30, 0],
-          scale: [1, 1.04, 1.08, 1.02, 1],
-          opacity: [0.5, 0.7, 0.5, 0.8, 0.5],
+          scale: [1, 1.08, 1],
+          opacity: [0.3, 0.5, 0.3],
         }}
-        transition={{ duration: 28, repeat: Infinity, ease: "easeInOut", delay: 7 }}
+        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 3 }}
       />
 
-      {/* Noise/grain texture for depth */}
+      {/* Subtle grid pattern */}
       <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E\")",
-          opacity: 0.4,
-        }}
-      />
-
-      {/* Subtle grid overlay */}
-      <div
-        className="absolute inset-0"
+        className="absolute inset-0 opacity-[0.03]"
         style={{
           backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
-          opacity: 0.018,
-        }}
-      />
-
-      {/* Vignette — darkens edges to focus attention on center */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: "radial-gradient(ellipse 80% 70% at 50% 50%, transparent 40%, rgba(6,10,20,0.6) 100%)",
+          backgroundSize: "60px 60px",
         }}
       />
     </div>
@@ -122,7 +79,7 @@ function LifecyclePreview() {
   const [activePhase, setActivePhase] = useState<string | null>(null)
 
   return (
-    <section className="section-padding" style={{ background: "var(--color-warm-white)" }}>
+    <section className="section-padding bg-white">
       <div className="container-content">
         <SectionHeading
           eyebrow="The Lifecycle"
@@ -145,24 +102,22 @@ function LifecyclePreview() {
               <button
                 className={`w-full text-left p-5 rounded-xl border transition-all duration-300 ${
                   activePhase === phase.id
-                    ? "bg-navy-900 border-gold-500 text-white shadow-xl"
-                    : "bg-white border-warm-100 text-navy-900 hover:border-gold-300 hover:shadow-md"
+                    ? "bg-primary-800 border-primary-600 text-white shadow-lg"
+                    : "bg-white border-neutral-200 text-neutral-900 hover:border-primary-300 hover:shadow-md"
                 }`}
-                style={{ borderColor: activePhase === phase.id ? "var(--color-gold-500)" : undefined }}
                 onClick={() => setActivePhase(activePhase === phase.id ? null : phase.id)}
               >
                 <span
-                  className={`text-xs font-700 tracking-widest uppercase block mb-2 ${
-                    activePhase === phase.id ? "text-gold-400" : "text-gold-600"
+                  className={`text-xs font-semibold tracking-widest uppercase block mb-2 ${
+                    activePhase === phase.id ? "text-primary-300" : "text-primary-600"
                   }`}
-                  style={{ fontWeight: 700 }}
                 >
                   {phase.number}
                 </span>
-                <span className="font-700 text-lg block" style={{ fontWeight: 700 }}>
+                <span className="font-semibold text-lg block">
                   {phase.title}
                 </span>
-                <span className={`text-xs mt-1 block ${activePhase === phase.id ? "text-white/60" : "text-neutral-500"}`}>
+                <span className={`text-xs mt-1 block ${activePhase === phase.id ? "text-white/70" : "text-neutral-500"}`}>
                   {phase.subtitle}
                 </span>
               </button>
@@ -171,7 +126,7 @@ function LifecyclePreview() {
               {i < LIFECYCLE_PHASES.length - 1 && (
                 <div className="hidden md:flex absolute top-1/2 -right-2.5 z-10 transform -translate-y-1/2 items-center">
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M4 10h12M12 5l5 5-5 5" stroke="var(--color-gold-500)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M4 10h12M12 5l5 5-5 5" stroke="currentColor" className="text-primary-400" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
               )}
@@ -192,27 +147,26 @@ function LifecyclePreview() {
                 transition={{ duration: 0.3 }}
                 className="overflow-hidden"
               >
-                <div
-                  className="p-8 rounded-2xl border border-gold-200 flex flex-col md:flex-row gap-8"
-                  style={{ background: "white" }}
-                >
+                <div className="p-8 rounded-2xl border border-primary-100 bg-primary-50/50 flex flex-col md:flex-row gap-8">
                   <div className="flex-1">
-                    <p className="text-xs font-700 tracking-widest uppercase text-gold-600 mb-3" style={{ fontWeight: 700 }}>
+                    <p className="text-xs font-semibold tracking-widest uppercase text-primary-600 mb-3">
                       Phase {phase.number} — {phase.title}
                     </p>
                     <p className="text-neutral-700 leading-relaxed mb-6">{phase.description}</p>
                     <Button href={phase.link} variant="primary" size="sm">
-                      Explore {phase.title} Solutions →
+                      Explore {phase.title} Solutions
                     </Button>
                   </div>
                   <div className="md:w-64">
-                    <p className="text-xs font-700 tracking-widest uppercase text-neutral-400 mb-4" style={{ fontWeight: 700 }}>
+                    <p className="text-xs font-semibold tracking-widest uppercase text-neutral-400 mb-4">
                       What We Deliver
                     </p>
                     <ul className="space-y-2">
                       {phase.details.map((d) => (
                         <li key={d} className="flex items-start gap-2 text-sm text-neutral-600">
-                          <span className="text-gold-500 mt-0.5">✓</span>
+                          <svg className="w-4 h-4 text-primary-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
                           {d}
                         </li>
                       ))}
@@ -226,7 +180,7 @@ function LifecyclePreview() {
 
         <div className="text-center mt-10">
           <Button href="/lifecycle" variant="secondary" size="lg">
-            See the Full Lifecycle →
+            See the Full Lifecycle
           </Button>
         </div>
       </div>
@@ -237,30 +191,16 @@ function LifecyclePreview() {
 // ── AI Spotlight ─────────────────────────────────────────────
 function AISpotlight() {
   return (
-    <section className="py-24 relative overflow-hidden">
-      <div
-        className="absolute inset-0"
-        style={{
-          background: "linear-gradient(135deg, #020817 0%, #04101f 40%, #020c1a 100%)",
-        }}
-      />
-      {/* Animated AI background */}
-      <motion.div
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage: "radial-gradient(at 40% 40%, rgba(0,212,255,0.15) 0px, transparent 50%), radial-gradient(at 70% 70%, rgba(0,180,220,0.1) 0px, transparent 50%)",
-        }}
-        animate={{ opacity: [0.15, 0.25, 0.15] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-      />
-      {/* Animated scan lines */}
-      <div
-        className="absolute inset-0 opacity-[0.02]"
-        style={{
-          backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,212,255,0.5) 2px, rgba(0,212,255,0.5) 3px)",
-          backgroundSize: "100% 40px",
-        }}
-      />
+    <section className="py-20 lg:py-24 relative overflow-hidden bg-neutral-900">
+      {/* Subtle background */}
+      <div className="absolute inset-0 opacity-30">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: "radial-gradient(at 30% 30%, rgba(13, 148, 136, 0.15) 0px, transparent 50%), radial-gradient(at 70% 70%, rgba(13, 148, 136, 0.1) 0px, transparent 50%)",
+          }}
+        />
+      </div>
 
       <div className="container-content relative z-10">
         <div className="max-w-4xl mx-auto text-center">
@@ -271,39 +211,33 @@ function AISpotlight() {
             transition={{ duration: 0.7 }}
           >
             <AIBadge className="mb-6" />
-            <h2
-              className="display-lg text-white mb-6"
-              style={{ textShadow: "0 0 60px rgba(0,212,255,0.15)" }}
-            >
+            <h2 className="display-lg text-white mb-6">
               AI Is Rewriting the Rules of Leadership
             </h2>
-            <p className="text-lg text-white/60 leading-relaxed mb-10 max-w-2xl mx-auto">
+            <p className="text-lg text-neutral-300 leading-relaxed mb-10 max-w-2xl mx-auto">
               The leaders who will define the next decade aren&apos;t those who understand AI — they&apos;re those who
               can lead through it. We&apos;ve built the only end-to-end framework for developing AI-ready leadership at
               every level of your organization.
             </p>
 
             {/* Stats row */}
-            <div className="grid grid-cols-3 gap-6 mb-12 max-w-2xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 max-w-2xl mx-auto">
               {[
                 { stat: "85%", desc: "of executives say AI will fundamentally change their industry" },
                 { stat: "72%", desc: "of organizations lack leaders prepared for AI-driven transformation" },
                 { stat: "3x", desc: "faster adoption when AI change is led by AI-fluent leaders" },
               ].map((item) => (
                 <div key={item.stat} className="text-center">
-                  <div
-                    className="text-3xl font-800 mb-2"
-                    style={{ color: "#00d4ff", fontWeight: 800, textShadow: "0 0 20px rgba(0,212,255,0.4)" }}
-                  >
+                  <div className="text-3xl font-semibold mb-2 text-ai-400">
                     {item.stat}
                   </div>
-                  <p className="text-xs text-white/40 leading-relaxed">{item.desc}</p>
+                  <p className="text-sm text-neutral-400 leading-relaxed">{item.desc}</p>
                 </div>
               ))}
             </div>
 
             <Button href="/solutions/ai-transformation" variant="ai" size="lg">
-              Explore AI Leadership Solutions →
+              Explore AI Leadership Solutions
             </Button>
           </motion.div>
         </div>
@@ -349,7 +283,7 @@ function SolutionsGrid() {
   }
 
   return (
-    <section className="section-padding" style={{ background: "var(--color-navy-900)" }}>
+    <section className="section-padding bg-primary-900">
       <div className="container-content">
         <SectionHeading
           eyebrow="Our Solutions"
@@ -372,40 +306,29 @@ function SolutionsGrid() {
                 href={solution.href}
                 className={`block h-full p-7 rounded-2xl transition-all duration-300 group ${
                   solution.featured
-                    ? "border border-ai-500/30 hover:border-ai-500/60"
+                    ? "border border-ai-500/30 hover:border-ai-500/60 bg-ai-500/5"
                     : "card-dark"
                 }`}
-                style={
-                  solution.featured
-                    ? {
-                        background: "linear-gradient(135deg, rgba(0,212,255,0.07) 0%, rgba(0,212,255,0.03) 100%)",
-                        boxShadow: "0 0 0 1px rgba(0,212,255,0.2), 0 0 30px rgba(0,212,255,0.05)",
-                      }
-                    : undefined
-                }
               >
                 {solution.featured && <AIBadge className="mb-4" />}
                 <div
                   className={`w-11 h-11 rounded-xl flex items-center justify-center mb-5 ${
-                    solution.featured ? "text-ai-500" : "text-gold-500"
+                    solution.featured ? "text-ai-400 bg-ai-500/10" : "text-primary-300 bg-primary-700/50"
                   }`}
-                  style={{
-                    background: solution.featured
-                      ? "rgba(0,212,255,0.1)"
-                      : "rgba(193,154,91,0.1)",
-                  }}
                 >
                   {icons[solution.icon]}
                 </div>
-                <h3 className="font-700 text-white text-lg mb-2 group-hover:text-gold-300 transition-colors" style={{ fontWeight: 700 }}>
+                <h3 className="font-semibold text-white text-lg mb-2 group-hover:text-primary-200 transition-colors">
                   {solution.title}
                 </h3>
-                <p className="text-sm text-white/50 leading-relaxed mb-4">{solution.description}</p>
+                <p className="text-sm text-white/60 leading-relaxed mb-4">{solution.description}</p>
                 <span
-                  className={`text-sm font-600 ${solution.featured ? "text-ai-400" : "text-gold-500"} group-hover:gap-2 flex items-center gap-1 transition-all`}
-                  style={{ fontWeight: 600 }}
+                  className={`text-sm font-medium ${solution.featured ? "text-ai-400" : "text-primary-300"} group-hover:gap-2 flex items-center gap-1 transition-all`}
                 >
-                  Learn more →
+                  Learn more
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
                 </span>
               </Link>
             </motion.div>
@@ -425,7 +348,7 @@ function SolutionsGrid() {
 // ── Insights Preview ─────────────────────────────────────────
 function InsightsPreview() {
   return (
-    <section className="section-padding" style={{ background: "var(--color-warm-white)" }}>
+    <section className="section-padding bg-neutral-50">
       <div className="container-content">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
           <SectionHeading
@@ -450,36 +373,47 @@ function InsightsPreview() {
             >
               <Link href={`/insights/${article.slug}`} className="block h-full card-base card-light group">
                 <div className="flex items-center gap-3 mb-4">
-                  <span
-                    className="text-xs font-700 px-3 py-1 rounded-full"
-                    style={{
-                      background: "var(--color-gold-100)",
-                      color: "var(--color-gold-700)",
-                      fontWeight: 700,
-                    }}
-                  >
+                  <span className="text-xs font-medium px-3 py-1 rounded-full bg-primary-100 text-primary-700">
                     {article.category}
                   </span>
                   <span className="text-xs text-neutral-400">{article.readTime}</span>
                 </div>
-                <h3 className="font-700 text-navy-900 text-lg leading-snug mb-3 group-hover:text-gold-700 transition-colors" style={{ fontWeight: 700 }}>
+                <h3 className="font-semibold text-neutral-900 text-lg leading-snug mb-3 group-hover:text-primary-700 transition-colors">
                   {article.title}
                 </h3>
                 <p className="text-sm text-neutral-500 leading-relaxed mb-5">{article.excerpt}</p>
                 <div className="flex items-center gap-3 mt-auto">
-                  <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-700 text-white"
-                    style={{ background: "var(--color-navy-700)", fontWeight: 700 }}
-                  >
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-white bg-primary-700">
                     {article.author.split(" ").map((n) => n[0]).join("").slice(0, 2)}
                   </div>
                   <div>
-                    <p className="text-xs font-600 text-navy-900" style={{ fontWeight: 600 }}>{article.author}</p>
+                    <p className="text-xs font-medium text-neutral-900">{article.author}</p>
                     <p className="text-xs text-neutral-400">{article.authorTitle}</p>
                   </div>
                 </div>
               </Link>
             </motion.article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ── Client Logos / Trust Indicators ─────────────────────────
+function TrustIndicators() {
+  return (
+    <section className="py-16 bg-white border-y border-neutral-100">
+      <div className="container-content">
+        <p className="text-center text-sm text-neutral-500 mb-8">
+          Trusted by industry-leading organizations worldwide
+        </p>
+        <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-6 opacity-50">
+          {/* Placeholder for client logos - using text for now */}
+          {["Fortune 500 Leaders", "Global Healthcare", "Tech Innovators", "Financial Services", "Government & Public Sector"].map((name) => (
+            <span key={name} className="text-sm font-medium text-neutral-400 tracking-wide">
+              {name}
+            </span>
           ))}
         </div>
       </div>
@@ -495,124 +429,82 @@ export function HomepageClient() {
       <section className="relative min-h-screen flex items-center" style={{ paddingTop: "5rem" }}>
         <HeroBackground />
 
-        <div className="container-content relative z-10 py-24">
-          <div className="max-w-4xl">
-            <div>
-              {/* Eyebrow */}
-              <motion.p
-                className="text-sm font-700 tracking-[0.18em] uppercase mb-6 flex items-center gap-3"
-                style={{ fontWeight: 700, color: "var(--color-gold-400)" }}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <span
-                  className="inline-block w-6 h-px"
-                  style={{ background: "var(--color-gold-500)" }}
-                />
-                {LIFECYCLE_FRAMEWORK_NAME}
-              </motion.p>
+        <div className="container-content relative z-10 py-20 lg:py-24">
+          <div className="max-w-3xl">
+            {/* Eyebrow */}
+            <motion.p
+              className="text-sm font-medium tracking-[0.15em] uppercase mb-6 flex items-center gap-3 text-primary-200"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <span className="inline-block w-8 h-px bg-primary-300" />
+              Leadership Development
+            </motion.p>
 
-              {/* H1 */}
-              <motion.h1
-                className="display-xl text-white mb-6"
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              >
-                The only leadership company{" "}
-                delivering{" "}
-                <span
-                  className="relative inline-block"
-                  style={{ color: "var(--color-gold-400)" }}
-                >
-                  end-to-end solutions
-                  <motion.svg
-                    className="absolute left-0 right-0 w-full"
-                    style={{ bottom: "-4px" }}
-                    height="4"
-                    viewBox="0 0 100 4"
-                    preserveAspectRatio="none"
-                    fill="none"
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 1 }}
-                    transition={{ duration: 1.2, delay: 0.9, ease: "easeOut" }}
-                  >
-                    <motion.path
-                      d="M0 2 Q25 0 50 2 Q75 4 100 2"
-                      stroke="var(--color-gold-500)"
-                      strokeWidth="2"
-                      fill="none"
-                    />
-                  </motion.svg>
-                </span>{" "}
-                across the entire development lifecycle.
-              </motion.h1>
+            {/* H1 */}
+            <motion.h1
+              className="display-xl text-white mb-6 text-balance"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            >
+              Grow leaders who transform{" "}
+              <span className="text-primary-200">organizations</span>
+            </motion.h1>
 
-              {/* Subheadline */}
-              <motion.p
-                className="text-xl text-white/55 mb-4 max-w-2xl leading-relaxed"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              >
-                {MESSAGING.lifecycleSpan} {MESSAGING.integrationMessage}
-              </motion.p>
+            {/* Subheadline */}
+            <motion.p
+              className="text-xl text-white/80 mb-4 max-w-2xl leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {MESSAGING.primaryClaim}
+            </motion.p>
 
-              {/* Integration message */}
-              <motion.p
-                className="text-sm text-white/35 mb-10 max-w-xl tracking-wide"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                {MESSAGING.audienceSpan} {MESSAGING.scaleSpan}
-              </motion.p>
+            {/* Integration message */}
+            <motion.p
+              className="text-base text-white/60 mb-10 max-w-xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              {MESSAGING.lifecycleSpan} {MESSAGING.integrationMessage}
+            </motion.p>
 
-              {/* CTAs */}
-              <motion.div
-                className="flex flex-col sm:flex-row gap-4"
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <Button href="/lifecycle" variant="primary" size="lg">
-                  Explore the Lifecycle
-                </Button>
-                <Button href="/contact" variant="outline-white" size="lg">
-                  Contact Us
-                </Button>
-              </motion.div>
-            </div>
+            {/* CTAs */}
+            <motion.div
+              className="flex flex-col sm:flex-row gap-4"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Button href="/lifecycle" variant="primary" size="lg">
+                Explore the Lifecycle
+              </Button>
+              <Button href="/consultation" variant="outline-white" size="lg">
+                Schedule a Consultation
+              </Button>
+            </motion.div>
 
-            {/* Lifecycle mini-preview dots — staggered reveal */}
+            {/* Lifecycle mini-preview */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-16 flex items-center gap-4 flex-wrap"
+              className="mt-14 flex items-center gap-3 flex-wrap"
             >
               {LIFECYCLE_PHASES.map((phase, i) => (
-                <motion.div
-                  key={phase.id}
-                  className="flex items-center gap-3"
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.75 + i * 0.08, duration: 0.4 }}
-                >
+                <div key={phase.id} className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
-                    <motion.div
-                      className="w-1.5 h-1.5 rounded-full"
-                      style={{ background: "var(--color-gold-500)" }}
-                      animate={{ scale: [1, 1.4, 1], opacity: [0.7, 1, 0.7] }}
-                      transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 }}
-                    />
-                    <span className="text-sm text-white/45 font-500" style={{ fontWeight: 500 }}>{phase.title}</span>
+                    <div className="w-2 h-2 rounded-full bg-primary-300/60" />
+                    <span className="text-sm text-white/60">{phase.title}</span>
                   </div>
                   {i < LIFECYCLE_PHASES.length - 1 && (
-                    <div className="w-6 h-px" style={{ background: "rgba(193,154,91,0.25)" }} />
+                    <div className="w-4 h-px bg-white/20" />
                   )}
-                </motion.div>
+                </div>
               ))}
             </motion.div>
           </div>
@@ -620,19 +512,19 @@ export function HomepageClient() {
 
         {/* Scroll indicator */}
         <motion.div
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
           animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
-          <div className="w-px h-10 bg-gradient-to-b from-transparent to-gold-500/40" />
-          <div className="w-1 h-1 rounded-full bg-gold-500/40" />
+          <div className="w-px h-8 bg-gradient-to-b from-transparent to-white/30" />
+          <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
         </motion.div>
       </section>
 
       {/* ── METRICS BAR ───────────────────────────────────── */}
-      <section style={{ background: "var(--color-navy-900)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-        <div className="container-content py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <section className="bg-white border-b border-neutral-100">
+        <div className="container-content py-12 lg:py-14">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
             {METRICS.map((metric, i) => (
               <motion.div
                 key={metric.label}
@@ -640,12 +532,12 @@ export function HomepageClient() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
+                className="text-center"
               >
                 <MetricCounter
                   value={metric.value}
                   suffix={metric.suffix}
                   label={metric.label}
-                  light
                 />
               </motion.div>
             ))}
@@ -653,11 +545,14 @@ export function HomepageClient() {
         </div>
       </section>
 
+      {/* ── TRUST INDICATORS ──────────────────────────────── */}
+      <TrustIndicators />
+
       {/* ── VALUE PILLARS ─────────────────────────────────── */}
-      <section className="section-padding" style={{ background: "var(--color-warm-white)" }}>
+      <section className="section-padding bg-neutral-50">
         <div className="container-content">
           <SectionHeading
-            eyebrow="Why We're Different"
+            eyebrow="Why We&apos;re Different"
             title="One firm. Every phase. Every leader. Every scale."
             subtitle={MESSAGING.challenge}
             className="mb-16"
@@ -668,20 +563,32 @@ export function HomepageClient() {
               {
                 number: "01",
                 title: "Full Lifecycle Coverage",
-                body: "We don't hand off between phases. One partner, one methodology, one seamless outcome — from the first assessment to the last succession plan.",
-                icon: "◈",
+                body: "We don&apos;t hand off between phases. One partner, one methodology, one seamless outcome — from the first assessment to the last succession plan.",
+                icon: (
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12a7.5 7.5 0 0015 0m-15 0a7.5 7.5 0 1115 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077l1.41-.513m14.095-5.13l1.41-.513M5.106 17.785l1.15-.964m11.49-9.642l1.149-.964M7.501 19.795l.75-1.3m7.5-12.99l.75-1.3m-6.063 16.658l.26-1.477m2.605-14.772l.26-1.477m0 17.726l-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205L12 12m6.894 5.785l-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864l-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
+                  </svg>
+                ),
               },
               {
                 number: "02",
                 title: "Every Level of Leadership",
                 body: "From emerging talent to the C-suite and board. Integrated programs that grow with your people and connect across levels.",
-                icon: "◇",
+                icon: (
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                  </svg>
+                ),
               },
               {
                 number: "03",
                 title: "Individual to Enterprise",
-                body: "Whether it's one executive or an entire organization, we scale without losing depth. Our platform ensures consistency at any scope.",
-                icon: "◉",
+                body: "Whether it&apos;s one executive or an entire organization, we scale without losing depth. Our platform ensures consistency at any scope.",
+                icon: (
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605" />
+                  </svg>
+                ),
               },
             ].map((pillar, i) => (
               <motion.div
@@ -693,17 +600,14 @@ export function HomepageClient() {
                 className="card-base card-light"
               >
                 <div className="flex items-center gap-4 mb-5">
-                  <span
-                    className="text-3xl"
-                    style={{ color: "var(--color-gold-500)" }}
-                  >
+                  <div className="w-12 h-12 rounded-xl bg-primary-100 text-primary-600 flex items-center justify-center">
                     {pillar.icon}
-                  </span>
-                  <span className="text-xs font-700 tracking-widest uppercase text-neutral-400" style={{ fontWeight: 700 }}>
+                  </div>
+                  <span className="text-xs font-semibold tracking-widest uppercase text-neutral-400">
                     {pillar.number}
                   </span>
                 </div>
-                <h3 className="font-700 text-navy-900 text-xl mb-3" style={{ fontWeight: 700 }}>
+                <h3 className="font-semibold text-neutral-900 text-xl mb-3">
                   {pillar.title}
                 </h3>
                 <p className="text-neutral-600 leading-relaxed">{pillar.body}</p>
