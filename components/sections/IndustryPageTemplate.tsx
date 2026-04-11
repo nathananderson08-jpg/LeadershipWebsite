@@ -30,15 +30,15 @@ export function IndustryPageTemplate({
     <>
       <section
         className="pt-40 pb-24 relative"
-        style={{ background: "linear-gradient(160deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}
       >
         <div className="container-content relative z-10">
           <Breadcrumbs crumbs={[{ label: "Industries", href: "/industries" }, { label: industryName }]} />
           <div className="max-w-3xl mt-8">
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-              <p className="text-xs font-700 tracking-widest uppercase text-gold-400 mb-4" style={{ fontWeight: 700 }}>{industryName}</p>
-              <h1 className="display-lg text-white mb-5">{heroTitle}</h1>
-              <p className="text-xl text-white/60 leading-relaxed">{heroSubtitle}</p>
+              <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-4" style={{ fontWeight: 700 }}>{industryName}</p>
+              <h1 className="display-lg text-forest-950 mb-5">{heroTitle}</h1>
+              <p className="text-xl text-forest-800/70 leading-relaxed">{heroSubtitle}</p>
             </motion.div>
           </div>
         </div>
@@ -71,13 +71,12 @@ export function IndustryPageTemplate({
       </section>
 
       {/* Lifecycle application */}
-      <section className="section-padding" style={{ background: "var(--color-navy-900)" }}>
+      <section className="section-padding" style={{ background: "var(--color-forest-100)" }}>
         <div className="container-content">
           <SectionHeading
             eyebrow="Our Lifecycle Approach"
             title={`How our lifecycle serves ${industryName}.`}
             subtitle={`We apply the full leadership development lifecycle to the specific context of ${industryName} — adapting every phase to your sector's challenges.`}
-            light
             className="mb-14"
           />
           <div className="space-y-4">
@@ -88,21 +87,21 @@ export function IndustryPageTemplate({
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="flex flex-col md:flex-row md:items-start gap-5 p-6 rounded-2xl"
-                style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+                className="flex flex-col md:flex-row md:items-start gap-5 p-6 rounded-2xl bg-white"
+                style={{ border: "1px solid var(--color-forest-200)" }}
               >
                 <span
                   className="text-xs font-700 px-4 py-1.5 rounded-full shrink-0 tracking-wider"
-                  style={{ background: "rgba(193,154,91,0.12)", color: "var(--color-gold-400)", fontWeight: 700 }}
+                  style={{ background: "var(--color-forest-100)", color: "var(--color-forest-700)", fontWeight: 700 }}
                 >
                   {item.phase}
                 </span>
-                <p className="text-sm text-white/65 leading-relaxed">{item.detail}</p>
+                <p className="text-sm text-forest-700 leading-relaxed">{item.detail}</p>
               </motion.div>
             ))}
           </div>
           <div className="mt-10 text-center">
-            <Button href="/lifecycle" variant="outline-white">
+            <Button href="/lifecycle" variant="primary">
               Explore the Full Lifecycle →
             </Button>
           </div>

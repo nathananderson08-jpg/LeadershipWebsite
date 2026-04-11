@@ -52,25 +52,25 @@ export default function ResultsPage() {
     <>
       <section
         className="pt-40 pb-24"
-        style={{ background: "linear-gradient(160deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}
       >
         <div className="container-content">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
-            <p className="text-xs font-700 tracking-widest uppercase text-gold-400 mb-5" style={{ fontWeight: 700 }}>Impact & Results</p>
-            <h1 className="display-lg text-white mb-5">Measurable Impact Across the Leadership Lifecycle.</h1>
-            <p className="text-xl text-white/60 leading-relaxed">We don&apos;t ask you to take the impact of leadership development on faith. We measure it — at every phase, through every engagement — and we show you the data.</p>
+            <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-5" style={{ fontWeight: 700 }}>Impact & Results</p>
+            <h1 className="display-lg text-forest-950 mb-5">Measurable Impact Across the Leadership Lifecycle.</h1>
+            <p className="text-xl text-forest-800/70 leading-relaxed">We don&apos;t ask you to take the impact of leadership development on faith. We measure it — at every phase, through every engagement — and we show you the data.</p>
           </motion.div>
         </div>
       </section>
 
       {/* Impact metrics */}
-      <section className="section-padding" style={{ background: "var(--color-navy-900)" }}>
+      <section className="section-padding" style={{ background: "var(--color-forest-100)" }}>
         <div className="container-content">
-          <SectionHeading eyebrow="Our Scale" title="Across the lifecycle. Across the globe." light className="mb-14" />
+          <SectionHeading eyebrow="Our Scale" title="Across the lifecycle. Across the globe." className="mb-14" />
           <div className="grid grid-cols-2 md:grid-cols-3 gap-10">
             {IMPACT_METRICS.map((metric, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
-                <MetricCounter value={metric.value} suffix={metric.suffix} label={metric.label} light />
+                <MetricCounter value={metric.value} suffix={metric.suffix} label={metric.label} />
               </motion.div>
             ))}
           </div>
@@ -158,13 +158,12 @@ export default function ResultsPage() {
       </section>
 
       {/* Our commitments */}
-      <section className="section-padding" style={{ background: "var(--color-navy-900)" }}>
+      <section className="section-padding" style={{ background: "var(--color-forest-100)" }}>
         <div className="container-content">
           <SectionHeading
             eyebrow="Our Commitments"
             title="How we hold ourselves accountable."
             subtitle={MESSAGING.philosophy}
-            light
             className="mb-14"
           />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -175,18 +174,17 @@ export default function ResultsPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="p-7 rounded-2xl"
+                className="p-7 rounded-2xl bg-white"
                 style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  border: "1px solid var(--color-forest-200)",
                 }}
               >
                 <div
                   className="w-2 h-2 rounded-full mb-4"
-                  style={{ background: "var(--color-gold-500)" }}
+                  style={{ background: "var(--color-forest-500)" }}
                 />
-                <h3 className="font-700 text-white text-lg mb-3" style={{ fontWeight: 700 }}>{item.title}</h3>
-                <p className="text-sm text-white/50 leading-relaxed">{item.body}</p>
+                <h3 className="font-700 text-forest-900 text-lg mb-3" style={{ fontWeight: 700 }}>{item.title}</h3>
+                <p className="text-sm text-forest-700 leading-relaxed">{item.body}</p>
               </motion.div>
             ))}
           </div>

@@ -40,15 +40,15 @@ export function Header() {
         style={{ fontFamily: "var(--font-plus-jakarta)" }}
       >
         <div className="container-content">
-          <div className="flex items-center justify-between h-20" style={{ height: "5rem" }}>
+          <div className="flex items-center justify-between h-24 lg:h-28" style={{ minHeight: "6rem" }}>
             {/* Logo - Made prominent */}
             <Link href="/" className="flex items-center gap-3 shrink-0 group" aria-label={`${FIRM_NAME} - Home`}>
               <Image
                 src="/logo.png"
                 alt={`${FIRM_NAME} - Leadership Development`}
-                width={200}
-                height={70}
-                className="h-14 md:h-16 w-auto object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+                width={280}
+                height={90}
+                className="h-16 md:h-20 lg:h-24 w-auto object-contain transition-transform duration-200 group-hover:scale-[1.02]"
                 priority
               />
             </Link>

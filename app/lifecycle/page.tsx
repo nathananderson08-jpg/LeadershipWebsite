@@ -20,9 +20,9 @@ export const pageMetadata = {
 
 
 const AUDIENCE_MATRIX = [
-  { level: "Emerging Leaders", color: "rgba(193,154,91,0.15)", textColor: "#c19a5b" },
-  { level: "Senior Leaders", color: "rgba(193,154,91,0.1)", textColor: "#c19a5b" },
-  { level: "C-Suite & Board", color: "rgba(193,154,91,0.06)", textColor: "#c19a5b" },
+  { level: "Emerging Leaders", color: "rgba(93,171,121,0.12)", textColor: "#5dab79" },
+  { level: "Senior Leaders", color: "rgba(93,171,121,0.08)", textColor: "#5dab79" },
+  { level: "C-Suite & Board", color: "rgba(93,171,121,0.05)", textColor: "#5dab79" },
 ]
 
 const AI_PHASE_INTEGRATION = [
@@ -40,7 +40,7 @@ function InteractiveLifecycle() {
     <div className="relative">
       {/* Connection line */}
       <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 -translate-y-8 z-0"
-        style={{ background: "linear-gradient(90deg, transparent 2%, rgba(193,154,91,0.3) 15%, rgba(193,154,91,0.3) 85%, transparent 98%)" }}
+        style={{ background: "linear-gradient(90deg, transparent 2%, rgba(93,171,121,0.4) 15%, rgba(93,171,121,0.4) 85%, transparent 98%)" }}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 relative z-10">
@@ -56,40 +56,40 @@ function InteractiveLifecycle() {
               onClick={() => setActivePhase(activePhase === i ? null : i)}
               className={`w-full relative text-left p-6 rounded-2xl border transition-all duration-400 group ${
                 activePhase === i
-                  ? "border-gold-500 shadow-2xl scale-[1.02]"
-                  : "border-white/10 hover:border-gold-500/40"
+                  ? "border-forest-500 shadow-2xl scale-[1.02]"
+                  : "border-forest-200 hover:border-forest-400"
               }`}
               style={{
                 background:
                   activePhase === i
-                    ? "linear-gradient(135deg, rgba(193,154,91,0.15) 0%, rgba(193,154,91,0.08) 100%)"
-                    : "rgba(255,255,255,0.03)",
+                    ? "linear-gradient(135deg, rgba(93,171,121,0.15) 0%, rgba(93,171,121,0.08) 100%)"
+                    : "white",
               }}
             >
               {/* Phase number */}
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-800 mb-5"
                 style={{
-                  background: activePhase === i ? "var(--color-gold-500)" : "rgba(193,154,91,0.1)",
-                  color: activePhase === i ? "var(--color-navy-900)" : "var(--color-gold-500)",
+                  background: activePhase === i ? "var(--color-forest-600)" : "var(--color-forest-100)",
+                  color: activePhase === i ? "white" : "var(--color-forest-700)",
                   fontWeight: 800,
                 }}
               >
                 {phase.number}
               </div>
 
-              <h3 className="font-700 text-white text-xl mb-1" style={{ fontWeight: 700 }}>
+              <h3 className="font-700 text-forest-900 text-xl mb-1" style={{ fontWeight: 700 }}>
                 {phase.title}
               </h3>
-              <p className="text-sm text-white/40 mb-4">{phase.subtitle}</p>
-              <p className="text-sm text-white/60 leading-relaxed">
+              <p className="text-sm text-forest-600/70 mb-4">{phase.subtitle}</p>
+              <p className="text-sm text-forest-800/60 leading-relaxed">
                 {phase.description.substring(0, 90)}...
               </p>
 
               {/* Expand indicator */}
               <div
                 className={`mt-4 text-xs font-600 transition-colors ${
-                  activePhase === i ? "text-gold-400" : "text-white/30 group-hover:text-gold-500"
+                  activePhase === i ? "text-forest-600" : "text-forest-400 group-hover:text-forest-600"
                 }`}
                 style={{ fontWeight: 600 }}
               >
@@ -115,17 +115,17 @@ function InteractiveLifecycle() {
               const phase = LIFECYCLE_PHASES[activePhase]
               return (
                 <div
-                  className="p-8 rounded-2xl border border-gold-500/20 flex flex-col md:flex-row gap-8"
-                  style={{ background: "rgba(193,154,91,0.05)" }}
+                  className="p-8 rounded-2xl border border-forest-300 flex flex-col md:flex-row gap-8"
+                  style={{ background: "white" }}
                 >
                   <div className="flex-1">
                     <p
-                      className="text-xs font-700 tracking-widest uppercase text-gold-500 mb-3"
+                      className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-3"
                       style={{ fontWeight: 700 }}
                     >
                       Phase {phase.number} — {phase.title}: {phase.subtitle}
                     </p>
-                    <p className="text-white/70 leading-relaxed mb-6 text-base">{phase.description}</p>
+                    <p className="text-forest-800/80 leading-relaxed mb-6 text-base">{phase.description}</p>
                     <Link href={phase.link}>
                       <Button variant="primary" size="sm">
                         Explore {phase.title} Solutions →
@@ -134,15 +134,15 @@ function InteractiveLifecycle() {
                   </div>
                   <div className="md:w-72">
                     <p
-                      className="text-xs font-700 tracking-widest uppercase text-white/30 mb-4"
+                      className="text-xs font-700 tracking-widest uppercase text-forest-500 mb-4"
                       style={{ fontWeight: 700 }}
                     >
                       What We Deliver
                     </p>
                     <ul className="space-y-2.5">
                       {phase.details.map((detail) => (
-                        <li key={detail} className="flex items-start gap-3 text-sm text-white/60">
-                          <span className="text-gold-500 shrink-0 mt-0.5">✓</span>
+                        <li key={detail} className="flex items-start gap-3 text-sm text-forest-700">
+                          <span className="text-forest-500 shrink-0 mt-0.5">✓</span>
                           {detail}
                         </li>
                       ))}
@@ -164,11 +164,11 @@ export default function LifecyclePage() {
       {/* ── HERO ──────────────────────────────────────────── */}
       <section
         className="relative pt-40 pb-24"
-        style={{ background: "linear-gradient(160deg, #0a0f1c 0%, #0d1529 60%, #0a0f1c 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}
       >
-        <div className="absolute inset-0 opacity-20"
+        <div className="absolute inset-0"
           style={{
-            backgroundImage: "radial-gradient(at 70% 30%, rgba(193,154,91,0.1) 0px, transparent 60%)",
+            backgroundImage: "radial-gradient(at 70% 30%, rgba(93,171,121,0.12) 0px, transparent 60%)",
           }}
         />
         <div className="container-content relative z-10 text-center max-w-4xl mx-auto">
@@ -177,17 +177,17 @@ export default function LifecyclePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            <p className="text-sm font-700 tracking-[0.15em] uppercase text-gold-400 mb-5" style={{ fontWeight: 700 }}>
+            <p className="text-sm font-700 tracking-[0.15em] uppercase text-forest-600 mb-5" style={{ fontWeight: 700 }}>
               {LIFECYCLE_FRAMEWORK_NAME}
             </p>
-            <h1 className="display-lg text-white mb-6">
+            <h1 className="display-lg text-forest-950 mb-6">
               One Partner. Every Phase.{" "}
-              <span style={{ color: "var(--color-gold-400)" }}>Complete</span> Leadership Development.
+              <span style={{ color: "var(--color-forest-600)" }}>Complete</span> Leadership Development.
             </h1>
-            <p className="text-xl text-white/60 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-xl text-forest-800/70 leading-relaxed max-w-2xl mx-auto">
               We are the only firm that delivers integrated solutions across the entire leadership development lifecycle — with no handoffs, no gaps, and no compromises.
             </p>
-            <p className="text-sm text-white/35 mt-5 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-sm text-forest-700/50 mt-5 max-w-2xl mx-auto leading-relaxed">
               {MESSAGING.connectionChain}
             </p>
           </motion.div>
@@ -197,14 +197,13 @@ export default function LifecyclePage() {
       {/* ── INTERACTIVE LIFECYCLE ─────────────────────────── */}
       <section
         className="section-padding"
-        style={{ background: "var(--color-navy-900)" }}
+        style={{ background: "var(--color-forest-100)" }}
       >
         <div className="container-content">
           <SectionHeading
             eyebrow="Five Phases. One System."
             title="The complete leadership development lifecycle"
             subtitle="Click any phase to explore what we deliver — and how each phase connects seamlessly to the next."
-            light
             className="mb-14"
           />
           <InteractiveLifecycle />
@@ -278,13 +277,12 @@ export default function LifecyclePage() {
       </section>
 
       {/* ── AUDIENCE × LIFECYCLE MATRIX ───────────────────── */}
-      <section className="section-padding" style={{ background: "var(--color-navy-900)" }}>
+      <section className="section-padding" style={{ background: "var(--color-warm-white)" }}>
         <div className="container-content">
           <SectionHeading
             eyebrow="Lifecycle × Audience"
             title="The same lifecycle. Every level."
             subtitle="Our lifecycle isn't a one-size-fits-all framework — it's calibrated to the specific challenges, context, and needs of leaders at every stage of their career."
-            light
             className="mb-14"
           />
 
@@ -296,10 +294,10 @@ export default function LifecyclePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.12, duration: 0.5 }}
-                className="p-7 rounded-2xl border border-white/10"
+                className="p-7 rounded-2xl border border-forest-200 bg-white"
                 style={{ background: audience.color }}
               >
-                <h3 className="font-700 text-white text-xl mb-5" style={{ fontWeight: 700 }}>
+                <h3 className="font-700 text-forest-900 text-xl mb-5" style={{ fontWeight: 700 }}>
                   {audience.level}
                 </h3>
                 <div className="space-y-3">
@@ -309,14 +307,14 @@ export default function LifecyclePage() {
                         className="w-2 h-2 rounded-full shrink-0"
                         style={{ background: audience.textColor }}
                       />
-                      <span className="text-sm text-white/60">
-                        <span className="text-white/90 font-600" style={{ fontWeight: 600 }}>{phase.title}:</span>{" "}
+                      <span className="text-sm text-forest-700">
+                        <span className="text-forest-900 font-600" style={{ fontWeight: 600 }}>{phase.title}:</span>{" "}
                         {phase.subtitle}
                       </span>
                     </div>
                   ))}
                 </div>
-                <div className="mt-6 pt-5 border-t border-white/10">
+                <div className="mt-6 pt-5 border-t border-forest-200">
                   <Link
                     href={
                       i === 0
@@ -325,7 +323,7 @@ export default function LifecyclePage() {
                         ? "/solutions/senior-leaders"
                         : "/solutions/c-suite"
                     }
-                    className="text-sm font-600 text-gold-400 hover:text-gold-300 transition-colors"
+                    className="text-sm font-600 text-forest-600 hover:text-forest-800 transition-colors"
                     style={{ fontWeight: 600 }}
                   >
                     Explore {audience.level} solutions →

@@ -27,15 +27,15 @@ export default function CareersPage() {
     <>
       <section
         className="pt-40 pb-24"
-        style={{ background: "linear-gradient(160deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}
       >
         <div className="container-content">
           <Breadcrumbs crumbs={[{ label: "About", href: "/about" }, { label: "Careers" }]} />
           <div className="max-w-3xl mt-8">
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-              <p className="text-xs font-700 tracking-widest uppercase text-gold-400 mb-4" style={{ fontWeight: 700 }}>Careers</p>
-              <h1 className="display-lg text-white mb-5">Join the Team Redefining Leadership Development.</h1>
-              <p className="text-xl text-white/60 leading-relaxed">We&apos;re building the world&apos;s only end-to-end leadership development firm. If you want to do the best work of your career alongside people who set the standard — read on.</p>
+              <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-4" style={{ fontWeight: 700 }}>Careers</p>
+              <h1 className="display-lg text-forest-950 mb-5">Join the Team Redefining Leadership Development.</h1>
+              <p className="text-xl text-forest-800/70 leading-relaxed">We&apos;re building the world&apos;s only end-to-end leadership development firm. If you want to do the best work of your career alongside people who set the standard — read on.</p>
             </motion.div>
           </div>
         </div>
@@ -57,12 +57,12 @@ export default function CareersPage() {
       </section>
 
       {/* Benefits */}
-      <section className="py-16" style={{ background: "var(--color-navy-900)" }}>
+      <section className="py-16" style={{ background: "var(--color-forest-100)" }}>
         <div className="container-content">
-          <p className="text-xs font-700 tracking-widest uppercase text-gold-500 mb-8 text-center" style={{ fontWeight: 700 }}>Benefits</p>
+          <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-8 text-center" style={{ fontWeight: 700 }}>Benefits</p>
           <div className="flex flex-wrap gap-4 justify-center">
             {["Competitive compensation + equity", "Flexible & remote-first", "Professional certification support (ICF, HOGAN, etc.)", "Annual learning & development budget", "Global team retreats", "Health & wellbeing benefits", "Meaningful client work from day one", "Access to leading researchers & practitioners"].map((benefit) => (
-              <span key={benefit} className="px-5 py-2.5 rounded-full text-sm font-600 text-white/80 bg-white/5 border border-white/10" style={{ fontWeight: 600 }}>
+              <span key={benefit} className="px-5 py-2.5 rounded-full text-sm font-600 text-forest-800 bg-white border border-forest-200" style={{ fontWeight: 600 }}>
                 ✓ {benefit}
               </span>
             ))}

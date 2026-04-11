@@ -41,13 +41,13 @@ export default function PartnersPage() {
     <>
       <section
         className="pt-40 pb-24"
-        style={{ background: "linear-gradient(160deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}
       >
         <div className="container-content">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
-            <p className="text-xs font-700 tracking-widest uppercase text-gold-400 mb-4" style={{ fontWeight: 700 }}>Partner With Us</p>
-            <h1 className="display-lg text-white mb-5">Expand Your Impact. Join Our Network.</h1>
-            <p className="text-xl text-white/60 leading-relaxed">We partner with practitioners, institutions, and technology providers who share our commitment to exceptional leadership development. If that&apos;s you, let&apos;s talk.</p>
+            <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-4" style={{ fontWeight: 700 }}>Partner With Us</p>
+            <h1 className="display-lg text-forest-950 mb-5">Expand Your Impact. Join Our Network.</h1>
+            <p className="text-xl text-forest-800/70 leading-relaxed">We partner with practitioners, institutions, and technology providers who share our commitment to exceptional leadership development. If that&apos;s you, let&apos;s talk.</p>
           </motion.div>
         </div>
       </section>

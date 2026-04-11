@@ -35,21 +35,21 @@ export default function ConsultationPage() {
       {/* Hero */}
       <section
         className="pt-40 pb-20 relative"
-        style={{ background: "linear-gradient(160deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}
       >
         <div className="container-content">
           <div className="max-w-2xl">
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-              <p className="text-xs font-700 tracking-widest uppercase text-gold-400 mb-4" style={{ fontWeight: 700 }}>Request a Consultation</p>
-              <h1 className="display-lg text-white mb-5">Start Your Leadership Transformation.</h1>
-              <ul className="space-y-2 text-white/60">
+              <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-4" style={{ fontWeight: 700 }}>Request a Consultation</p>
+              <h1 className="display-lg text-forest-950 mb-5">Start Your Leadership Transformation.</h1>
+              <ul className="space-y-2 text-forest-800/70">
                 {[
                   "A 60-minute strategy conversation with a senior practitioner",
                   "An initial assessment of your leadership development needs",
                   "A proposed approach tailored to your organization",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-lg">
-                    <span className="text-gold-400 shrink-0 mt-0.5">✓</span>
+                    <span className="text-forest-600 shrink-0 mt-0.5">✓</span>
                     {item}
                   </li>
                 ))}
@@ -201,9 +201,9 @@ export default function ConsultationPage() {
       </section>
 
       {/* What to expect */}
-      <section className="py-16" style={{ background: "var(--color-navy-900)" }}>
+      <section className="py-16" style={{ background: "var(--color-forest-100)" }}>
         <div className="container-content max-w-3xl mx-auto">
-          <p className="text-xs font-700 tracking-widest uppercase text-gold-500 mb-8 text-center" style={{ fontWeight: 700 }}>What to Expect</p>
+          <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-8 text-center" style={{ fontWeight: 700 }}>What to Expect</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
               { step: "01", title: "We reach out within 24 hours", desc: "A senior practitioner — not a sales person — will contact you to understand your needs." },
@@ -211,9 +211,9 @@ export default function ConsultationPage() {
               { step: "03", title: "Tailored proposal", desc: "Within 5 business days, you receive a proposed approach specific to your needs." },
             ].map((step) => (
               <div key={step.step} className="text-center">
-                <div className="text-2xl font-700 text-gold-400 mb-2" style={{ fontWeight: 700 }}>{step.step}</div>
-                <h3 className="font-700 text-white text-base mb-2" style={{ fontWeight: 700 }}>{step.title}</h3>
-                <p className="text-sm text-white/50 leading-relaxed">{step.desc}</p>
+                <div className="text-2xl font-700 text-forest-600 mb-2" style={{ fontWeight: 700 }}>{step.step}</div>
+                <h3 className="font-700 text-forest-900 text-base mb-2" style={{ fontWeight: 700 }}>{step.title}</h3>
+                <p className="text-sm text-forest-700 leading-relaxed">{step.desc}</p>
               </div>
             ))}
           </div>

@@ -62,9 +62,9 @@ export function Footer() {
               <Image
                 src="/logo.png"
                 alt={`${FIRM_NAME} - Leadership Development`}
-                width={180}
-                height={65}
-                className="h-14 w-auto object-contain transition-opacity duration-200 group-hover:opacity-100"
+                width={240}
+                height={85}
+                className="h-20 w-auto object-contain transition-opacity duration-200 group-hover:opacity-100"
               />
             </Link>
             <p className="text-sm text-white/50 leading-relaxed mb-6">

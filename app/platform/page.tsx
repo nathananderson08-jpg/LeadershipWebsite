@@ -51,21 +51,17 @@ export default function PlatformPage() {
     <>
       <section
         className="pt-40 pb-24 relative"
-        style={{ background: "linear-gradient(160deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}
       >
         <div
-          className="absolute inset-0 opacity-30"
-          style={{ backgroundImage: "radial-gradient(at 70% 30%, rgba(0,212,255,0.06) 0px, transparent 50%)" }}
-        />
-        <div
-          className="absolute inset-0 opacity-[0.025]"
-          style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)", backgroundSize: "50px 50px" }}
+          className="absolute inset-0"
+          style={{ backgroundImage: "radial-gradient(at 70% 30%, rgba(93,171,121,0.12) 0px, transparent 50%)" }}
         />
         <div className="container-content relative z-10">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
-            <p className="text-xs font-700 tracking-widest uppercase text-gold-400 mb-5" style={{ fontWeight: 700 }}>Our Platform</p>
-            <h1 className="display-lg text-white mb-5">{PLATFORM_NAME}</h1>
-            <p className="text-xl text-white/60 leading-relaxed">We&apos;re not just a consultancy. Our proprietary platform connects every phase of the leadership development lifecycle — from assessment to succession — in a single integrated system that no combination of vendors can replicate.</p>
+            <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-5" style={{ fontWeight: 700 }}>Our Platform</p>
+            <h1 className="display-lg text-forest-950 mb-5">{PLATFORM_NAME}</h1>
+            <p className="text-xl text-forest-800/70 leading-relaxed">We&apos;re not just a consultancy. Our proprietary platform connects every phase of the leadership development lifecycle — from assessment to succession — in a single integrated system that no combination of vendors can replicate.</p>
           </motion.div>
         </div>
       </section>
@@ -137,9 +133,9 @@ export default function PlatformPage() {
       </section>
 
       {/* Features */}
-      <section className="section-padding" style={{ background: "var(--color-navy-900)" }}>
+      <section className="section-padding" style={{ background: "var(--color-forest-100)" }}>
         <div className="container-content">
-          <SectionHeading eyebrow="Platform Features" title="Five integrated capabilities. One complete system." light className="mb-14" />
+          <SectionHeading eyebrow="Platform Features" title="Five integrated capabilities. One complete system." className="mb-14" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {PLATFORM_FEATURES.map((feature, i) => (
               <motion.div
@@ -152,14 +148,14 @@ export default function PlatformPage() {
                 style={
                   feature.featured
                     ? { background: "linear-gradient(135deg, rgba(0,212,255,0.07) 0%, rgba(0,212,255,0.03) 100%)", border: "1px solid rgba(0,212,255,0.18)" }
-                    : { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }
+                    : { background: "white", border: "1px solid var(--color-forest-200)" }
                 }
               >
                 {feature.featured && <AIBadge className="mb-4" />}
                 <div className="text-3xl mb-4">{feature.icon}</div>
-                <h3 className="font-700 text-white text-lg mb-3" style={{ fontWeight: 700 }}>{feature.title}</h3>
-                <p className="text-sm text-white/55 leading-relaxed mb-4">{feature.desc}</p>
-                <p className="text-xs font-mono" style={{ color: feature.featured ? "rgba(0,212,255,0.5)" : "rgba(255,255,255,0.2)" }}>
+                <h3 className="font-700 text-forest-900 text-lg mb-3" style={{ fontWeight: 700 }}>{feature.title}</h3>
+                <p className="text-sm text-forest-700 leading-relaxed mb-4">{feature.desc}</p>
+                <p className="text-xs font-mono" style={{ color: feature.featured ? "rgba(0,212,255,0.5)" : "var(--color-forest-400)" }}>
                   {feature.techDetail}
                 </p>
               </motion.div>

@@ -44,36 +44,36 @@ export default function InsightsPage() {
     <>
       <section
         className="pt-40 pb-16"
-        style={{ background: "linear-gradient(160deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}
       >
         <div className="container-content">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
-            <p className="text-xs font-700 tracking-widest uppercase text-gold-400 mb-4" style={{ fontWeight: 700 }}>Insights Hub</p>
-            <h1 className="display-lg text-white mb-5">Thinking from the frontier of leadership development.</h1>
-            <p className="text-xl text-white/60 leading-relaxed">Articles, research, and analysis on leadership, AI transformation, succession, culture, and the future of organizations.</p>
+            <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-4" style={{ fontWeight: 700 }}>Insights Hub</p>
+            <h1 className="display-lg text-forest-950 mb-5">Thinking from the frontier of leadership development.</h1>
+            <p className="text-xl text-forest-800/70 leading-relaxed">Articles, research, and analysis on leadership, AI transformation, succession, culture, and the future of organizations.</p>
           </motion.div>
         </div>
       </section>
 
       {/* Featured article */}
-      <section className="py-12" style={{ background: "var(--color-navy-950)" }}>
+      <section className="py-12" style={{ background: "var(--color-forest-100)" }}>
         <div className="container-content">
           <Link
             href={`/insights/${ALL_ARTICLES[0].slug}`}
-            className="block p-8 rounded-2xl group transition-all hover:bg-white/5"
-            style={{ border: "1px solid rgba(193,154,91,0.2)" }}
+            className="block p-8 rounded-2xl group transition-all hover:bg-white bg-white"
+            style={{ border: "1px solid var(--color-forest-200)" }}
           >
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-xs font-700 px-3 py-1 rounded-full" style={{ background: "var(--color-gold-500)", color: "var(--color-navy-900)", fontWeight: 700 }}>
+              <span className="text-xs font-700 px-3 py-1 rounded-full" style={{ background: "var(--color-forest-600)", color: "white", fontWeight: 700 }}>
                 Featured
               </span>
-              <span className="text-xs font-700 px-3 py-1 rounded-full" style={{ background: "rgba(193,154,91,0.1)", color: "var(--color-gold-400)", fontWeight: 700 }}>
+              <span className="text-xs font-700 px-3 py-1 rounded-full" style={{ background: "var(--color-forest-100)", color: "var(--color-forest-700)", fontWeight: 700 }}>
                 {ALL_ARTICLES[0].category}
               </span>
-              <span className="text-xs text-white/30">{ALL_ARTICLES[0].readTime}</span>
+              <span className="text-xs text-forest-600">{ALL_ARTICLES[0].readTime}</span>
             </div>
-            <h2 className="display-md text-white mb-3 group-hover:text-gold-300 transition-colors">{ALL_ARTICLES[0].title}</h2>
-            <p className="text-white/50 text-lg leading-relaxed max-w-3xl">{ALL_ARTICLES[0].excerpt}</p>
+            <h2 className="display-md text-forest-950 mb-3 group-hover:text-forest-700 transition-colors">{ALL_ARTICLES[0].title}</h2>
+            <p className="text-forest-700 text-lg leading-relaxed max-w-3xl">{ALL_ARTICLES[0].excerpt}</p>
           </Link>
         </div>
       </section>
