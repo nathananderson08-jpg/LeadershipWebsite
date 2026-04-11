@@ -60,13 +60,17 @@ export function Sidebar() {
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-6 relative z-10"
         style={{ borderBottom: '1px solid rgba(93,171,121,0.12)' }}>
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-bold text-sm"
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 overflow-hidden"
           style={{
-            background: 'linear-gradient(135deg, #5dab79 0%, #7fb093 100%)',
-            color: '#ffffff',
-            fontWeight: 800,
+            background: '#1a3a2a',
           }}>
-          A&amp;O
+          <Image
+            src="/logo.png"
+            alt="Apex & Origin"
+            width={32}
+            height={32}
+            className="object-contain"
+          />
         </div>
         <div>
           <h1 className="text-sm font-semibold tracking-tight" style={{ color: '#1a3a2a' }}>

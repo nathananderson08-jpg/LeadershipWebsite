@@ -150,13 +150,15 @@ export default function PortalLoginPage() {
         }} />
         <div className="relative z-10 text-center">
           {/* Logo mark */}
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-8 font-bold text-xl"
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-8 overflow-hidden"
             style={{
-              background: 'linear-gradient(135deg, #5dab79 0%, #7fb093 100%)',
-              color: '#ffffff',
-              fontWeight: 800,
+              background: '#1a3a2a',
             }}>
-            A&amp;O
+            <img
+              src="/logo.png"
+              alt="Apex & Origin"
+              className="w-14 h-14 object-contain"
+            />
           </div>
           <h1 className="text-3xl font-bold mb-2" style={{ color: '#1a3a2a', letterSpacing: '-0.02em' }}>
             Apex &amp; Origin
