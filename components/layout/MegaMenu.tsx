@@ -21,13 +21,13 @@ export function MegaMenu({ onClose }: { onClose: () => void }) {
   return (
     <div
       className="absolute top-full left-0 right-0 border-t border-white/10"
-      style={{ background: "rgba(10,15,28,0.98)", backdropFilter: "blur(16px)" }}
+      style={{ background: "rgba(19,36,25,0.98)", backdropFilter: "blur(16px)" }}
     >
       <div className="container-content py-8">
         <div className="grid grid-cols-3 gap-8">
           {/* Lifecycle Phases */}
           <div>
-            <p className="text-xs font-700 tracking-widest uppercase text-gold-500 mb-4" style={{ fontWeight: 700 }}>
+            <p className="text-xs font-700 tracking-widest uppercase text-forest-400 mb-4" style={{ fontWeight: 700 }}>
               By Lifecycle Phase
             </p>
             <ul className="space-y-1">
@@ -38,7 +38,7 @@ export function MegaMenu({ onClose }: { onClose: () => void }) {
                     onClick={onClose}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 group transition-colors"
                   >
-                    <span className="text-xs text-gold-600 font-600 w-16 shrink-0" style={{ fontWeight: 600 }}>
+                    <span className="text-xs text-forest-500 font-600 w-16 shrink-0" style={{ fontWeight: 600 }}>
                       {item.phase}
                     </span>
                     <span className="text-sm text-white/80 group-hover:text-white transition-colors">
@@ -52,7 +52,7 @@ export function MegaMenu({ onClose }: { onClose: () => void }) {
 
           {/* Audience Levels */}
           <div>
-            <p className="text-xs font-700 tracking-widest uppercase text-gold-500 mb-4" style={{ fontWeight: 700 }}>
+            <p className="text-xs font-700 tracking-widest uppercase text-forest-400 mb-4" style={{ fontWeight: 700 }}>
               By Audience Level
             </p>
             <ul className="space-y-1">
@@ -75,7 +75,7 @@ export function MegaMenu({ onClose }: { onClose: () => void }) {
               <Link
                 href="/solutions"
                 onClick={onClose}
-                className="text-sm text-gold-400 hover:text-gold-300 transition-colors font-600"
+                className="text-sm text-forest-300 hover:text-forest-200 transition-colors font-600"
                 style={{ fontWeight: 600 }}
               >
                 View all solutions →
@@ -85,7 +85,7 @@ export function MegaMenu({ onClose }: { onClose: () => void }) {
 
           {/* AI Featured */}
           <div>
-            <p className="text-xs font-700 tracking-widest uppercase text-gold-500 mb-4" style={{ fontWeight: 700 }}>
+            <p className="text-xs font-700 tracking-widest uppercase text-forest-400 mb-4" style={{ fontWeight: 700 }}>
               Featured
             </p>
             <Link
@@ -93,8 +93,8 @@ export function MegaMenu({ onClose }: { onClose: () => void }) {
               onClick={onClose}
               className="block p-4 rounded-xl transition-all group"
               style={{
-                background: "linear-gradient(135deg, rgba(0,212,255,0.08) 0%, rgba(0,212,255,0.04) 100%)",
-                border: "1px solid rgba(0,212,255,0.2)",
+                background: "linear-gradient(135deg, rgba(20,163,163,0.1) 0%, rgba(20,163,163,0.04) 100%)",
+                border: "1px solid rgba(20,163,163,0.25)",
               }}
             >
               <AIBadge className="mb-3" />
@@ -106,7 +106,7 @@ export function MegaMenu({ onClose }: { onClose: () => void }) {
               </p>
               <span
                 className="inline-block mt-3 text-xs font-700 tracking-wide"
-                style={{ color: "#00d4ff", fontWeight: 700 }}
+                style={{ color: "#14a3a3", fontWeight: 700 }}
               >
                 Explore →
               </span>

@@ -33,7 +33,7 @@ export function SectionHeading({
       {eyebrow && (
         <p
           className={`text-sm font-700 tracking-[0.15em] uppercase mb-4 ${
-            light ? "text-gold-400" : "text-gold-600"
+            light ? "text-forest-300" : "text-forest-600"
           }`}
           style={{ fontWeight: 700 }}
         >
@@ -41,7 +41,7 @@ export function SectionHeading({
         </p>
       )}
       <h2
-        className={`display-md mb-5 ${light ? "text-white" : "text-navy-900"}`}
+        className={`display-md mb-5 ${light ? "text-white" : "text-forest-900"}`}
       >
         {title}
       </h2>

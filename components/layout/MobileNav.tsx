@@ -63,7 +63,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
       {/* Drawer */}
       <div
         className="relative ml-auto w-full max-w-sm h-full flex flex-col overflow-y-auto"
-        style={{ background: "var(--color-navy-900)" }}
+        style={{ background: "var(--color-forest-900)" }}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-white/10">
@@ -85,7 +85,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
         <div className="flex-1 p-6 space-y-6">
           {MOBILE_SECTIONS.map((section) => (
             <div key={section.heading}>
-              <p className="text-xs font-700 tracking-widest uppercase text-gold-600 mb-3" style={{ fontWeight: 700 }}>
+              <p className="text-xs font-700 tracking-widest uppercase text-forest-400 mb-3" style={{ fontWeight: 700 }}>
                 {section.heading}
               </p>
               <ul className="space-y-1">

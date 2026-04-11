@@ -34,21 +34,21 @@ export function Header() {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-navy-900/95 backdrop-blur-md shadow-lg shadow-black/20"
+            ? "bg-forest-900/95 backdrop-blur-md shadow-lg shadow-black/20"
             : "bg-transparent"
         }`}
         style={{ fontFamily: "var(--font-plus-jakarta)" }}
       >
         <div className="container-content">
-          <div className="flex items-center justify-between h-18" style={{ height: "4.5rem" }}>
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 shrink-0 group">
+          <div className="flex items-center justify-between h-20" style={{ height: "5rem" }}>
+            {/* Logo - Made prominent */}
+            <Link href="/" className="flex items-center gap-3 shrink-0 group" aria-label={`${FIRM_NAME} - Home`}>
               <Image
                 src="/logo.png"
-                alt={FIRM_NAME}
-                width={120}
-                height={44}
-                className="h-10 w-auto object-contain"
+                alt={`${FIRM_NAME} - Leadership Development`}
+                width={200}
+                height={70}
+                className="h-14 md:h-16 w-auto object-contain transition-transform duration-200 group-hover:scale-[1.02]"
                 priority
               />
             </Link>
@@ -93,7 +93,7 @@ export function Header() {
                 }}
                 onMouseEnter={e => {
                   (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.85)"
-                  ;(e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(193,154,91,0.4)"
+                  ;(e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(61,122,84,0.5)"
                 }}
                 onMouseLeave={e => {
                   (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.55)"

@@ -21,12 +21,12 @@ export function CTABanner({
   secondaryHref = "/solutions",
 }: CTABannerProps) {
   return (
-    <section className="py-24 relative overflow-hidden" style={{ background: "var(--color-navy-900)" }}>
+    <section className="py-24 relative overflow-hidden" style={{ background: "var(--color-forest-900)" }}>
       {/* Background decoration */}
       <div
         className="absolute inset-0 opacity-30"
         style={{
-          backgroundImage: "radial-gradient(at 30% 50%, rgba(193,154,91,0.12) 0px, transparent 60%), radial-gradient(at 70% 50%, rgba(0,212,255,0.05) 0px, transparent 60%)",
+          backgroundImage: "radial-gradient(at 30% 50%, rgba(79,154,106,0.15) 0px, transparent 60%), radial-gradient(at 70% 50%, rgba(20,163,163,0.08) 0px, transparent 60%)",
         }}
       />
       <div className="container-content relative z-10">
