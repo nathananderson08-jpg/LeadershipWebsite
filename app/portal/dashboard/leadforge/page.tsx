@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Target, Upload, FileText, Zap, AlertCircle, TrendingUp } from 'lucide-react';
-import { useLeadForgeStats, useProspects, useTriggerEvents } from '@/hooks/portal/useLeadForge';
+import { useLeadForgeStats } from '@/hooks/portal/useLeadForge';
 
 function IcpBadge({ score }: { score: number }) {
   const color = score >= 80 ? '#4ade80' : score >= 60 ? '#f59e0b' : '#ef4444';
@@ -29,9 +29,7 @@ function PriorityBadge({ priority }: { priority: string | null }) {
 }
 
 export default function LeadForgePage() {
-  const { prospectsTotal, triggerEventsThisWeek, activeCampaigns, pendingReview, loading } = useLeadForgeStats();
-  const { prospects } = useProspects();
-  const { events } = useTriggerEvents();
+  const { prospectsTotal, triggerEventsThisWeek, activeCampaigns, pendingReview, loading, prospects, events } = useLeadForgeStats();
 
   const topProspects = prospects.slice(0, 5);
   const recentEvents = events.slice(0, 5);

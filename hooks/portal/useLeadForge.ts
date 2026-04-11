@@ -96,12 +96,17 @@ export function useProspects() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('leadforge_prospects')
-      .select('*, account:leadforge_accounts(*)')
-      .order('icp_score', { ascending: false });
-    if (!error && data) setProspects(data as LeadForgeProspect[]);
-    setLoading(false);
+    try {
+      const { data, error } = await supabase
+        .from('leadforge_prospects')
+        .select('*, account:leadforge_accounts(*)')
+        .order('icp_score', { ascending: false });
+      if (!error && data) setProspects(data as LeadForgeProspect[]);
+    } catch {
+      // silently fail — show empty state
+    } finally {
+      setLoading(false);
+    }
   }, [supabase]);
 
   useEffect(() => {
@@ -157,12 +162,17 @@ export function useAccounts() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('leadforge_accounts')
-      .select('*')
-      .order('company_name');
-    if (!error && data) setAccounts(data as LeadForgeAccount[]);
-    setLoading(false);
+    try {
+      const { data, error } = await supabase
+        .from('leadforge_accounts')
+        .select('*')
+        .order('company_name');
+      if (!error && data) setAccounts(data as LeadForgeAccount[]);
+    } catch {
+      // silently fail — show empty state
+    } finally {
+      setLoading(false);
+    }
   }, [supabase]);
 
   useEffect(() => {
@@ -195,12 +205,17 @@ export function useTriggerEvents() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('leadforge_trigger_events')
-      .select('*, account:leadforge_accounts(*)')
-      .order('detected_at', { ascending: false });
-    if (!error && data) setEvents(data as LeadForgeTriggerEvent[]);
-    setLoading(false);
+    try {
+      const { data, error } = await supabase
+        .from('leadforge_trigger_events')
+        .select('*, account:leadforge_accounts(*)')
+        .order('detected_at', { ascending: false });
+      if (!error && data) setEvents(data as LeadForgeTriggerEvent[]);
+    } catch {
+      // silently fail — show empty state
+    } finally {
+      setLoading(false);
+    }
   }, [supabase]);
 
   useEffect(() => {
@@ -247,12 +262,17 @@ export function useLeadForgeContent() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('leadforge_content')
-      .select('*, prospect:leadforge_prospects(full_name, title)')
-      .order('created_at', { ascending: false });
-    if (!error && data) setContent(data as LeadForgeContent[]);
-    setLoading(false);
+    try {
+      const { data, error } = await supabase
+        .from('leadforge_content')
+        .select('*, prospect:leadforge_prospects(full_name, title)')
+        .order('created_at', { ascending: false });
+      if (!error && data) setContent(data as LeadForgeContent[]);
+    } catch {
+      // silently fail — show empty state
+    } finally {
+      setLoading(false);
+    }
   }, [supabase]);
 
   useEffect(() => {
@@ -310,5 +330,8 @@ export function useLeadForgeStats() {
     activeCampaigns,
     pendingReview,
     loading: pLoading || eLoading || cLoading,
+    // expose raw data so callers don't need to re-call sub-hooks
+    prospects,
+    events,
   };
 }
