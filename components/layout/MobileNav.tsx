@@ -68,7 +68,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-white/10">
           <span className="font-700 text-white text-base" style={{ fontWeight: 700 }}>
-            {FIRM_NAME} <span className="text-gold-400 font-400" style={{ fontWeight: 400 }}>Leadership</span>
+            {FIRM_NAME}
           </span>
           <button
             onClick={onClose}
@@ -107,10 +107,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
 
         {/* Bottom CTA */}
         <div className="p-6 border-t border-white/10 space-y-3">
-          <Button href="/consultation" variant="primary" className="w-full justify-center" onClick={onClose}>
-            Request a Consultation
-          </Button>
-          <Button href="/contact" variant="outline-white" className="w-full justify-center" onClick={onClose}>
+          <Button href="/contact" variant="primary" className="w-full justify-center" onClick={onClose}>
             Contact Us
           </Button>
         </div>

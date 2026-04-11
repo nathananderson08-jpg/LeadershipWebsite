@@ -7,13 +7,6 @@ import { MetricCounter } from "@/components/ui/MetricCounter"
 import { CTABanner } from "@/components/sections/CTABanner"
 import { FIRM_NAME } from "@/lib/constants"
 
-const TIMELINE = [
-  { year: "Year 1", title: "Founded with a Clear Mission", desc: "Built from the ground up to solve the leadership fragmentation problem — one partner, one methodology, complete lifecycle coverage." },
-  { year: "Year 2", title: "Methodology & Platform Development", desc: "Invested in building our proprietary assessment engine, the ALIGN™ AI framework, and the technology infrastructure to deliver at scale." },
-  { year: "Year 3", title: "Global Practice Expansion", desc: "Grew our coaching network, expanded to multiple continents, and launched our AI Leadership Transformation practice ahead of market demand." },
-  { year: "Today", title: "The Only End-to-End Firm", desc: "Serving organizations across 6 continents, with an integrated platform and a team of world-class practitioners who cover the entire leadership development lifecycle." },
-]
-
 const SCALE_METRICS = [
   { value: 10000, suffix: "+", label: "Leaders Developed" },
   { value: 200, suffix: "+", label: "Organizations Served" },
@@ -87,47 +80,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Timeline */}
-      <section className="section-padding" style={{ background: "var(--color-warm-50)" }}>
-        <div className="container-content">
-          <SectionHeading eyebrow="Our Journey" title="From founding insight to global practice." className="mb-14" />
-          <div className="relative">
-            {/* Vertical line */}
-            <div
-              className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2"
-              style={{ background: "linear-gradient(180deg, var(--color-gold-300) 0%, var(--color-gold-500) 50%, var(--color-gold-300) 100%)" }}
-            />
-            <div className="space-y-10">
-              {TIMELINE.map((item, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.12 }}
-                  className={`relative flex items-start gap-8 ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}
-                >
-                  {/* Dot */}
-                  <div
-                    className="absolute left-8 md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-2 z-10 mt-1"
-                    style={{ background: "var(--color-gold-500)", borderColor: "var(--color-warm-50)" }}
-                  />
-                  {/* Content */}
-                  <div className={`ml-16 md:ml-0 md:w-1/2 ${i % 2 === 0 ? "md:pr-12" : "md:pl-12"}`}>
-                    <div className="p-6 rounded-2xl bg-white" style={{ border: "1px solid var(--color-warm-100)" }}>
-                      <span className="text-xs font-700 tracking-widest uppercase text-gold-600 mb-2 block" style={{ fontWeight: 700 }}>{item.year}</span>
-                      <h3 className="font-700 text-navy-900 text-xl mb-2" style={{ fontWeight: 700 }}>{item.title}</h3>
-                      <p className="text-sm text-neutral-500 leading-relaxed">{item.desc}</p>
-                    </div>
-                  </div>
-                  <div className="hidden md:block md:w-1/2" />
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Scale metrics */}
       <section className="section-padding" style={{ background: "var(--color-navy-900)" }}>
         <div className="container-content">
@@ -142,7 +94,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <CTABanner headline="Want to understand our approach in depth?" primaryLabel="Explore Our Methodology" primaryHref="/about/methodology" secondaryLabel="Request a Consultation" secondaryHref="/consultation" />
+      <CTABanner headline="Want to understand our approach in depth?" primaryLabel="Explore Our Methodology" primaryHref="/about/methodology" secondaryLabel="Contact Us" secondaryHref="/contact" />
     </>
   )
 }

@@ -18,33 +18,6 @@ export const pageMetadata = {
     "Explore the only end-to-end leadership development lifecycle: from assessment and coaching to development, transformation, and succession.",
 }
 
-const COMPETITOR_DATA = [
-  {
-    firm: `${FIRM_NAME} Leadership`,
-    highlight: true,
-    phases: [true, true, true, true, true],
-  },
-  {
-    firm: "Typical Coaching Firm",
-    highlight: false,
-    phases: [false, true, false, false, false],
-  },
-  {
-    firm: "Typical Training Provider",
-    highlight: false,
-    phases: [false, false, true, false, false],
-  },
-  {
-    firm: "Typical Assessment Company",
-    highlight: false,
-    phases: [true, false, false, false, false],
-  },
-  {
-    firm: "Typical Change Consultancy",
-    highlight: false,
-    phases: [false, false, false, true, false],
-  },
-]
 
 const AUDIENCE_MATRIX = [
   { level: "Emerging Leaders", color: "rgba(193,154,91,0.15)", textColor: "#c19a5b" },
@@ -238,91 +211,50 @@ export default function LifecyclePage() {
         </div>
       </section>
 
-      {/* ── COMPETITOR COMPARISON ─────────────────────────── */}
+      {/* ── WHY INTEGRATED ───────────────────────────────── */}
       <section className="section-padding" style={{ background: "var(--color-warm-white)" }}>
         <div className="container-content">
           <SectionHeading
-            eyebrow="The Competitive Difference"
-            title="Most firms cover a fraction. We cover it all."
-            subtitle="The leadership development landscape is fragmented by design — firms specialize in one phase and ignore the rest. We built the only integrated alternative."
+            eyebrow="The Integrated Difference"
+            title="Most firms do one thing. We do everything — and connect it all."
+            subtitle="The leadership development industry is built on specialization. Assessment firms don't coach. Coaching firms don't build programs. Training providers don't plan succession. The result is a patchwork of disconnected interventions that produces inconsistent, hard-to-measure outcomes."
             className="mb-14"
           />
 
-          <div className="overflow-x-auto">
-            <table className="w-full" style={{ minWidth: "600px" }}>
-              <thead>
-                <tr>
-                  <th className="text-left py-4 pr-6 text-sm font-600 text-neutral-500 w-56" style={{ fontWeight: 600 }}>
-                    Provider Type
-                  </th>
-                  {["Assess", "Coach", "Develop", "Transform", "Sustain"].map((phase) => (
-                    <th key={phase} className="text-center py-4 px-4 text-sm font-700 text-navy-900" style={{ fontWeight: 700 }}>
-                      {phase}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {COMPETITOR_DATA.map((row, i) => (
-                  <motion.tr
-                    key={row.firm}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1, duration: 0.5 }}
-                    className={`border-t ${row.highlight ? "border-gold-200" : "border-neutral-100"}`}
-                    style={
-                      row.highlight
-                        ? {
-                            background: "linear-gradient(90deg, rgba(193,154,91,0.08) 0%, rgba(193,154,91,0.03) 100%)",
-                          }
-                        : undefined
-                    }
-                  >
-                    <td className="py-4 pr-6">
-                      <span
-                        className={`text-sm font-600 ${row.highlight ? "text-navy-900" : "text-neutral-500"}`}
-                        style={{ fontWeight: row.highlight ? 700 : 500 }}
-                      >
-                        {row.firm}
-                        {row.highlight && (
-                          <span
-                            className="ml-2 text-xs px-2 py-0.5 rounded-full"
-                            style={{
-                              background: "var(--color-gold-500)",
-                              color: "var(--color-navy-900)",
-                              fontWeight: 700,
-                            }}
-                          >
-                            Us
-                          </span>
-                        )}
-                      </span>
-                    </td>
-                    {row.phases.map((covered, j) => (
-                      <td key={j} className="text-center py-4 px-4">
-                        {covered ? (
-                          <span
-                            className="inline-flex items-center justify-center w-7 h-7 rounded-full text-sm"
-                            style={{
-                              background: row.highlight ? "var(--color-gold-500)" : "rgba(34,197,94,0.12)",
-                              color: row.highlight ? "var(--color-navy-900)" : "#16a34a",
-                              fontWeight: 700,
-                            }}
-                          >
-                            ✓
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center justify-center w-7 h-7 rounded-full text-neutral-200 text-lg">
-                            —
-                          </span>
-                        )}
-                      </td>
-                    ))}
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            {[
+              {
+                title: "The fragmented model fails leaders.",
+                body: "When a leader works with three different vendors across three years, there's no common language, no shared data, and no one holding the thread. Every engagement starts from scratch. The insights from an assessment never inform the coaching. The coaching never reinforces the development program. Leaders feel it — they describe it as 'a lot of activity with not enough impact.'",
+              },
+              {
+                title: "Integration is what makes development stick.",
+                body: "Our lifecycle methodology creates a continuous through-line from first assessment to last succession plan. The data from Phase 1 informs Phase 2. Coaching insights shape Phase 3 curriculum. Phase 4 transformation outcomes define Phase 5 pipeline priorities. Because one team holds the whole picture, nothing gets lost between handoffs — because there are none.",
+              },
+              {
+                title: "One partner means one standard of excellence.",
+                body: "Every firm we've seen struggle with leadership development has the same root problem: too many vendors, too little coordination. When you work with us, you have one relationship, one methodology, and one accountable partner — at every phase, for every leader level, at any organizational scale.",
+              },
+              {
+                title: "The outcome is a leadership system, not a program.",
+                body: "Our clients don't just run better leadership programs — they build a self-reinforcing leadership system. Assessment feeds coaching, which informs development, which enables transformation, which sustains through succession. That system outlasts any individual program, coach, or initiative. It becomes part of how the organization develops people, permanently.",
+              },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                className="p-8 rounded-2xl bg-white"
+                style={{ border: "1px solid var(--color-warm-100)" }}
+              >
+                <h3 className="font-700 text-navy-900 text-lg mb-3" style={{ fontWeight: 700 }}>
+                  {item.title}
+                </h3>
+                <p className="text-neutral-600 leading-relaxed text-sm">{item.body}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

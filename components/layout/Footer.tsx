@@ -41,7 +41,7 @@ const FOOTER_COLUMNS = [
     heading: "Connect",
     links: [
       { label: "Contact Us", href: "/contact" },
-      { label: "Request Consultation", href: "/consultation" },
+      { label: "Contact Us", href: "/contact" },
       { label: "Industries", href: "/industries" },
       { label: "Emerging Leaders", href: "/solutions/emerging-leaders" },
       { label: "Senior Leaders", href: "/solutions/senior-leaders" },
@@ -66,10 +66,10 @@ export function Footer() {
                   fontWeight: 800,
                 }}
               >
-                {FIRM_NAME === "[FIRM NAME]" ? "LF" : FIRM_NAME.substring(0, 2).toUpperCase()}
+                A&amp;O
               </div>
               <span className="font-700 text-white text-sm" style={{ fontWeight: 700 }}>
-                {FIRM_NAME} <span className="text-gold-400 font-400" style={{ fontWeight: 400 }}>Leadership</span>
+                {FIRM_NAME}
               </span>
             </Link>
             <p className="text-sm text-white/50 leading-relaxed mb-6">

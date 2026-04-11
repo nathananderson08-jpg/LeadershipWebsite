@@ -15,8 +15,8 @@ interface CTABannerProps {
 export function CTABanner({
   headline = "Ready to build leadership at every level?",
   subtext = "From assessment to succession, we cover the entire lifecycle. Let's design the right solution for your organization.",
-  primaryLabel = "Start a Conversation",
-  primaryHref = "/consultation",
+  primaryLabel = "Contact Us",
+  primaryHref = "/contact",
   secondaryLabel = "Explore Solutions",
   secondaryHref = "/solutions",
 }: CTABannerProps) {

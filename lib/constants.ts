@@ -3,7 +3,7 @@
 // Replace [FIRM NAME] with the actual firm name when finalized
 // ============================================================
 
-export const FIRM_NAME: string = "[FIRM NAME]"
+export const FIRM_NAME: string = "Apex & Origin"
 export const FIRM_TAGLINE = "The Complete Leadership Partner"
 export const FIRM_DOMAIN = "https://www.leadershipfirm.com" // update when live
 export const FIRM_EMAIL = "hello@leadershipfirm.com"
@@ -222,6 +222,12 @@ export const INDUSTRIES = [
   { title: "Manufacturing", href: "/industries/manufacturing", icon: "factory" },
   { title: "Energy", href: "/industries/energy", icon: "zap" },
   { title: "Government & Public Sector", href: "/industries/government", icon: "shield" },
+  { title: "Professional Services", href: "/industries/professional-services", icon: "briefcase" },
+  { title: "Education", href: "/industries/education", icon: "graduation-cap" },
+  { title: "Retail & Consumer Goods", href: "/industries/retail", icon: "shopping-bag" },
+  { title: "Non-Profit & Social Sector", href: "/industries/nonprofit", icon: "heart" },
+  { title: "Life Sciences & Pharma", href: "/industries/life-sciences", icon: "flask" },
+  { title: "Hospitality & Travel", href: "/industries/hospitality", icon: "globe" },
 ]
 
 // ── Key messaging ────────────────────────────────────────────

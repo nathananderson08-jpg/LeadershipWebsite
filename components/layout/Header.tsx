@@ -49,10 +49,10 @@ export function Header() {
                   fontWeight: 800,
                 }}
               >
-                {FIRM_NAME === "[FIRM NAME]" ? "LF" : FIRM_NAME.substring(0, 2).toUpperCase()}
+                A&amp;O
               </div>
               <span className="font-700 text-white text-base tracking-tight hidden sm:block" style={{ fontWeight: 700 }}>
-                {FIRM_NAME} <span className="text-gold-400 font-400" style={{ fontWeight: 400 }}>Leadership</span>
+                {FIRM_NAME}
               </span>
             </Link>
 
@@ -85,8 +85,8 @@ export function Header() {
 
             {/* CTA + Mobile toggle */}
             <div className="flex items-center gap-3">
-              <Button href="/consultation" variant="primary" size="sm" className="hidden md:inline-flex">
-                Request a Consultation
+              <Button href="/contact" variant="primary" size="sm" className="hidden md:inline-flex">
+                Contact Us
               </Button>
 
               {/* Mobile hamburger */}

@@ -579,8 +579,8 @@ export function HomepageClient() {
                 <Button href="/lifecycle" variant="primary" size="lg">
                   Explore the Lifecycle
                 </Button>
-                <Button href="/consultation" variant="outline-white" size="lg">
-                  Request a Consultation
+                <Button href="/contact" variant="outline-white" size="lg">
+                  Contact Us
                 </Button>
               </motion.div>
             </div>

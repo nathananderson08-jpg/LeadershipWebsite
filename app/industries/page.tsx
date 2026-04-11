@@ -13,6 +13,12 @@ const INDUSTRY_DETAILS = [
   { href: "/industries/manufacturing", description: "Operational excellence, workforce transformation, and Industry 4.0 require leaders who can lead both machines and people." },
   { href: "/industries/energy", description: "Energy transition, ESG pressure, and operational complexity require leaders who can navigate disruption without losing execution." },
   { href: "/industries/government", description: "Public trust, workforce engagement, and digital government transformation demand leadership built for the public interest." },
+  { href: "/industries/professional-services", description: "Law, consulting, accounting, and advisory firms face unique leadership challenges: developing partners, retaining talent, and managing client-facing cultures at every level." },
+  { href: "/industries/education", description: "From K-12 to research universities, educational institutions need leaders who can inspire faculty, navigate governance complexity, and lead through continuous change." },
+  { href: "/industries/retail", description: "Omnichannel transformation, customer experience demands, and high-turnover workforces require retail leaders who can execute at speed and build culture at scale." },
+  { href: "/industries/nonprofit", description: "Mission-driven organizations need leaders who can mobilize volunteers, manage constrained resources, and build stakeholder trust — while staying true to purpose." },
+  { href: "/industries/life-sciences", description: "Regulated, high-stakes, and innovation-driven — life sciences organizations need leaders who can balance scientific rigor with commercial execution and regulatory accountability." },
+  { href: "/industries/hospitality", description: "Guest experience, frontline leadership, and high-volume people management make hospitality one of the most demanding sectors for leadership development at scale." },
 ]
 
 export default function IndustriesPage() {
