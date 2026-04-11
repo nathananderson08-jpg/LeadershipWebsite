@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { FIRM_NAME, SOCIAL } from "@/lib/constants"
 
@@ -58,19 +59,15 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
           {/* Brand column */}
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center gap-3 mb-5 group">
-              <div
-                className="w-9 h-9 rounded-lg flex items-center justify-center font-800 text-navy-900 text-sm"
-                style={{
-                  background: "linear-gradient(135deg, #c19a5b 0%, #d4b07a 100%)",
-                  fontWeight: 800,
-                }}
-              >
-                A&amp;O
-              </div>
-              <span className="font-700 text-white text-sm" style={{ fontWeight: 700 }}>
-                {FIRM_NAME}
-              </span>
+            <Link href="/" className="flex items-center mb-5 group">
+              <Image
+                src="/logo.png"
+                alt={FIRM_NAME}
+                width={130}
+                height={48}
+                className="h-10 w-auto object-contain"
+                style={{ filter: "brightness(0) invert(1)", opacity: 0.85 }}
+              />
             </Link>
             <p className="text-sm text-white/50 leading-relaxed mb-6">
               The only leadership company delivering end-to-end solutions across the entire development lifecycle.

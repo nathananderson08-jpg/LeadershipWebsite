@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { FIRM_NAME } from "@/lib/constants"
 import { MegaMenu } from "./MegaMenu"
@@ -42,18 +43,15 @@ export function Header() {
           <div className="flex items-center justify-between h-18" style={{ height: "4.5rem" }}>
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 shrink-0 group">
-              <div
-                className="w-9 h-9 rounded-lg flex items-center justify-center font-800 text-navy-900 text-sm tracking-tight"
-                style={{
-                  background: "linear-gradient(135deg, #c19a5b 0%, #d4b07a 100%)",
-                  fontWeight: 800,
-                }}
-              >
-                A&amp;O
-              </div>
-              <span className="font-700 text-white text-base tracking-tight hidden sm:block" style={{ fontWeight: 700 }}>
-                {FIRM_NAME}
-              </span>
+              <Image
+                src="/logo.png"
+                alt={FIRM_NAME}
+                width={120}
+                height={44}
+                className="h-10 w-auto object-contain"
+                style={{ filter: "brightness(0) invert(1)" }}
+                priority
+              />
             </Link>
 
             {/* Desktop Nav */}
@@ -85,6 +83,26 @@ export function Header() {
 
             {/* CTA + Mobile toggle */}
             <div className="flex items-center gap-3">
+              <Link
+                href="/portal"
+                className="hidden md:inline-flex items-center px-4 py-2 rounded-lg text-xs font-600 transition-colors"
+                style={{
+                  fontWeight: 600,
+                  color: "rgba(255,255,255,0.55)",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  letterSpacing: "0.04em",
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.85)"
+                  ;(e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(193,154,91,0.4)"
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.55)"
+                  ;(e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.12)"
+                }}
+              >
+                Practitioner Hub
+              </Link>
               <Button href="/contact" variant="primary" size="sm" className="hidden md:inline-flex">
                 Contact Us
               </Button>

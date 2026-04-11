@@ -22,7 +22,7 @@ export default function PortalDashboardLayout({
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen" style={{ background: 'var(--portal-bg-primary)' }}>
-        <div className="w-8 h-8 rounded-full border-2 border-t-transparent portal-animate-spin"
+        <div className="w-8 h-8 rounded-full border-2 portal-animate-spin"
           style={{ borderColor: 'var(--portal-accent)', borderTopColor: 'transparent' }} />
       </div>
     );
@@ -31,38 +31,43 @@ export default function PortalDashboardLayout({
   if (!profile) return null;
 
   return (
-    <div className="flex h-screen p-5 gap-5" style={{ background: 'var(--portal-bg-secondary)' }}>
+    <div className="flex h-screen p-4 gap-4" style={{ background: '#05090f' }}>
       <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden rounded-2xl portal-glass-card"
-        style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+      <div
+        className="flex-1 flex flex-col overflow-hidden rounded-2xl"
+        style={{
+          background: 'var(--portal-bg-secondary)',
+          border: '1px solid rgba(255,255,255,0.06)',
+        }}
+      >
         {/* Admin top banner */}
         {isAdmin && (
           <div style={{
-            padding: '12px 40px',
+            padding: '10px 32px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            background: 'linear-gradient(90deg, rgba(139,123,181,0.06) 0%, rgba(123,165,160,0.04) 100%)',
-            borderBottom: '1px solid var(--portal-border-default)',
+            background: 'rgba(193,154,91,0.06)',
+            borderBottom: '1px solid rgba(193,154,91,0.12)',
           }}>
             <div className="flex items-center gap-3">
-              <div className="w-2 h-2 rounded-full" style={{ background: 'var(--portal-accent)', opacity: 0.6 }} />
+              <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#c19a5b' }} />
               <span className="text-[11px] font-semibold uppercase tracking-[0.15em]"
-                style={{ fontFamily: "'Inter', sans-serif", color: 'var(--portal-accent)' }}>
+                style={{ color: '#c19a5b' }}>
                 Admin Portal
               </span>
-              <span style={{ color: 'var(--portal-text-tertiary)', fontSize: '10px' }}>|</span>
-              <span className="text-[12px]" style={{ fontFamily: "'DM Serif Display', serif", color: 'var(--portal-text-tertiary)' }}>
-                LeadershipCo
+              <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: '10px' }}>|</span>
+              <span className="text-[12px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                Apex &amp; Origin
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[11px]" style={{ color: 'var(--portal-text-tertiary)' }}>Signed in as</span>
-              <span className="text-[12px] font-medium" style={{ color: 'var(--portal-text-secondary)' }}>{profile?.full_name}</span>
+              <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.3)' }}>Signed in as</span>
+              <span className="text-[12px] font-medium" style={{ color: 'rgba(255,255,255,0.6)' }}>{profile?.full_name}</span>
             </div>
           </div>
         )}
-        <div style={{ flex: 1, overflow: 'auto', padding: '24px' }}>
+        <div style={{ flex: 1, overflow: 'auto', padding: '28px 32px' }}>
           {children}
         </div>
       </div>

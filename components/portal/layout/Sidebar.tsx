@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/portal/useAuth';
 import { cn } from '@/lib/portal/utils';
@@ -12,6 +13,7 @@ import {
   Sparkles,
   Compass,
   Heart,
+  ExternalLink,
 } from 'lucide-react';
 
 const adminNavItems = [
@@ -42,54 +44,45 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="flex flex-col w-72 h-full rounded-2xl relative overflow-hidden portal-glass-card"
-      style={{ padding: '12px' }}>
-      {/* Monet Water Lilies background */}
-      <div className="absolute inset-0 pointer-events-none">
-        <img
-          src="/monet.jpg"
-          alt=""
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(to bottom, var(--portal-bg-primary) 0%, rgba(250,248,245,0.92) 20%, rgba(250,248,245,0.7) 45%, rgba(250,248,245,0.3) 70%, transparent 100%)',
-        }} />
-      </div>
+    <aside
+      className="flex flex-col w-72 h-full rounded-2xl relative overflow-hidden"
+      style={{
+        background: 'linear-gradient(180deg, #0d1529 0%, #0a0f1c 100%)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        padding: '12px',
+      }}
+    >
+      {/* Subtle gold radial glow at top */}
+      <div className="absolute top-0 left-0 right-0 h-64 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse at 50% 0%, rgba(193,154,91,0.08) 0%, transparent 70%)',
+      }} />
 
       {/* Logo */}
-      <div className="flex items-center gap-4 px-7 py-7 relative z-10"
-        style={{ borderBottom: '1px solid var(--portal-border-subtle)' }}>
-        <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 relative overflow-hidden">
-          <div className="absolute inset-0" style={{
-            background: 'linear-gradient(135deg, var(--portal-wc-lavender), var(--portal-wc-blue), var(--portal-wc-sage))',
-            opacity: 0.7,
-          }} />
-          <div className="absolute inset-0" style={{
-            background: 'radial-gradient(circle at 30% 40%, var(--portal-wc-gold) 0%, transparent 50%)',
-            opacity: 0.5,
-          }} />
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="relative z-10" style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.15))' }}>
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-          </svg>
+      <div className="flex items-center gap-3 px-5 py-6 relative z-10"
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-bold text-sm"
+          style={{
+            background: 'linear-gradient(135deg, #c19a5b 0%, #d4b07a 100%)',
+            color: '#0a0f1c',
+            fontWeight: 800,
+          }}>
+          A&amp;O
         </div>
         <div>
-          <h1 className="text-base tracking-tight" style={{ fontFamily: "'DM Serif Display', Georgia, serif", color: 'var(--portal-text-primary)' }}>
-            {isAdmin ? 'LeadershipCo' : 'PractitionerHub'}
+          <h1 className="text-sm font-semibold tracking-tight" style={{ color: '#ffffff' }}>
+            Apex &amp; Origin
           </h1>
-          <p className="text-[11px] font-medium tracking-wide" style={{ fontFamily: "'Inter', sans-serif", color: 'var(--portal-accent)' }}>
-            {isAdmin ? 'Admin Portal' : 'Practitioner Portal'}
+          <p className="text-[11px] font-medium tracking-wide" style={{ color: 'rgba(193,154,91,0.8)' }}>
+            {isAdmin ? 'Admin Portal' : 'Practitioner Hub'}
           </p>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 min-h-0 px-5 overflow-y-auto relative z-10"
-        style={{ paddingTop: '24px', paddingBottom: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <p className="px-3 text-[10px] font-semibold uppercase tracking-[0.15em]"
-          style={{ fontFamily: "'Inter', sans-serif", color: 'var(--portal-text-tertiary)', marginBottom: '8px' }}>
+      <nav className="flex-1 min-h-0 px-3 relative z-10 overflow-y-auto"
+        style={{ paddingTop: '20px', paddingBottom: '20px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <p className="px-3 text-[10px] font-semibold uppercase tracking-[0.18em] mb-3"
+          style={{ color: 'rgba(255,255,255,0.25)' }}>
           Navigation
         </p>
         {navItems.map((item) => {
@@ -99,29 +92,28 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-4 px-4 py-4 rounded-2xl text-[15px] font-medium transition-all group',
-                !active && 'hover:bg-[var(--portal-bg-hover)]'
+                'flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all group',
               )}
               style={active ? {
-                background: 'var(--portal-bg-elevated)',
-                color: 'var(--portal-accent)',
-                border: '1px solid var(--portal-border-accent)',
-                boxShadow: '0 2px 8px rgba(139, 123, 181, 0.1)',
+                background: 'rgba(193,154,91,0.12)',
+                color: '#d4b07a',
+                border: '1px solid rgba(193,154,91,0.25)',
               } : {
-                color: 'var(--portal-text-secondary)',
+                color: 'rgba(255,255,255,0.55)',
                 border: '1px solid transparent',
               }}
             >
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all"
-                style={active ? { background: 'var(--portal-accent-subtle)' } : { background: 'var(--portal-bg-secondary)' }}>
-                <item.icon size={20} strokeWidth={1.8} />
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all"
+                style={active
+                  ? { background: 'rgba(193,154,91,0.15)', color: '#c19a5b' }
+                  : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.4)' }
+                }>
+                <item.icon size={16} strokeWidth={1.8} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="truncate leading-tight">{item.label}</p>
+                <p className="truncate leading-tight text-[13px]">{item.label}</p>
                 <p className="text-[11px] truncate mt-0.5" style={{
-                  color: active ? 'var(--portal-accent)' : 'var(--portal-text-tertiary)',
-                  opacity: 0.8,
-                  fontFamily: "'Inter', sans-serif",
+                  color: active ? 'rgba(193,154,91,0.6)' : 'rgba(255,255,255,0.25)',
                   fontWeight: 400,
                 }}>
                   {item.description}
@@ -131,75 +123,80 @@ export function Sidebar() {
           );
         })}
 
-        <div className="my-4 mx-3" style={{ borderTop: '1px solid var(--portal-border-subtle)' }} />
+        <div className="my-3 mx-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} />
 
         <Link
           href="/portal/dashboard/settings"
           className={cn(
-            'flex items-center gap-4 px-4 py-4 rounded-2xl text-[15px] font-medium transition-all group',
-            !isActive('/portal/dashboard/settings') && 'hover:bg-[var(--portal-bg-hover)]'
+            'flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all group',
           )}
           style={isActive('/portal/dashboard/settings') ? {
-            background: 'var(--portal-bg-elevated)',
-            color: 'var(--portal-accent)',
-            border: '1px solid var(--portal-border-accent)',
-            boxShadow: '0 2px 8px rgba(139, 123, 181, 0.1)',
+            background: 'rgba(193,154,91,0.12)',
+            color: '#d4b07a',
+            border: '1px solid rgba(193,154,91,0.25)',
           } : {
-            color: 'var(--portal-text-secondary)',
+            color: 'rgba(255,255,255,0.55)',
             border: '1px solid transparent',
           }}
         >
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all"
-            style={isActive('/portal/dashboard/settings') ? { background: 'var(--portal-accent-subtle)' } : { background: 'var(--portal-bg-secondary)' }}>
-            <Settings size={20} strokeWidth={1.8} />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all"
+            style={isActive('/portal/dashboard/settings')
+              ? { background: 'rgba(193,154,91,0.15)', color: '#c19a5b' }
+              : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.4)' }
+            }>
+            <Settings size={16} strokeWidth={1.8} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="truncate leading-tight">Settings</p>
-            <p className="text-[11px] truncate mt-0.5" style={{
-              color: isActive('/portal/dashboard/settings') ? 'var(--portal-accent)' : 'var(--portal-text-tertiary)',
-              opacity: 0.8,
-              fontFamily: "'Inter', sans-serif",
-              fontWeight: 400,
-            }}>Account preferences</p>
+            <p className="truncate leading-tight text-[13px]">Settings</p>
+            <p className="text-[11px] truncate mt-0.5" style={{ color: 'rgba(255,255,255,0.25)', fontWeight: 400 }}>
+              Account preferences
+            </p>
           </div>
         </Link>
 
         <button
           onClick={signOut}
-          className="flex items-center gap-4 w-full px-4 py-4 rounded-2xl text-[15px] font-medium border border-transparent transition-all group hover:bg-[var(--portal-bg-hover)]"
-          style={{ color: 'var(--portal-text-secondary)' }}
+          className="flex items-center gap-3 w-full px-3 py-3 rounded-xl text-sm font-medium border border-transparent transition-all group"
+          style={{ color: 'rgba(255,255,255,0.4)' }}
         >
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all"
-            style={{ background: 'var(--portal-bg-secondary)' }}>
-            <LogOut size={20} strokeWidth={1.8} />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+            style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.3)' }}>
+            <LogOut size={16} strokeWidth={1.8} />
           </div>
           <div className="flex-1 min-w-0 text-left">
-            <p className="truncate leading-tight">Sign Out</p>
-            <p className="text-[11px] truncate mt-0.5" style={{ color: 'var(--portal-text-tertiary)', opacity: 0.8, fontFamily: "'Inter', sans-serif", fontWeight: 400 }}>
-              Leave portal
-            </p>
+            <p className="truncate leading-tight text-[13px]">Sign Out</p>
           </div>
         </button>
       </nav>
 
+      {/* Back to main site */}
+      <div className="px-3 pb-3 relative z-10">
+        <Link
+          href="/"
+          className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-[12px] transition-all"
+          style={{ color: 'rgba(255,255,255,0.3)', border: '1px solid rgba(255,255,255,0.06)' }}
+        >
+          <ExternalLink size={12} />
+          Back to main site
+        </Link>
+      </div>
+
       {/* User card */}
-      <div className="px-5 py-5 relative z-10" style={{ borderTop: '1px solid var(--portal-border-subtle)' }}>
-        <div className="px-4 py-4 rounded-2xl portal-glass-card">
+      <div className="px-3 py-3 relative z-10" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="px-4 py-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-semibold shrink-0 relative overflow-hidden">
-              <div className="absolute inset-0" style={{
-                background: 'linear-gradient(135deg, var(--portal-wc-lavender), var(--portal-wc-sage))',
-                opacity: 0.6,
-              }} />
-              <span className="relative z-10" style={{ color: 'var(--portal-text-primary)' }}>
-                {profile?.full_name?.charAt(0)?.toUpperCase() || '?'}
-              </span>
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold shrink-0"
+              style={{
+                background: 'linear-gradient(135deg, #c19a5b 0%, #d4b07a 100%)',
+                color: '#0a0f1c',
+              }}>
+              {profile?.full_name?.charAt(0)?.toUpperCase() || '?'}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium truncate" style={{ color: 'var(--portal-text-primary)' }}>
+              <p className="text-sm font-medium truncate" style={{ color: 'rgba(255,255,255,0.85)' }}>
                 {profile?.full_name}
               </p>
-              <p className="text-[11px] truncate" style={{ color: 'var(--portal-text-tertiary)' }}>
+              <p className="text-[11px] truncate" style={{ color: 'rgba(255,255,255,0.35)' }}>
                 {profile?.email}
               </p>
             </div>
