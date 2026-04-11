@@ -490,7 +490,10 @@ export function HomepageClient() {
     <>
       {/* ── HERO ──────────────────────────────────────────── */}
       <section className="relative min-h-screen flex items-center" style={{ paddingTop: "5rem" }}>
-        <VideoBackground overlayOpacity={0.35} />
+        <VideoBackground 
+          videoSrc="https://static.videezy.com/system/resources/previews/000/044/030/original/clouds-timelapse.mp4"
+          overlayOpacity={0.4}
+        />
 
         <div className="container-content relative z-10 py-24">
           <div className="max-w-4xl">
