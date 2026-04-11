@@ -43,7 +43,7 @@ function InteractiveLifecycle() {
         style={{ background: "linear-gradient(90deg, transparent 2%, rgba(93,171,121,0.4) 15%, rgba(93,171,121,0.4) 85%, transparent 98%)" }}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 relative z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 relative z-10 items-stretch">
         {LIFECYCLE_PHASES.map((phase, i) => (
           <motion.div
             key={phase.id}
@@ -51,10 +51,11 @@ function InteractiveLifecycle() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="flex"
           >
             <button
               onClick={() => setActivePhase(activePhase === i ? null : i)}
-              className={`w-full relative text-left p-6 rounded-2xl border transition-all duration-400 group ${
+              className={`w-full h-full flex flex-col relative text-left p-6 rounded-2xl border transition-all duration-400 group ${
                 activePhase === i
                   ? "border-forest-500 shadow-2xl scale-[1.02]"
                   : "border-forest-200 hover:border-forest-400"
@@ -82,7 +83,7 @@ function InteractiveLifecycle() {
                 {phase.title}
               </h3>
               <p className="text-sm text-forest-600/70 mb-4">{phase.subtitle}</p>
-              <p className="text-sm text-forest-800/60 leading-relaxed">
+              <p className="text-sm text-forest-800/60 leading-relaxed flex-1">
                 {phase.description.substring(0, 90)}...
               </p>
 
