@@ -66,7 +66,7 @@ export function Footer() {
                 width={130}
                 height={48}
                 className="h-10 w-auto object-contain"
-                style={{ filter: "brightness(0) invert(1)", opacity: 0.85 }}
+                style={{ opacity: 0.9 }}
               />
             </Link>
             <p className="text-sm text-white/50 leading-relaxed mb-6">
