@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { createPortalClient } from '@/lib/portal/supabase';
 import type { Profile } from '@/lib/portal/types';
-import type { User, Session } from '@supabase/supabase-js';
+import type { User, Session, AuthChangeEvent } from '@supabase/supabase-js';
 
 interface AuthState {
   user: User | null;
@@ -54,7 +54,7 @@ export function useAuth() {
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      async (event: AuthChangeEvent, session: Session | null) => {
         if (session?.user) {
           setState(s => ({ ...s, user: session.user }));
           loadProfile(session.user.id);
