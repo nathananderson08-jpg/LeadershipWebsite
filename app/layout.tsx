@@ -21,20 +21,48 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: `End-to-End Leadership Development Solutions | ${FIRM_NAME}`,
+    default: `${FIRM_NAME} | End-to-End Leadership Development & Executive Coaching`,
     template: `%s | ${FIRM_NAME}`,
   },
   description:
-    "The only leadership company offering assessment, coaching, development, transformation, and succession planning across every level of your organization.",
+    "Transform your organization with comprehensive leadership development solutions. From executive coaching and 360 assessments to succession planning and AI transformation. Serving Fortune 500 companies across 35+ countries.",
+  keywords: [
+    "leadership development",
+    "executive coaching",
+    "leadership assessment",
+    "succession planning",
+    "organizational transformation",
+    "team coaching",
+    "leadership training",
+    "executive development",
+    "AI leadership",
+    "corporate coaching",
+    "leadership consulting",
+    "C-suite coaching",
+  ],
   metadataBase: new URL(FIRM_DOMAIN),
+  alternates: {
+    canonical: FIRM_DOMAIN,
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: `${FIRM_NAME} Leadership`,
-    images: [{ url: "/og/default.png", width: 1200, height: 630 }],
+    siteName: `${FIRM_NAME}`,
+    title: `${FIRM_NAME} | End-to-End Leadership Development`,
+    description: "The only leadership company delivering end-to-end solutions across assessment, coaching, development, transformation, and succession planning.",
+    images: [
+      {
+        url: "/og/default.png",
+        width: 1200,
+        height: 630,
+        alt: `${FIRM_NAME} - Leadership Development Solutions`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    title: `${FIRM_NAME} | Leadership Development`,
+    description: "Transform your organization with comprehensive leadership development solutions.",
   },
   robots: {
     index: true,
@@ -47,6 +75,10 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  verification: {
+    google: "your-google-verification-code",
+  },
+  category: "Business",
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

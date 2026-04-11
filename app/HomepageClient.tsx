@@ -14,13 +14,13 @@ import { METRICS, LIFECYCLE_PHASES, SOLUTIONS, SAMPLE_ARTICLES, MESSAGING, LIFEC
 function HeroBackground() {
   return (
     <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-      {/* Base layer */}
+      {/* Base layer - Light, airy gradient */}
       <div
         className="absolute inset-0"
-        style={{ background: "linear-gradient(160deg, #080d1a 0%, #0c1428 55%, #07101e 100%)" }}
+        style={{ background: "linear-gradient(160deg, #f3faf5 0%, #e3f2e8 55%, #f8f8f6 100%)" }}
       />
 
-      {/* Mesh orb 1 — gold top-right, slow drift */}
+      {/* Mesh orb 1 — Soft sage green top-right, slow drift */}
       <motion.div
         className="absolute"
         style={{
@@ -29,7 +29,7 @@ function HeroBackground() {
           maxWidth: 1000,
           maxHeight: 1000,
           borderRadius: "50%",
-          background: "radial-gradient(circle at 50% 50%, rgba(193,154,91,0.10) 0%, rgba(193,154,91,0.04) 35%, transparent 65%)",
+          background: "radial-gradient(circle at 50% 50%, rgba(93,171,121,0.15) 0%, rgba(93,171,121,0.05) 35%, transparent 65%)",
           top: "-25%",
           right: "-20%",
           willChange: "transform",
@@ -42,7 +42,7 @@ function HeroBackground() {
         transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* Mesh orb 2 — cyan bottom-left, counter-drift */}
+      {/* Mesh orb 2 — Warm earth tone bottom-left, counter-drift */}
       <motion.div
         className="absolute"
         style={{
@@ -51,7 +51,7 @@ function HeroBackground() {
           maxWidth: 800,
           maxHeight: 800,
           borderRadius: "50%",
-          background: "radial-gradient(circle at 50% 50%, rgba(0,212,255,0.055) 0%, rgba(0,180,220,0.02) 40%, transparent 65%)",
+          background: "radial-gradient(circle at 50% 50%, rgba(201,168,138,0.12) 0%, rgba(201,168,138,0.04) 40%, transparent 65%)",
           bottom: "-20%",
           left: "-15%",
           willChange: "transform",
@@ -64,7 +64,7 @@ function HeroBackground() {
         transition={{ duration: 22, repeat: Infinity, ease: "easeInOut", delay: 3 }}
       />
 
-      {/* Mesh orb 3 — gold mid-center, subtle pulse */}
+      {/* Mesh orb 3 — Light green mid-center, subtle pulse */}
       <motion.div
         className="absolute"
         style={{
@@ -73,7 +73,7 @@ function HeroBackground() {
           maxWidth: 600,
           maxHeight: 600,
           borderRadius: "50%",
-          background: "radial-gradient(circle at 50% 50%, rgba(193,154,91,0.06) 0%, transparent 60%)",
+          background: "radial-gradient(circle at 50% 50%, rgba(122,184,146,0.1) 0%, transparent 60%)",
           top: "30%",
           left: "30%",
           willChange: "transform",
@@ -87,30 +87,20 @@ function HeroBackground() {
         transition={{ duration: 28, repeat: Infinity, ease: "easeInOut", delay: 7 }}
       />
 
-      {/* Noise/grain texture for depth */}
+      {/* Subtle texture for organic feel */}
       <div
         className="absolute inset-0"
         style={{
-          backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E\")",
-          opacity: 0.4,
+          backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E\")",
+          opacity: 0.3,
         }}
       />
 
-      {/* Subtle grid overlay */}
+      {/* Subtle soft vignette */}
       <div
         className="absolute inset-0"
         style={{
-          backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
-          opacity: 0.018,
-        }}
-      />
-
-      {/* Vignette — darkens edges to focus attention on center */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: "radial-gradient(ellipse 80% 70% at 50% 50%, transparent 40%, rgba(6,10,20,0.6) 100%)",
+          background: "radial-gradient(ellipse 80% 70% at 50% 50%, transparent 50%, rgba(243,250,245,0.5) 100%)",
         }}
       />
     </div>
@@ -145,15 +135,15 @@ function LifecyclePreview() {
               <button
                 className={`w-full text-left p-5 rounded-xl border transition-all duration-300 ${
                   activePhase === phase.id
-                    ? "bg-navy-900 border-gold-500 text-white shadow-xl"
-                    : "bg-white border-warm-100 text-navy-900 hover:border-gold-300 hover:shadow-md"
+                    ? "bg-forest-900 border-forest-500 text-white shadow-xl"
+                    : "bg-white border-warm-100 text-forest-900 hover:border-forest-300 hover:shadow-md"
                 }`}
-                style={{ borderColor: activePhase === phase.id ? "var(--color-gold-500)" : undefined }}
+                style={{ borderColor: activePhase === phase.id ? "var(--color-forest-500)" : undefined }}
                 onClick={() => setActivePhase(activePhase === phase.id ? null : phase.id)}
               >
                 <span
                   className={`text-xs font-700 tracking-widest uppercase block mb-2 ${
-                    activePhase === phase.id ? "text-gold-400" : "text-gold-600"
+                    activePhase === phase.id ? "text-forest-300" : "text-forest-600"
                   }`}
                   style={{ fontWeight: 700 }}
                 >
@@ -171,7 +161,7 @@ function LifecyclePreview() {
               {i < LIFECYCLE_PHASES.length - 1 && (
                 <div className="hidden md:flex absolute top-1/2 -right-2.5 z-10 transform -translate-y-1/2 items-center">
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M4 10h12M12 5l5 5-5 5" stroke="var(--color-gold-500)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M4 10h12M12 5l5 5-5 5" stroke="var(--color-forest-500)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
               )}
@@ -193,11 +183,11 @@ function LifecyclePreview() {
                 className="overflow-hidden"
               >
                 <div
-                  className="p-8 rounded-2xl border border-gold-200 flex flex-col md:flex-row gap-8"
+                  className="p-8 rounded-2xl border border-forest-200 flex flex-col md:flex-row gap-8"
                   style={{ background: "white" }}
                 >
                   <div className="flex-1">
-                    <p className="text-xs font-700 tracking-widest uppercase text-gold-600 mb-3" style={{ fontWeight: 700 }}>
+                    <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-3" style={{ fontWeight: 700 }}>
                       Phase {phase.number} — {phase.title}
                     </p>
                     <p className="text-neutral-700 leading-relaxed mb-6">{phase.description}</p>
@@ -212,7 +202,7 @@ function LifecyclePreview() {
                     <ul className="space-y-2">
                       {phase.details.map((d) => (
                         <li key={d} className="flex items-start gap-2 text-sm text-neutral-600">
-                          <span className="text-gold-500 mt-0.5">✓</span>
+                          <span className="text-forest-500 mt-0.5">✓</span>
                           {d}
                         </li>
                       ))}
@@ -241,23 +231,23 @@ function AISpotlight() {
       <div
         className="absolute inset-0"
         style={{
-          background: "linear-gradient(135deg, #020817 0%, #04101f 40%, #020c1a 100%)",
+          background: "linear-gradient(135deg, #e3f2e8 0%, #c5e0cf 40%, #e3f2e8 100%)",
         }}
       />
       {/* Animated AI background */}
       <motion.div
-        className="absolute inset-0 opacity-20"
+        className="absolute inset-0 opacity-30"
         style={{
-          backgroundImage: "radial-gradient(at 40% 40%, rgba(0,212,255,0.15) 0px, transparent 50%), radial-gradient(at 70% 70%, rgba(0,180,220,0.1) 0px, transparent 50%)",
+          backgroundImage: "radial-gradient(at 40% 40%, rgba(93,171,121,0.2) 0px, transparent 50%), radial-gradient(at 70% 70%, rgba(93,171,121,0.15) 0px, transparent 50%)",
         }}
-        animate={{ opacity: [0.15, 0.25, 0.15] }}
+        animate={{ opacity: [0.2, 0.35, 0.2] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
       />
-      {/* Animated scan lines */}
+      {/* Subtle pattern */}
       <div
-        className="absolute inset-0 opacity-[0.02]"
+        className="absolute inset-0 opacity-[0.03]"
         style={{
-          backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,212,255,0.5) 2px, rgba(0,212,255,0.5) 3px)",
+          backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(93,171,121,0.4) 2px, rgba(93,171,121,0.4) 3px)",
           backgroundSize: "100% 40px",
         }}
       />
@@ -272,12 +262,11 @@ function AISpotlight() {
           >
             <AIBadge className="mb-6" />
             <h2
-              className="display-lg text-white mb-6"
-              style={{ textShadow: "0 0 60px rgba(0,212,255,0.15)" }}
+              className="display-lg text-forest-950 mb-6"
             >
               AI Is Rewriting the Rules of Leadership
             </h2>
-            <p className="text-lg text-white/60 leading-relaxed mb-10 max-w-2xl mx-auto">
+            <p className="text-lg text-forest-800/70 leading-relaxed mb-10 max-w-2xl mx-auto">
               The leaders who will define the next decade aren&apos;t those who understand AI — they&apos;re those who
               can lead through it. We&apos;ve built the only end-to-end framework for developing AI-ready leadership at
               every level of your organization.
@@ -292,12 +281,12 @@ function AISpotlight() {
               ].map((item) => (
                 <div key={item.stat} className="text-center">
                   <div
-                    className="text-3xl font-800 mb-2"
-                    style={{ color: "#00d4ff", fontWeight: 800, textShadow: "0 0 20px rgba(0,212,255,0.4)" }}
+                    className="text-3xl font-800 mb-2 text-forest-700"
+                    style={{ fontWeight: 800 }}
                   >
                     {item.stat}
                   </div>
-                  <p className="text-xs text-white/40 leading-relaxed">{item.desc}</p>
+                  <p className="text-xs text-forest-700/60 leading-relaxed">{item.desc}</p>
                 </div>
               ))}
             </div>
@@ -349,13 +338,12 @@ function SolutionsGrid() {
   }
 
   return (
-    <section className="section-padding" style={{ background: "var(--color-navy-900)" }}>
+    <section className="section-padding" style={{ background: "var(--color-forest-50)" }}>
       <div className="container-content">
         <SectionHeading
           eyebrow="Our Solutions"
           title="Solutions for every phase, every level, every scale"
           subtitle="Whether you need to diagnose, develop, or transform — we have a solution designed for your exact challenge."
-          light
           className="mb-16"
         />
 
@@ -372,14 +360,13 @@ function SolutionsGrid() {
                 href={solution.href}
                 className={`block h-full p-7 rounded-2xl transition-all duration-300 group ${
                   solution.featured
-                    ? "border border-ai-500/30 hover:border-ai-500/60"
-                    : "card-dark"
+                    ? "border border-forest-300 hover:border-forest-400 bg-white"
+                    : "card-light"
                 }`}
                 style={
                   solution.featured
                     ? {
-                        background: "linear-gradient(135deg, rgba(0,212,255,0.07) 0%, rgba(0,212,255,0.03) 100%)",
-                        boxShadow: "0 0 0 1px rgba(0,212,255,0.2), 0 0 30px rgba(0,212,255,0.05)",
+                        boxShadow: "0 4px 24px rgba(93,171,121,0.12)",
                       }
                     : undefined
                 }
@@ -387,22 +374,22 @@ function SolutionsGrid() {
                 {solution.featured && <AIBadge className="mb-4" />}
                 <div
                   className={`w-11 h-11 rounded-xl flex items-center justify-center mb-5 ${
-                    solution.featured ? "text-ai-500" : "text-gold-500"
+                    solution.featured ? "text-forest-600" : "text-forest-600"
                   }`}
                   style={{
                     background: solution.featured
-                      ? "rgba(0,212,255,0.1)"
-                      : "rgba(193,154,91,0.1)",
+                      ? "rgba(93,171,121,0.15)"
+                      : "rgba(93,171,121,0.1)",
                   }}
                 >
                   {icons[solution.icon]}
                 </div>
-                <h3 className="font-700 text-white text-lg mb-2 group-hover:text-gold-300 transition-colors" style={{ fontWeight: 700 }}>
+                <h3 className="font-700 text-forest-900 text-lg mb-2 group-hover:text-forest-700 transition-colors" style={{ fontWeight: 700 }}>
                   {solution.title}
                 </h3>
-                <p className="text-sm text-white/50 leading-relaxed mb-4">{solution.description}</p>
+                <p className="text-sm text-neutral-600 leading-relaxed mb-4">{solution.description}</p>
                 <span
-                  className={`text-sm font-600 ${solution.featured ? "text-ai-400" : "text-gold-500"} group-hover:gap-2 flex items-center gap-1 transition-all`}
+                  className={`text-sm font-600 ${solution.featured ? "text-forest-600" : "text-forest-600"} group-hover:gap-2 flex items-center gap-1 transition-all`}
                   style={{ fontWeight: 600 }}
                 >
                   Learn more →
@@ -413,7 +400,7 @@ function SolutionsGrid() {
         </div>
 
         <div className="text-center mt-12">
-          <Button href="/solutions" variant="outline-white" size="lg">
+          <Button href="/solutions" variant="secondary" size="lg">
             View All Solutions
           </Button>
         </div>
@@ -453,8 +440,8 @@ function InsightsPreview() {
                   <span
                     className="text-xs font-700 px-3 py-1 rounded-full"
                     style={{
-                      background: "var(--color-gold-100)",
-                      color: "var(--color-gold-700)",
+                      background: "var(--color-forest-100)",
+                      color: "var(--color-forest-700)",
                       fontWeight: 700,
                     }}
                   >
@@ -462,19 +449,19 @@ function InsightsPreview() {
                   </span>
                   <span className="text-xs text-neutral-400">{article.readTime}</span>
                 </div>
-                <h3 className="font-700 text-navy-900 text-lg leading-snug mb-3 group-hover:text-gold-700 transition-colors" style={{ fontWeight: 700 }}>
+                <h3 className="font-700 text-forest-900 text-lg leading-snug mb-3 group-hover:text-forest-600 transition-colors" style={{ fontWeight: 700 }}>
                   {article.title}
                 </h3>
                 <p className="text-sm text-neutral-500 leading-relaxed mb-5">{article.excerpt}</p>
                 <div className="flex items-center gap-3 mt-auto">
                   <div
                     className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-700 text-white"
-                    style={{ background: "var(--color-navy-700)", fontWeight: 700 }}
+                    style={{ background: "var(--color-forest-700)", fontWeight: 700 }}
                   >
                     {article.author.split(" ").map((n) => n[0]).join("").slice(0, 2)}
                   </div>
                   <div>
-                    <p className="text-xs font-600 text-navy-900" style={{ fontWeight: 600 }}>{article.author}</p>
+                    <p className="text-xs font-600 text-forest-900" style={{ fontWeight: 600 }}>{article.author}</p>
                     <p className="text-xs text-neutral-400">{article.authorTitle}</p>
                   </div>
                 </div>
@@ -501,21 +488,21 @@ export function HomepageClient() {
               {/* Eyebrow */}
               <motion.p
                 className="text-sm font-700 tracking-[0.18em] uppercase mb-6 flex items-center gap-3"
-                style={{ fontWeight: 700, color: "var(--color-gold-400)" }}
+                style={{ fontWeight: 700, color: "var(--color-forest-600)" }}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               >
                 <span
                   className="inline-block w-6 h-px"
-                  style={{ background: "var(--color-gold-500)" }}
+                  style={{ background: "var(--color-forest-500)" }}
                 />
                 {LIFECYCLE_FRAMEWORK_NAME}
               </motion.p>
 
               {/* H1 */}
               <motion.h1
-                className="display-xl text-white mb-6"
+                className="display-xl text-forest-950 mb-6"
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
@@ -524,7 +511,7 @@ export function HomepageClient() {
                 delivering{" "}
                 <span
                   className="relative inline-block"
-                  style={{ color: "var(--color-gold-400)" }}
+                  style={{ color: "var(--color-forest-600)" }}
                 >
                   end-to-end solutions
                   <motion.svg
@@ -540,7 +527,7 @@ export function HomepageClient() {
                   >
                     <motion.path
                       d="M0 2 Q25 0 50 2 Q75 4 100 2"
-                      stroke="var(--color-gold-500)"
+                      stroke="var(--color-forest-500)"
                       strokeWidth="2"
                       fill="none"
                     />
@@ -551,7 +538,7 @@ export function HomepageClient() {
 
               {/* Subheadline */}
               <motion.p
-                className="text-xl text-white/55 mb-4 max-w-2xl leading-relaxed"
+                className="text-xl text-forest-800/70 mb-4 max-w-2xl leading-relaxed"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
@@ -561,7 +548,7 @@ export function HomepageClient() {
 
               {/* Integration message */}
               <motion.p
-                className="text-sm text-white/35 mb-10 max-w-xl tracking-wide"
+                className="text-sm text-forest-700/50 mb-10 max-w-xl tracking-wide"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -579,7 +566,7 @@ export function HomepageClient() {
                 <Button href="/lifecycle" variant="primary" size="lg">
                   Explore the Lifecycle
                 </Button>
-                <Button href="/contact" variant="outline-white" size="lg">
+                <Button href="/contact" variant="secondary" size="lg">
                   Contact Us
                 </Button>
               </motion.div>
@@ -603,14 +590,14 @@ export function HomepageClient() {
                   <div className="flex items-center gap-2">
                     <motion.div
                       className="w-1.5 h-1.5 rounded-full"
-                      style={{ background: "var(--color-gold-500)" }}
+                      style={{ background: "var(--color-forest-500)" }}
                       animate={{ scale: [1, 1.4, 1], opacity: [0.7, 1, 0.7] }}
                       transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 }}
                     />
-                    <span className="text-sm text-white/45 font-500" style={{ fontWeight: 500 }}>{phase.title}</span>
+                    <span className="text-sm text-forest-700/60 font-500" style={{ fontWeight: 500 }}>{phase.title}</span>
                   </div>
                   {i < LIFECYCLE_PHASES.length - 1 && (
-                    <div className="w-6 h-px" style={{ background: "rgba(193,154,91,0.25)" }} />
+                    <div className="w-6 h-px" style={{ background: "rgba(93,171,121,0.3)" }} />
                   )}
                 </motion.div>
               ))}
@@ -624,13 +611,13 @@ export function HomepageClient() {
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
         >
-          <div className="w-px h-10 bg-gradient-to-b from-transparent to-gold-500/40" />
-          <div className="w-1 h-1 rounded-full bg-gold-500/40" />
+          <div className="w-px h-10 bg-gradient-to-b from-transparent to-forest-500/40" />
+          <div className="w-1 h-1 rounded-full bg-forest-500/40" />
         </motion.div>
       </section>
 
       {/* ── METRICS BAR ───────────────────────────────────── */}
-      <section style={{ background: "var(--color-navy-900)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+      <section style={{ background: "var(--color-forest-100)", borderBottom: "1px solid var(--color-forest-200)" }}>
         <div className="container-content py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {METRICS.map((metric, i) => (
@@ -664,51 +651,51 @@ export function HomepageClient() {
           />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                number: "01",
-                title: "Full Lifecycle Coverage",
-                body: "We don't hand off between phases. One partner, one methodology, one seamless outcome — from the first assessment to the last succession plan.",
-                icon: "◈",
-              },
-              {
-                number: "02",
-                title: "Every Level of Leadership",
-                body: "From emerging talent to the C-suite and board. Integrated programs that grow with your people and connect across levels.",
-                icon: "◇",
-              },
-              {
-                number: "03",
-                title: "Individual to Enterprise",
-                body: "Whether it's one executive or an entire organization, we scale without losing depth. Our platform ensures consistency at any scope.",
-                icon: "◉",
-              },
-            ].map((pillar, i) => (
-              <motion.div
-                key={pillar.number}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15, duration: 0.6 }}
-                className="card-base card-light"
-              >
-                <div className="flex items-center gap-4 mb-5">
-                  <span
-                    className="text-3xl"
-                    style={{ color: "var(--color-gold-500)" }}
-                  >
-                    {pillar.icon}
-                  </span>
-                  <span className="text-xs font-700 tracking-widest uppercase text-neutral-400" style={{ fontWeight: 700 }}>
-                    {pillar.number}
-                  </span>
-                </div>
-                <h3 className="font-700 text-navy-900 text-xl mb-3" style={{ fontWeight: 700 }}>
-                  {pillar.title}
-                </h3>
-                <p className="text-neutral-600 leading-relaxed">{pillar.body}</p>
-              </motion.div>
-            ))}
+              {[
+                {
+                  number: "01",
+                  title: "Full Lifecycle Coverage",
+                  body: "We don't hand off between phases. One partner, one methodology, one seamless outcome — from the first assessment to the last succession plan.",
+                  icon: "◈",
+                },
+                {
+                  number: "02",
+                  title: "Every Level of Leadership",
+                  body: "From emerging talent to the C-suite and board. Integrated programs that grow with your people and connect across levels.",
+                  icon: "◇",
+                },
+                {
+                  number: "03",
+                  title: "Individual to Enterprise",
+                  body: "Whether it's one executive or an entire organization, we scale without losing depth. Our platform ensures consistency at any scope.",
+                  icon: "◉",
+                },
+              ].map((pillar, i) => (
+                <motion.div
+                  key={pillar.number}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15, duration: 0.6 }}
+                  className="card-base card-light"
+                >
+                  <div className="flex items-center gap-4 mb-5">
+                    <span
+                      className="text-3xl"
+                      style={{ color: "var(--color-forest-500)" }}
+                    >
+                      {pillar.icon}
+                    </span>
+                    <span className="text-xs font-700 tracking-widest uppercase text-neutral-400" style={{ fontWeight: 700 }}>
+                      {pillar.number}
+                    </span>
+                  </div>
+                  <h3 className="font-700 text-forest-900 text-xl mb-3" style={{ fontWeight: 700 }}>
+                    {pillar.title}
+                  </h3>
+                  <p className="text-neutral-600 leading-relaxed">{pillar.body}</p>
+                </motion.div>
+              ))}
           </div>
         </div>
       </section>
@@ -722,7 +709,7 @@ export function HomepageClient() {
       {/* ── SOLUTIONS GRID ────────────────────────────────── */}
       <SolutionsGrid />
 
-      {/* ── INSIGHTS ──────────────────────────────────────── */}
+      {/* ── INSIGHTS ─────────────────────────────���────────── */}
       <InsightsPreview />
 
       {/* ── CTA BANNER ────────────────────────────────────── */}
