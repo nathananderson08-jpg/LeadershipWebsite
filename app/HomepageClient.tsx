@@ -8,7 +8,7 @@ import { MetricCounter } from "@/components/ui/MetricCounter"
 import { SectionHeading } from "@/components/ui/SectionHeading"
 import { AIBadge } from "@/components/ui/AIBadge"
 import { CTABanner } from "@/components/sections/CTABanner"
-import { VideoBackground } from "@/components/ui/VideoBackground"
+import { VantaClouds } from "@/components/ui/VantaClouds"
 import { ParticleField } from "@/components/ui/ParticleField"
 import { METRICS, LIFECYCLE_PHASES, SOLUTIONS, SAMPLE_ARTICLES, MESSAGING, LIFECYCLE_FRAMEWORK_NAME } from "@/lib/constants"
 
@@ -490,10 +490,7 @@ export function HomepageClient() {
     <>
       {/* ── HERO ──────────────────────────────────────────── */}
       <section className="relative min-h-screen flex items-center" style={{ paddingTop: "5rem" }}>
-        <VideoBackground 
-          videoSrc="https://static.videezy.com/system/resources/previews/000/044/030/original/clouds-timelapse.mp4"
-          overlayOpacity={0.4}
-        />
+        <VantaClouds />
 
         <div className="container-content relative z-10 py-24">
           <div className="max-w-4xl">
@@ -725,7 +722,7 @@ export function HomepageClient() {
       {/* ── INSIGHTS ─────────────────────────────���────────── */}
       <InsightsPreview />
 
-      {/* ── CTA BANNER ────────────────────────────────────── */}
+      {/* ���─ CTA BANNER ────────────────────────────────────── */}
       <CTABanner />
     </>
   )
