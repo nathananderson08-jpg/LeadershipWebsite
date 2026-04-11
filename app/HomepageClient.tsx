@@ -491,8 +491,8 @@ export function HomepageClient() {
       {/* ── HERO ──────────────────────────────────────────── */}
       <section className="relative min-h-screen flex items-center" style={{ paddingTop: "5rem" }}>
         <VideoBackground 
-          videoSrc="https://videos.pexels.com/video-files/5377684/5377684-uhd_2560_1440_25fps.mp4"
-          overlayOpacity={0.45}
+          videoSrc="https://videos.pexels.com/video-files/857251/857251-hd_1920_1080_25fps.mp4"
+          overlayOpacity={0.4}
         />
 
         <div className="container-content relative z-10 py-24">
