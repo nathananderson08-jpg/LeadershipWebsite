@@ -22,17 +22,17 @@ export default function AboutPage() {
       {/* Hero */}
       <section
         className="pt-40 pb-24 relative"
-        style={{ background: "linear-gradient(160deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%)" }}
+        style={{ background: "linear-gradient(160deg, #eaf4ec 0%, #f0f7f2 100%)" }}
       >
-        <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(at 60% 30%, rgba(193,154,91,0.07) 0px, transparent 50%)" }} />
+        <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(at 60% 30%, rgba(74,124,90,0.08) 0px, transparent 50%)" }} />
         <div className="container-content relative z-10 max-w-4xl">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <p className="text-xs font-700 tracking-widest uppercase text-gold-400 mb-5" style={{ fontWeight: 700 }}>Our Story</p>
-            <h1 className="display-lg text-white mb-6">
+            <p className="text-xs font-700 tracking-widest uppercase text-navy-500 mb-5" style={{ fontWeight: 700 }}>Our Story</p>
+            <h1 className="display-lg text-navy-900 mb-6">
               Built to Solve Leadership&apos;s Biggest Problem:{" "}
-              <span style={{ color: "var(--color-gold-400)" }}>Fragmentation.</span>
+              <span style={{ color: "var(--color-navy-500)" }}>Fragmentation.</span>
             </h1>
-            <p className="text-xl text-white/60 leading-relaxed max-w-2xl">
+            <p className="text-xl text-neutral-600 leading-relaxed max-w-2xl">
               Every great organization needs leadership that works at every level. We built the firm that makes that possible.
             </p>
           </motion.div>
@@ -65,13 +65,13 @@ export default function AboutPage() {
             <div className="lg:col-span-2">
               <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
                 <div className="space-y-4">
-                  <div className="p-6 rounded-2xl" style={{ background: "var(--color-warm-50)", border: "1px solid var(--color-warm-100)" }}>
+                  <div className="p-6 rounded-2xl" style={{ background: "#f0f5f1", border: "1px solid #e2ede5" }}>
                     <p className="text-3xl font-800 text-navy-900 mb-2" style={{ fontWeight: 800 }}>Our Mission</p>
                     <p className="text-neutral-600 leading-relaxed">To develop leaders who can navigate complexity, inspire performance, and build organizations that last — at every level, across the entire leadership lifecycle.</p>
                   </div>
-                  <div className="p-6 rounded-2xl" style={{ background: "var(--color-navy-900)", border: "1px solid rgba(193,154,91,0.15)" }}>
-                    <p className="text-3xl font-800 text-white mb-2" style={{ fontWeight: 800 }}>Our Vision</p>
-                    <p className="leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>A world where every organization has access to the complete leadership development infrastructure it needs to build lasting capability.</p>
+                  <div className="p-6 rounded-2xl" style={{ background: "#eaf4ec", border: "1px solid #c8dece" }}>
+                    <p className="text-3xl font-800 text-navy-900 mb-2" style={{ fontWeight: 800 }}>Our Vision</p>
+                    <p className="text-neutral-600 leading-relaxed">A world where every organization has access to the complete leadership development infrastructure it needs to build lasting capability.</p>
                   </div>
                 </div>
               </motion.div>

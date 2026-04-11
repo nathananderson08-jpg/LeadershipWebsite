@@ -26,7 +26,7 @@ export function CTABanner({
       <div
         className="absolute inset-0 opacity-30"
         style={{
-          backgroundImage: "radial-gradient(at 30% 50%, rgba(193,154,91,0.12) 0px, transparent 60%), radial-gradient(at 70% 50%, rgba(0,212,255,0.05) 0px, transparent 60%)",
+          backgroundImage: "radial-gradient(at 30% 50%, rgba(74,124,90,0.20) 0px, transparent 60%), radial-gradient(at 70% 50%, rgba(74,124,90,0.10) 0px, transparent 60%)",
         }}
       />
       <div className="container-content relative z-10">

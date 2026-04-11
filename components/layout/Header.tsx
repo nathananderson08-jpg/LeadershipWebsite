@@ -32,10 +32,10 @@ export function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white ${
           scrolled
-            ? "bg-navy-900/95 backdrop-blur-md shadow-lg shadow-black/20"
-            : "bg-transparent"
+            ? "shadow-md border-b border-gray-100"
+            : "border-b border-gray-100"
         }`}
         style={{ fontFamily: "var(--font-plus-jakarta)" }}
       >
@@ -61,17 +61,17 @@ export function Header() {
                     key={item.label}
                     onMouseEnter={() => setMegaOpen(true)}
                     onMouseLeave={() => setMegaOpen(false)}
-                    className="px-4 py-2 text-sm font-600 text-white/80 hover:text-white transition-colors rounded-lg hover:bg-white/5 relative"
+                    className="px-4 py-2 text-sm font-600 text-neutral-700 hover:text-navy-900 transition-colors rounded-lg hover:bg-gray-50 relative"
                     style={{ fontWeight: 600 }}
                   >
                     {item.label}
-                    <span className="ml-1 text-white/40">▾</span>
+                    <span className="ml-1 text-neutral-400">▾</span>
                   </button>
                 ) : (
                   <Link
                     key={item.label}
                     href={item.href}
-                    className="px-4 py-2 text-sm font-600 text-white/80 hover:text-white transition-colors rounded-lg hover:bg-white/5"
+                    className="px-4 py-2 text-sm font-600 text-neutral-700 hover:text-navy-900 transition-colors rounded-lg hover:bg-gray-50"
                     style={{ fontWeight: 600 }}
                   >
                     {item.label}
@@ -87,17 +87,19 @@ export function Header() {
                 className="hidden md:inline-flex items-center px-4 py-2 rounded-lg text-xs font-600 transition-colors"
                 style={{
                   fontWeight: 600,
-                  color: "rgba(255,255,255,0.55)",
-                  border: "1px solid rgba(255,255,255,0.12)",
+                  color: "#162a1e",
+                  border: "1px solid rgba(22,42,30,0.25)",
                   letterSpacing: "0.04em",
                 }}
                 onMouseEnter={e => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.85)"
-                  ;(e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(193,154,91,0.4)"
+                  (e.currentTarget as HTMLAnchorElement).style.color = "#162a1e"
+                  ;(e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(22,42,30,0.5)"
+                  ;(e.currentTarget as HTMLAnchorElement).style.background = "rgba(22,42,30,0.05)"
                 }}
                 onMouseLeave={e => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.55)"
-                  ;(e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.12)"
+                  (e.currentTarget as HTMLAnchorElement).style.color = "#162a1e"
+                  ;(e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(22,42,30,0.25)"
+                  ;(e.currentTarget as HTMLAnchorElement).style.background = "transparent"
                 }}
               >
                 Practitioner Hub

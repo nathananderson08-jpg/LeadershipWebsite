@@ -3,9 +3,9 @@ import { SolutionPageTemplate } from "@/components/sections/SolutionPageTemplate
 import { FIRM_NAME } from "@/lib/constants"
 
 export const metadata: Metadata = {
-  title: `Leadership Development Programs — Custom & Cohort-Based Training | ${FIRM_NAME}`,
+  title: `Leadership Development Programs — Academies, Cohort Learning & Custom Curricula | ${FIRM_NAME}`,
   description:
-    "Structured leadership development programs for every level. Cohort-based learning, custom curricula, and blended delivery integrated with coaching and assessment.",
+    "Structured leadership development programs for every level and need. From leadership academies to skills training to AI readiness — all designed for behavior change, not just knowledge transfer.",
 }
 
 export default function ProgramsPage() {
@@ -15,63 +15,68 @@ export default function ProgramsPage() {
       phase="03 — Develop"
       phaseIndex={2}
       heroTitle="Programs built for scale. Designed for depth."
-      heroSubtitle="Leadership development programs that go beyond workshops — we build curricula, cohort experiences, and learning architectures that produce lasting behavioral change."
+      heroSubtitle="Leadership development programs that go beyond content delivery — we architect curricula, cohort experiences, and learning systems that produce lasting behavioral change at individual, team, and organizational levels."
       challengeTitle="Most training doesn't transfer. We design for transfer from the start."
-      challengeBody="The biggest failure in leadership development is the application gap — the distance between what leaders learn in a program and what they actually change when they return to work. We close that gap by design."
+      challengeBody="The biggest failure in leadership development is the application gap — the distance between what leaders learn in a program and what they actually change when they return to work. We close that gap through design, not hope."
       challengePoints={[
-        "One-off workshops produce knowledge, not behavior change — and knowledge depreciates fast.",
-        "Generic leadership curricula miss the specific challenges, culture, and context of your organization.",
-        "Programs disconnected from coaching have no mechanism for individual application.",
-        "Learning without measurement has no accountability and no business case.",
+        "One-off workshops produce knowledge, not behavior change — and knowledge depreciates fast without reinforcement.",
+        "Generic curricula miss the specific challenges, culture, and strategic context of your organization.",
+        "Programs disconnected from coaching have no mechanism for individual application and accountability.",
+        "Learning without measurement has no business case and no feedback loop for continuous improvement.",
       ]}
-      approachTitle="Cohort learning meets custom design meets embedded coaching."
-      approachBody="Our programs are built on three principles: cohort accountability, contextual relevance, and integration with the broader lifecycle. We don't deliver content — we architect capability."
+      approachTitle="Learning architectures that produce lasting capability."
+      approachBody="Our programs span individual, team, and organizational levels. We offer six distinct program types — each designed to a specific depth, audience, and type of change. All can be integrated with coaching, assessment, and measurement."
       features={[
         {
           icon: "🎓",
           title: "Leadership Academies",
-          description: "Multi-module programs for distinct leadership populations — emerging leaders, senior directors, or enterprise-wide transformation. Typically 6-12 months.",
+          description: "Multi-module programs for distinct leadership populations — emerging managers, senior directors, or enterprise-wide transformation. Duration of 6–12 months. Built on cohort-based learning with coaching integration.",
         },
         {
           icon: "⚡",
-          title: "Cohort-Based Learning",
-          description: "Peer cohorts who learn together, challenge each other, and build lasting professional networks. The social architecture of learning matters as much as the content.",
+          title: "Executive Breakthrough Programs",
+          description: "High-impact development experiences for senior leaders: immersive workshops, action learning projects, and structured peer challenge. Typically 3–6 months. Combines group learning with individual coaching.",
         },
         {
-          icon: "🎛️",
-          title: "Custom Curriculum Design",
-          description: "We design programs from scratch when needed — based on assessment data, organizational strategy, and the specific capability gaps we need to close.",
+          icon: "🌱",
+          title: "Inner Development & Character Work",
+          description: "Programs addressing the inner dimension of leadership — values, purpose, identity, psychological patterns, and leadership character. Often integrated into academy programs or offered as stand-alone development interventions.",
         },
         {
-          icon: "🌐",
-          title: "Blended Delivery",
-          description: "Virtual, in-person, and hybrid delivery formats optimized for your workforce — including live workshops, digital learning, peer learning circles, and action learning projects.",
+          icon: "🤝",
+          title: "Skills Training & Team Effectiveness",
+          description: "Targeted skill-building for specific leadership capabilities: communication, feedback, influence, decision-making, and team effectiveness. Modular design allows custom combinations based on diagnostic data.",
+        },
+        {
+          icon: "🤖",
+          title: "AI & Leadership Readiness",
+          description: "Programs preparing leaders to lead in an AI-enabled environment: strategic AI fluency, human-AI collaboration, managing AI adoption anxiety, and building AI-ready team cultures. Available as stand-alone or integrated into broader academies.",
         },
         {
           icon: "📊",
-          title: "Measurement & Impact Tracking",
-          description: "Every program includes measurement architecture: pre/post assessments, behavioral surveys, and impact metrics tied to organizational outcomes.",
+          title: "Change Management at Scale",
+          description: "Leadership development specifically designed for major change programs — restructures, mergers, digital transformations, and AI rollouts. Equips leaders with the mindsets, tools, and communication skills required to lead through uncertainty.",
         },
       ]}
       audiences={[
-        "Organizations building systematic leadership pipelines at scale",
-        "HR and L&D teams needing structured programs for defined leadership populations",
-        "Companies launching leadership academies for emerging or senior talent",
-        "Organizations undergoing significant transformation who need to build new capabilities fast",
-        "Companies with distributed workforces who need consistent development experiences",
+        "Organizations building systematic leadership pipelines for emerging, mid-level, or senior populations",
+        "HR and L&D teams deploying structured programs for defined leadership cohorts",
+        "Companies launching leadership academies and needing end-to-end design and facilitation",
+        "Organizations with distributed workforces requiring consistent, scalable development experiences",
+        "Leaders and teams preparing for AI adoption or significant organizational transformation",
       ]}
       engagementModels={[
         {
-          title: "Signature Program (Off-the-Shelf)",
-          description: "Our proven programs for emerging, senior, or C-suite audiences — contextualized for your organization. Fastest time to delivery.",
+          title: "Signature Program (Contextualized)",
+          description: "Our proven program designs for specific audiences — emerging, mid-level, or senior — adapted to your organizational culture, strategy, and language. Fastest time to delivery.",
         },
         {
           title: "Custom Program Design",
-          description: "Fully bespoke curriculum designed around your organizational needs, culture, and strategy. 60-90 day design phase, then ongoing facilitation.",
+          description: "Fully bespoke curriculum built around your diagnostic data, organizational challenges, and strategic priorities. 60–90 day design phase, followed by facilitated delivery and measurement.",
         },
         {
           title: "Leadership Academy Build",
-          description: "End-to-end design, build, and launch of a multi-year leadership academy — including governance, measurement, and content licensing.",
+          description: "End-to-end design, build, and launch of a multi-year leadership academy — including governance model, cohort architecture, measurement framework, and content licensing.",
         },
       ]}
       relatedSolutions={[

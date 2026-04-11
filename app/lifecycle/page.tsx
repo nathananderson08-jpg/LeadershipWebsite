@@ -20,9 +20,9 @@ export const pageMetadata = {
 
 
 const AUDIENCE_MATRIX = [
-  { level: "Emerging Leaders", color: "rgba(193,154,91,0.15)", textColor: "#c19a5b" },
-  { level: "Senior Leaders", color: "rgba(193,154,91,0.1)", textColor: "#c19a5b" },
-  { level: "C-Suite & Board", color: "rgba(193,154,91,0.06)", textColor: "#c19a5b" },
+  { level: "Emerging Leaders", color: "rgba(74,124,90,0.20)", textColor: "#4a7c5a" },
+  { level: "Senior Leaders", color: "rgba(74,124,90,0.14)", textColor: "#4a7c5a" },
+  { level: "C-Suite & Board", color: "rgba(74,124,90,0.08)", textColor: "#4a7c5a" },
 ]
 
 const AI_PHASE_INTEGRATION = [
@@ -164,11 +164,11 @@ export default function LifecyclePage() {
       {/* ── HERO ──────────────────────────────────────────── */}
       <section
         className="relative pt-40 pb-24"
-        style={{ background: "linear-gradient(160deg, #0a0f1c 0%, #0d1529 60%, #0a0f1c 100%)" }}
+        style={{ background: "linear-gradient(160deg, #162a1e 0%, #1e3d2e 60%, #162a1e 100%)" }}
       >
-        <div className="absolute inset-0 opacity-20"
+        <div className="absolute inset-0 opacity-30"
           style={{
-            backgroundImage: "radial-gradient(at 70% 30%, rgba(193,154,91,0.1) 0px, transparent 60%)",
+            backgroundImage: "radial-gradient(at 70% 30%, rgba(74,124,90,0.15) 0px, transparent 60%)",
           }}
         />
         <div className="container-content relative z-10 text-center max-w-4xl mx-auto">
@@ -177,12 +177,12 @@ export default function LifecyclePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            <p className="text-sm font-700 tracking-[0.15em] uppercase text-gold-400 mb-5" style={{ fontWeight: 700 }}>
+            <p className="text-sm font-700 tracking-[0.15em] uppercase text-navy-300 mb-5" style={{ fontWeight: 700 }}>
               {LIFECYCLE_FRAMEWORK_NAME}
             </p>
             <h1 className="display-lg text-white mb-6">
               One Partner. Every Phase.{" "}
-              <span style={{ color: "var(--color-gold-400)" }}>Complete</span> Leadership Development.
+              <span style={{ color: "var(--color-navy-300)" }}>Complete</span> Leadership Development.
             </h1>
             <p className="text-xl text-white/60 leading-relaxed max-w-2xl mx-auto">
               We are the only firm that delivers integrated solutions across the entire leadership development lifecycle — with no handoffs, no gaps, and no compromises.
@@ -191,6 +191,74 @@ export default function LifecyclePage() {
               {MESSAGING.connectionChain}
             </p>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ── LEADERSHIP TALENT VALUE CHAIN ─────────────────── */}
+      <section className="py-16" style={{ background: "#f0f5f1" }}>
+        <div className="container-content">
+          <div className="text-center mb-10">
+            <p className="text-xs font-700 tracking-widest uppercase text-navy-500 mb-3" style={{ fontWeight: 700 }}>The Bigger Picture</p>
+            <h2 className="display-md text-navy-900">Where development fits in the talent lifecycle</h2>
+            <p className="text-neutral-600 mt-4 max-w-2xl mx-auto leading-relaxed">
+              Organizations manage talent across six phases. Most vendors serve one. We deliver comprehensive solutions across the phases that generate the most long-term leadership leverage.
+            </p>
+          </div>
+          <div className="flex flex-col md:flex-row items-stretch rounded-2xl overflow-hidden border border-gray-200 mb-8">
+            {[
+              { label: "Recruitment", desc: "Sourcing & hiring", focus: false },
+              { label: "Assessment", desc: "Diagnosing capability & potential", focus: true },
+              { label: "Training", desc: "Building foundational skills", focus: true },
+              { label: "Development", desc: "Deep growth & transformation", focus: true, primary: true },
+              { label: "Retention", desc: "Engagement & culture", focus: true },
+              { label: "Succession", desc: "Pipeline & long-term continuity", focus: true },
+            ].map((phase, i) => (
+              <div
+                key={phase.label}
+                className="flex-1 p-5 relative"
+                style={{
+                  background: phase.primary ? "#162a1e" : phase.focus ? "#eaf4ec" : "white",
+                  borderRight: i < 5 ? "1px solid #e2ede5" : "none",
+                }}
+              >
+                {phase.primary && (
+                  <span className="absolute top-2 right-2 text-[9px] font-700 px-2 py-0.5 rounded-full uppercase tracking-wider"
+                    style={{ background: "rgba(74,124,90,0.25)", color: "#8abf9a", fontWeight: 700 }}>
+                    Core Focus
+                  </span>
+                )}
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold mb-3"
+                  style={{
+                    background: phase.primary ? "rgba(74,124,90,0.3)" : phase.focus ? "#162a1e" : "#e5e5e5",
+                    color: phase.primary ? "#8abf9a" : phase.focus ? "white" : "#a3a3a3",
+                    fontWeight: 700,
+                  }}>
+                  {i + 1}
+                </div>
+                <p className={`text-sm font-700 mb-1`}
+                  style={{ fontWeight: 700, color: phase.primary ? "white" : phase.focus ? "#162a1e" : "#a3a3a3" }}>
+                  {phase.label}
+                </p>
+                <p className="text-xs leading-relaxed" style={{ color: phase.primary ? "rgba(255,255,255,0.55)" : phase.focus ? "#737373" : "#a3a3a3" }}>
+                  {phase.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-neutral-500">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded" style={{ background: "#162a1e" }} />
+              <span>Core focus — deepest expertise</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded border" style={{ background: "#eaf4ec", borderColor: "#c8dece" }} />
+              <span>Adjacent capabilities we deliver</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded border border-gray-200" style={{ background: "white" }} />
+              <span>Outside our scope</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -208,6 +276,85 @@ export default function LifecyclePage() {
             className="mb-14"
           />
           <InteractiveLifecycle />
+        </div>
+      </section>
+
+      {/* ── DEVELOPMENT FRAMEWORK MATRIX ─────────────────── */}
+      <section className="section-padding" style={{ background: "white" }}>
+        <div className="container-content">
+          <SectionHeading
+            eyebrow="Our Framework"
+            title="Every level. Every type of change."
+            subtitle="Our solutions span three levels of leadership and two modes of development — ensuring complete coverage no matter where your challenge sits."
+            className="mb-14"
+          />
+          <div className="overflow-x-auto">
+            <div className="min-w-[640px]">
+              {/* Column headers */}
+              <div className="grid grid-cols-3 gap-3 mb-3">
+                <div />
+                <div className="text-center p-4 rounded-xl" style={{ background: "#eaf4ec", border: "1px solid #c8dece" }}>
+                  <p className="text-sm font-700 text-navy-900" style={{ fontWeight: 700 }}>Transformational</p>
+                  <p className="text-xs text-neutral-500 mt-1">Identity, mindset & deep behavioral change</p>
+                </div>
+                <div className="text-center p-4 rounded-xl" style={{ background: "#f0f5f1", border: "1px solid #e2ede5" }}>
+                  <p className="text-sm font-700 text-navy-900" style={{ fontWeight: 700 }}>Foundational</p>
+                  <p className="text-xs text-neutral-500 mt-1">Skills, capabilities & knowledge building</p>
+                </div>
+              </div>
+              {/* Matrix rows */}
+              {[
+                {
+                  level: "Individual",
+                  desc: "Each leader",
+                  transformational: ["Deep Executive Coaching", "Executive Breakthrough Programs", "Inner Development & Character Work"],
+                  foundational: ["Leadership Diagnostics & 360 Reviews", "Skills Training & Team Effectiveness", "AI & Leadership Readiness"],
+                },
+                {
+                  level: "Team",
+                  desc: "Collective leadership",
+                  transformational: ["Top Team Alignment & Integration", "Culture Transformation"],
+                  foundational: ["Team Effectiveness Programs", "Facilitated Workshops", "Team Diagnostics"],
+                },
+                {
+                  level: "Organization",
+                  desc: "Systemic capability",
+                  transformational: ["Enterprise Leadership Architecture", "Organizational Change & Adaptive Leadership"],
+                  foundational: ["Leadership Pipeline Development", "Change Management at Scale", "Succession Planning"],
+                },
+              ].map((row) => (
+                <div key={row.level} className="grid grid-cols-3 gap-3 mb-3">
+                  <div className="p-4 rounded-xl flex flex-col justify-center" style={{ background: "#162a1e" }}>
+                    <p className="text-sm font-700 text-white" style={{ fontWeight: 700 }}>{row.level}</p>
+                    <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.45)" }}>{row.desc}</p>
+                  </div>
+                  <div className="p-4 rounded-xl" style={{ background: "#eaf4ec", border: "1px solid #c8dece" }}>
+                    <ul className="space-y-2">
+                      {row.transformational.map(item => (
+                        <li key={item} className="flex items-start gap-2 text-xs text-navy-800">
+                          <span className="text-navy-500 shrink-0 mt-0.5">→</span>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="p-4 rounded-xl" style={{ background: "#f0f5f1", border: "1px solid #e2ede5" }}>
+                    <ul className="space-y-2">
+                      {row.foundational.map(item => (
+                        <li key={item} className="flex items-start gap-2 text-xs text-neutral-700">
+                          <span className="text-navy-400 shrink-0 mt-0.5">→</span>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <p className="text-center text-sm text-neutral-400 mt-8 max-w-2xl mx-auto">
+            Every offering is designed to integrate with adjacent solutions — creating a coherent development system, not a collection of standalone programs.
+          </p>
         </div>
       </section>
 
@@ -325,7 +472,7 @@ export default function LifecyclePage() {
                         ? "/solutions/senior-leaders"
                         : "/solutions/c-suite"
                     }
-                    className="text-sm font-600 text-gold-400 hover:text-gold-300 transition-colors"
+                    className="text-sm font-600 text-navy-200 hover:text-white transition-colors"
                     style={{ fontWeight: 600 }}
                   >
                     Explore {audience.level} solutions →
@@ -338,7 +485,7 @@ export default function LifecyclePage() {
       </section>
 
       {/* ── AI CALLOUT ────────────────────────────────────── */}
-      <section className="py-20" style={{ background: "linear-gradient(135deg, #020817 0%, #040e1a 100%)" }}>
+      <section className="py-20" style={{ background: "linear-gradient(135deg, #061510 0%, #0f201a 100%)" }}>
         <div className="container-content">
           <div className="max-w-4xl mx-auto">
             <div
@@ -391,7 +538,7 @@ export default function LifecyclePage() {
         headline="Let's map your leadership lifecycle."
         subtext="Every organization is at a different stage. We'll help you understand where you are, where you need to go, and how to get there."
         primaryLabel="Start the Conversation"
-        primaryHref="/consultation"
+        primaryHref="/contact"
         secondaryLabel="View All Solutions"
         secondaryHref="/solutions"
       />

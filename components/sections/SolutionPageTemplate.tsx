@@ -65,11 +65,11 @@ export function SolutionPageTemplate({
       {/* Hero */}
       <section
         className="pt-40 pb-24 relative"
-        style={{ background: "linear-gradient(160deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%)" }}
+        style={{ background: "linear-gradient(160deg, #eaf4ec 0%, #f0f7f2 100%)" }}
       >
         <div
-          className="absolute inset-0 opacity-50"
-          style={{ backgroundImage: "radial-gradient(at 60% 30%, rgba(193,154,91,0.08) 0px, transparent 50%)" }}
+          className="absolute inset-0 opacity-40"
+          style={{ backgroundImage: "radial-gradient(at 60% 30%, rgba(74,124,90,0.08) 0px, transparent 50%)" }}
         />
         <div className="container-content relative z-10">
           <Breadcrumbs crumbs={[{ label: "Solutions", href: "/solutions" }, { label: breadcrumb }]} />
@@ -79,18 +79,18 @@ export function SolutionPageTemplate({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
-              <p className="text-xs font-700 tracking-widest uppercase text-gold-400 mb-4" style={{ fontWeight: 700 }}>
+              <p className="text-xs font-700 tracking-widest uppercase text-navy-500 mb-4" style={{ fontWeight: 700 }}>
                 {phase}
               </p>
-              <h1 className="display-lg text-white mb-5">{heroTitle}</h1>
-              <p className="text-xl text-white/60 leading-relaxed">{heroSubtitle}</p>
+              <h1 className="display-lg text-navy-900 mb-5">{heroTitle}</h1>
+              <p className="text-xl text-neutral-600 leading-relaxed">{heroSubtitle}</p>
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* The Challenge */}
-      <section className="section-padding" style={{ background: "var(--color-warm-white)" }}>
+      <section className="section-padding" style={{ background: "white" }}>
         <div className="container-content">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
             <motion.div
@@ -99,7 +99,7 @@ export function SolutionPageTemplate({
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <p className="text-xs font-700 tracking-widest uppercase text-gold-600 mb-4" style={{ fontWeight: 700 }}>
+              <p className="text-xs font-700 tracking-widest uppercase text-navy-600 mb-4" style={{ fontWeight: 700 }}>
                 The Challenge
               </p>
               <h2 className="display-md text-navy-900 mb-5">{challengeTitle}</h2>
@@ -116,9 +116,9 @@ export function SolutionPageTemplate({
                 <div
                   key={i}
                   className="flex items-start gap-4 p-5 rounded-xl"
-                  style={{ background: "white", border: "1px solid var(--color-warm-100)" }}
+                  style={{ background: "#f0f5f1", border: "1px solid #e2ede5" }}
                 >
-                  <span className="text-gold-500 text-lg shrink-0">◈</span>
+                  <span className="text-navy-500 text-lg shrink-0">◈</span>
                   <p className="text-neutral-700">{point}</p>
                 </div>
               ))}
@@ -150,14 +150,14 @@ export function SolutionPageTemplate({
               >
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-5"
-                  style={{ background: "rgba(193,154,91,0.1)" }}
+                  style={{ background: "rgba(74,124,90,0.15)" }}
                 >
                   {feature.icon}
                 </div>
                 <h3 className="font-700 text-white text-lg mb-3" style={{ fontWeight: 700 }}>
                   {feature.title}
                 </h3>
-                <p className="text-sm text-white/55 leading-relaxed">{feature.description}</p>
+                <p className="text-sm text-white/60 leading-relaxed">{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -217,7 +217,7 @@ export function SolutionPageTemplate({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Audience */}
             <div>
-              <p className="text-xs font-700 tracking-widest uppercase text-gold-600 mb-6" style={{ fontWeight: 700 }}>
+              <p className="text-xs font-700 tracking-widest uppercase text-navy-600 mb-6" style={{ fontWeight: 700 }}>
                 Who It&apos;s For
               </p>
               <div className="space-y-3">
@@ -225,9 +225,9 @@ export function SolutionPageTemplate({
                   <div
                     key={aud}
                     className="flex items-center gap-3 p-4 rounded-xl"
-                    style={{ background: "var(--color-warm-50)", border: "1px solid var(--color-warm-100)" }}
+                    style={{ background: "#f0f5f1", border: "1px solid #e2ede5" }}
                   >
-                    <span style={{ color: "var(--color-gold-500)" }}>✓</span>
+                    <span style={{ color: "var(--color-navy-500)" }}>✓</span>
                     <span className="text-navy-900 font-500" style={{ fontWeight: 500 }}>{aud}</span>
                   </div>
                 ))}
@@ -236,12 +236,12 @@ export function SolutionPageTemplate({
 
             {/* Engagement Models */}
             <div>
-              <p className="text-xs font-700 tracking-widest uppercase text-gold-600 mb-6" style={{ fontWeight: 700 }}>
+              <p className="text-xs font-700 tracking-widest uppercase text-navy-600 mb-6" style={{ fontWeight: 700 }}>
                 Engagement Models
               </p>
               <div className="space-y-4">
                 {engagementModels.map((model) => (
-                  <div key={model.title} className="border-l-2 pl-5" style={{ borderColor: "var(--color-gold-400)" }}>
+                  <div key={model.title} className="border-l-2 pl-5" style={{ borderColor: "var(--color-navy-400)" }}>
                     <p className="font-700 text-navy-900 mb-1" style={{ fontWeight: 700 }}>{model.title}</p>
                     <p className="text-sm text-neutral-500">{model.description}</p>
                   </div>
@@ -253,7 +253,7 @@ export function SolutionPageTemplate({
       </section>
 
       {/* Related Solutions */}
-      <section className="py-16" style={{ background: "var(--color-warm-50)" }}>
+      <section className="py-16" style={{ background: "#f0f5f1" }}>
         <div className="container-content">
           <p className="text-xs font-700 tracking-widest uppercase text-neutral-400 mb-8 text-center" style={{ fontWeight: 700 }}>
             Related Solutions
@@ -263,9 +263,9 @@ export function SolutionPageTemplate({
               <Link
                 key={rel.href}
                 href={rel.href}
-                className="flex items-center gap-3 px-5 py-3 rounded-full bg-white border border-neutral-200 hover:border-gold-400 transition-colors group"
+                className="flex items-center gap-3 px-5 py-3 rounded-full bg-white border border-neutral-200 hover:border-navy-400 transition-colors group"
               >
-                <span className="text-xs font-700 text-gold-600" style={{ fontWeight: 700 }}>{rel.phase}</span>
+                <span className="text-xs font-700 text-navy-600" style={{ fontWeight: 700 }}>{rel.phase}</span>
                 <span className="text-sm text-neutral-700 group-hover:text-navy-900 font-600" style={{ fontWeight: 600 }}>{rel.title}</span>
               </Link>
             ))}
@@ -276,7 +276,7 @@ export function SolutionPageTemplate({
       <CTABanner
         headline={ctaHeadline}
         primaryLabel="Discuss This Solution"
-        primaryHref="/consultation"
+        primaryHref="/contact"
         secondaryLabel="Explore All Solutions"
         secondaryHref="/solutions"
       />

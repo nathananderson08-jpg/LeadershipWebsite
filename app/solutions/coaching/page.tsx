@@ -3,9 +3,9 @@ import { SolutionPageTemplate } from "@/components/sections/SolutionPageTemplate
 import { FIRM_NAME } from "@/lib/constants"
 
 export const metadata: Metadata = {
-  title: `Executive Coaching — ICF-Certified Leadership Coaches | ${FIRM_NAME}`,
+  title: `Executive Coaching — Deep Coaching & Breakthrough Programs | ${FIRM_NAME}`,
   description:
-    "Transform leadership performance with ICF-certified executive coaching. 1:1, group, and team coaching integrated with assessment and development programs.",
+    "Transform leadership performance through deep executive coaching, breakthrough programs, and inner development work. ICF-certified coaches integrated with assessment and development.",
 }
 
 export default function CoachingPage() {
@@ -15,63 +15,63 @@ export default function CoachingPage() {
       phase="02 — Coach"
       phaseIndex={1}
       heroTitle="The most direct path to leadership transformation."
-      heroSubtitle="Our ICF-certified coaches bring deep expertise across industries and levels — and every coaching engagement integrates with assessment data and development plans for maximum impact."
+      heroSubtitle="Our coaches bring deep expertise across industries and leadership levels — and every coaching engagement is anchored in assessment data and connected to broader development goals for maximum, lasting impact."
       challengeTitle="Coaching only works if it's connected to something real."
-      challengeBody="Standalone coaching — disconnected from assessment data, development programs, and organizational context — delivers limited, short-lived results. Leaders need coaching that's embedded in a broader system of growth."
+      challengeBody="Standalone coaching — disconnected from diagnostic data, development programs, and organizational context — delivers limited, short-lived results. Leaders need coaching embedded in a broader system of growth, not another vendor relationship that starts from scratch."
       challengePoints={[
-        "Coaching that starts without diagnostic data misses the most important developmental gaps.",
-        "Coaches without organizational context can't help leaders navigate the systemic barriers to change.",
-        "Generic coaching relationships that don't evolve with the leader's needs plateau quickly.",
-        "Team dysfunction often can't be solved through individual coaching alone.",
+        "Coaching that starts without diagnostic data misses the leader's most critical developmental gaps.",
+        "Coaches without organizational context can't help leaders navigate the systemic barriers they actually face.",
+        "Generic coaching that doesn't evolve with the leader's needs plateaus within months.",
+        "Individual coaching alone cannot resolve team dysfunction or systemic cultural issues.",
       ]}
       approachTitle="Coaching embedded in a system of transformation."
-      approachBody="Our coaches are embedded in the full lifecycle — they work from assessment data, coordinate with program facilitators, and maintain continuity through succession planning. This integration is what produces lasting change."
+      approachBody="Our coaches work from assessment data, coordinate with program facilitators, and maintain continuity through succession planning. We offer five distinct coaching modalities — each calibrated to a specific leadership challenge, level, and desired depth of change."
       features={[
         {
-          icon: "👤",
-          title: "1:1 Executive Coaching",
-          description: "Deep, confidential coaching relationships built on assessment data and tailored to the individual leader's context, goals, and career stage.",
+          icon: "🧭",
+          title: "Deep Executive Coaching",
+          description: "Long-term, high-depth coaching relationships for senior leaders. Combines psychological depth with strategic context. Engagements of 6–18 months. Focuses on identity, leadership presence, and complex organizational navigation.",
+        },
+        {
+          icon: "⚡",
+          title: "Executive Breakthrough Programs",
+          description: "Intensive, time-bounded coaching for leaders at inflection points — new roles, capability gaps, or performance challenges. Structured sprint format (90 days) with clear milestones and measurable outcomes.",
+        },
+        {
+          icon: "🌱",
+          title: "Inner Development & Character Work",
+          description: "Coaching that addresses the inner game of leadership: values alignment, psychological patterns, emotional intelligence, and leadership character. Essential for leaders whose technical capability has outpaced their inner development.",
         },
         {
           icon: "👥",
-          title: "Group Coaching",
-          description: "Cohort-based coaching that builds shared language, peer accountability, and collective capability — often paired with leadership development programs.",
-        },
-        {
-          icon: "🏆",
-          title: "Team Coaching",
-          description: "The entire leadership team as the unit of change. We address team dynamics, psychological safety, and collective effectiveness — not just individuals.",
-        },
-        {
-          icon: "🤖",
-          title: "AI Strategy Coaching",
-          description: "Specialized coaching for leaders navigating AI transformation — building strategic AI fluency, managing adoption anxiety, and leading AI-driven change.",
+          title: "Group & Cohort Coaching",
+          description: "Cohort-based coaching that builds shared language, peer accountability, and collective capability — typically paired with development programs. Accelerates learning and creates lasting peer networks.",
         },
         {
           icon: "🔄",
-          title: "Transition Coaching",
-          description: "Intensive coaching support for high-stakes leadership transitions — new role, new organization, or new scope. Typically 90-day sprint engagements.",
+          title: "Transition & Role Coaching",
+          description: "Intensive coaching for high-stakes leadership transitions: new role, new organization, newly expanded scope, or post-restructure. Typically 90-day sprint engagements with weekly sessions.",
         },
       ]}
       audiences={[
         "C-suite executives navigating strategic complexity and organizational change",
         "Senior leaders transitioning into expanded roles or new organizations",
         "High-potential leaders accelerating toward senior leadership",
-        "Teams facing collective challenges: alignment, trust, performance",
-        "Leaders at any level preparing for an AI-driven business environment",
+        "Leaders whose performance has plateaued or who are facing specific derailers",
+        "Teams facing collective challenges: alignment, trust, or shared direction",
       ]}
       engagementModels={[
         {
-          title: "90-Day Sprint",
-          description: "Intensive coaching focused on a specific leadership challenge, transition, or capability gap. Six bi-weekly sessions plus continuous support.",
+          title: "90-Day Breakthrough Sprint",
+          description: "Intensive coaching focused on a single high-priority challenge or transition. Weekly sessions, between-session support, and a structured progress framework.",
         },
         {
-          title: "6-Month Engagement",
-          description: "Deep coaching relationship covering multiple developmental priorities. Twelve sessions plus assessment integration and development planning.",
+          title: "6-Month Development Partnership",
+          description: "Deep coaching relationship covering multiple developmental priorities. Bi-weekly sessions plus assessment integration, development planning, and mid-point review.",
         },
         {
-          title: "Ongoing Advisory",
-          description: "Long-term strategic coaching relationship for executives who need a trusted sounding board. Monthly sessions, unlimited availability between sessions.",
+          title: "12–18 Month Executive Partnership",
+          description: "Long-term strategic coaching relationship for executives requiring sustained development. Monthly deep-dive sessions plus ongoing availability between sessions.",
         },
       ]}
       relatedSolutions={[
