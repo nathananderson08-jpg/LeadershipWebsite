@@ -1,32 +1,25 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 
 interface VideoBackgroundProps {
-  videoSrc?: string
-  posterSrc?: string
   overlayOpacity?: number
   className?: string
 }
 
 /**
- * VideoBackground component for hero sections.
- * Falls back gracefully to a gradient if video can't load.
+ * AnimatedBackground component for hero sections.
+ * Uses CSS animations for a smooth, professional clouds/sky timelapse effect.
  * Respects reduced motion preferences.
  */
 export function VideoBackground({
-  videoSrc = "https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4",
-  posterSrc,
-  overlayOpacity = 0.65,
+  overlayOpacity = 0.4,
   className = "",
 }: VideoBackgroundProps) {
-  const [videoLoaded, setVideoLoaded] = useState(false)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
-    // Check for reduced motion preference
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
     setPrefersReducedMotion(mediaQuery.matches)
 
@@ -37,46 +30,82 @@ export function VideoBackground({
     return () => mediaQuery.removeEventListener("change", handleChange)
   }, [])
 
-  useEffect(() => {
-    if (videoRef.current && !prefersReducedMotion) {
-      videoRef.current.play().catch(() => {
-        // Video autoplay failed, fallback handled by state
-      })
-    }
-  }, [prefersReducedMotion])
-
   return (
     <div className={`absolute inset-0 overflow-hidden ${className}`} aria-hidden="true">
-      {/* Base gradient layer - always visible */}
+      {/* Sky gradient base */}
       <div
         className="absolute inset-0"
         style={{
-          background: "linear-gradient(160deg, #f3faf5 0%, #e3f2e8 55%, #f8f8f6 100%)",
+          background: "linear-gradient(180deg, #87CEEB 0%, #B0E0E6 30%, #E0F4F7 60%, #f3faf5 100%)",
         }}
       />
 
-      {/* Video layer - only if motion is allowed */}
+      {/* Animated cloud layers */}
       {!prefersReducedMotion && (
-        <motion.div
-          className="absolute inset-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: videoLoaded ? 1 : 0 }}
-          transition={{ duration: 1.5 }}
-        >
-          <video
-            ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster={posterSrc}
-            onCanPlayThrough={() => setVideoLoaded(true)}
-            crossOrigin="anonymous"
-          >
-            <source src={videoSrc} type="video/mp4" />
-          </video>
-        </motion.div>
+        <>
+          {/* Cloud layer 1 - large, slow moving */}
+          <motion.div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `
+                radial-gradient(ellipse 300px 120px at 10% 20%, rgba(255,255,255,0.9) 0%, transparent 70%),
+                radial-gradient(ellipse 400px 150px at 80% 15%, rgba(255,255,255,0.85) 0%, transparent 70%),
+                radial-gradient(ellipse 350px 130px at 50% 25%, rgba(255,255,255,0.8) 0%, transparent 70%),
+                radial-gradient(ellipse 280px 100px at 25% 35%, rgba(255,255,255,0.75) 0%, transparent 70%),
+                radial-gradient(ellipse 320px 110px at 70% 30%, rgba(255,255,255,0.8) 0%, transparent 70%)
+              `,
+            }}
+            animate={{
+              x: [0, 100, 0],
+            }}
+            transition={{
+              duration: 60,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+
+          {/* Cloud layer 2 - medium, moderate speed */}
+          <motion.div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `
+                radial-gradient(ellipse 250px 90px at 15% 40%, rgba(255,255,255,0.7) 0%, transparent 70%),
+                radial-gradient(ellipse 300px 100px at 60% 45%, rgba(255,255,255,0.65) 0%, transparent 70%),
+                radial-gradient(ellipse 220px 80px at 85% 50%, rgba(255,255,255,0.7) 0%, transparent 70%),
+                radial-gradient(ellipse 280px 95px at 40% 55%, rgba(255,255,255,0.6) 0%, transparent 70%)
+              `,
+            }}
+            animate={{
+              x: [0, 150, 0],
+            }}
+            transition={{
+              duration: 45,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+
+          {/* Cloud layer 3 - small wisps, faster */}
+          <motion.div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `
+                radial-gradient(ellipse 180px 60px at 20% 60%, rgba(255,255,255,0.5) 0%, transparent 70%),
+                radial-gradient(ellipse 200px 70px at 55% 65%, rgba(255,255,255,0.45) 0%, transparent 70%),
+                radial-gradient(ellipse 160px 55px at 75% 70%, rgba(255,255,255,0.5) 0%, transparent 70%)
+              `,
+            }}
+            animate={{
+              x: [0, 200, 0],
+            }}
+            transition={{
+              duration: 35,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+        </>
       )}
 
       {/* Gradient overlay for text readability */}
@@ -84,13 +113,13 @@ export function VideoBackground({
         className="absolute inset-0"
         style={{
           background: `linear-gradient(160deg, 
-            rgba(243, 250, 245, ${overlayOpacity}) 0%, 
-            rgba(227, 242, 232, ${overlayOpacity - 0.1}) 40%, 
-            rgba(248, 248, 246, ${overlayOpacity - 0.15}) 100%)`,
+            rgba(243, 250, 245, ${overlayOpacity + 0.2}) 0%, 
+            rgba(227, 242, 232, ${overlayOpacity + 0.1}) 40%, 
+            rgba(248, 248, 246, ${overlayOpacity}) 100%)`,
         }}
       />
 
-      {/* Animated mesh orbs - subtle and airy */}
+      {/* Animated accent orbs */}
       <motion.div
         className="absolute"
         style={{
@@ -99,7 +128,7 @@ export function VideoBackground({
           maxWidth: 1000,
           maxHeight: 1000,
           borderRadius: "50%",
-          background: "radial-gradient(circle at 50% 50%, rgba(93,171,121,0.12) 0%, rgba(93,171,121,0.04) 35%, transparent 65%)",
+          background: "radial-gradient(circle at 50% 50%, rgba(93,171,121,0.08) 0%, rgba(93,171,121,0.02) 35%, transparent 65%)",
           top: "-25%",
           right: "-20%",
           willChange: "transform",
@@ -120,7 +149,7 @@ export function VideoBackground({
           maxWidth: 800,
           maxHeight: 800,
           borderRadius: "50%",
-          background: "radial-gradient(circle at 50% 50%, rgba(201,168,138,0.1) 0%, rgba(201,168,138,0.03) 40%, transparent 65%)",
+          background: "radial-gradient(circle at 50% 50%, rgba(135,206,235,0.1) 0%, rgba(135,206,235,0.03) 40%, transparent 65%)",
           bottom: "-20%",
           left: "-15%",
           willChange: "transform",
@@ -135,7 +164,7 @@ export function VideoBackground({
 
       {/* Subtle texture */}
       <div
-        className="absolute inset-0 opacity-20"
+        className="absolute inset-0 opacity-10"
         style={{
           backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E\")",
         }}
@@ -145,7 +174,7 @@ export function VideoBackground({
       <div
         className="absolute inset-0"
         style={{
-          background: "radial-gradient(ellipse 80% 70% at 50% 50%, transparent 50%, rgba(243,250,245,0.4) 100%)",
+          background: "radial-gradient(ellipse 80% 70% at 50% 50%, transparent 50%, rgba(243,250,245,0.5) 100%)",
         }}
       />
     </div>
