@@ -58,28 +58,23 @@ export function Sidebar() {
       }} />
 
       {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-6 relative z-10"
+      <div className="flex flex-col items-center px-5 py-8 relative z-10"
         style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 overflow-hidden"
+        <div className="w-full rounded-xl overflow-hidden mb-4"
           style={{
             background: '#ffffff',
           }}>
           <Image
             src="/logo.png"
             alt="Apex & Origin"
-            width={32}
-            height={32}
-            className="object-contain"
+            width={240}
+            height={80}
+            className="w-full h-auto object-contain"
           />
         </div>
-        <div>
-          <h1 className="text-sm font-semibold tracking-tight" style={{ color: '#ffffff' }}>
-            Apex &amp; Origin
-          </h1>
-          <p className="text-[11px] font-medium tracking-wide" style={{ color: '#7fb093' }}>
-            {isAdmin ? 'Admin Portal' : 'Practitioner Hub'}
-          </p>
-        </div>
+        <p className="text-[11px] font-medium tracking-wide" style={{ color: '#7fb093' }}>
+          {isAdmin ? 'Admin Portal' : 'Practitioner Hub'}
+        </p>
       </div>
 
       {/* Navigation */}

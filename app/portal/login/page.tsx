@@ -149,20 +149,17 @@ export default function PortalLoginPage() {
           backgroundSize: '48px 48px',
         }} />
         <div className="relative z-10 text-center">
-          {/* Logo mark */}
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-8 overflow-hidden"
+          {/* Logo */}
+          <div className="w-72 mx-auto rounded-2xl mb-8 overflow-hidden"
             style={{
               background: '#ffffff',
             }}>
             <img
               src="/logo.png"
               alt="Apex & Origin"
-              className="w-14 h-14 object-contain"
+              className="w-full h-auto object-contain"
             />
           </div>
-          <h1 className="text-3xl font-bold mb-2" style={{ color: '#ffffff', letterSpacing: '-0.02em' }}>
-            Apex &amp; Origin
-          </h1>
           <p className="text-base mb-16" style={{ color: '#7fb093' }}>Practitioner Hub</p>
 
           {/* Lifecycle phases visual */}
