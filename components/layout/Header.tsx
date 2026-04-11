@@ -57,16 +57,22 @@ export function Header() {
             <nav className="hidden lg:flex items-center gap-1">
               {NAV_ITEMS.map((item) =>
                 item.hasMega ? (
-                  <button
+                  <div
                     key={item.label}
+                    className="relative"
                     onMouseEnter={() => setMegaOpen(true)}
                     onMouseLeave={() => setMegaOpen(false)}
-                    className="px-4 py-2 text-sm font-600 text-forest-800 hover:text-forest-950 transition-colors rounded-lg hover:bg-forest-50 relative"
-                    style={{ fontWeight: 600 }}
                   >
-                    {item.label}
-                    <span className="ml-1 text-forest-400">▾</span>
-                  </button>
+                    <button
+                      className="px-4 py-2 text-sm font-600 text-forest-800 hover:text-forest-950 transition-colors rounded-lg hover:bg-forest-50 relative"
+                      style={{ fontWeight: 600 }}
+                    >
+                      {item.label}
+                      <span className="ml-1 text-forest-400">▾</span>
+                    </button>
+                    {/* Invisible bridge to prevent gap when moving to dropdown */}
+                    {megaOpen && <div className="absolute left-0 right-0 h-6 top-full" />}
+                  </div>
                 ) : (
                   <Link
                     key={item.label}

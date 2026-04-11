@@ -133,7 +133,7 @@ function LifecyclePreview() {
               className="relative"
             >
               <button
-                className={`w-full text-left p-5 rounded-xl border transition-all duration-300 ${
+                className={`w-full h-full text-left p-5 rounded-xl border transition-all duration-300 ${
                   activePhase === phase.id
                     ? "bg-forest-900 border-forest-500 text-white shadow-xl"
                     : "bg-white border-warm-100 text-forest-900 hover:border-forest-300 hover:shadow-md"
