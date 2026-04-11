@@ -14,14 +14,16 @@ import {
   Compass,
   Heart,
   ExternalLink,
+  Target,
 } from 'lucide-react';
 
 const adminNavItems = [
-  { href: '/portal/dashboard/programs', label: 'Active Programs', icon: Layers, description: 'Pipeline overview' },
-  { href: '/portal/dashboard/programs/new', label: 'Create Program', icon: Sparkles, description: 'Design a new program' },
-  { href: '/portal/dashboard/staffing', label: 'Program Staffing', icon: Compass, description: 'Invitations & confirmations' },
-  { href: '/portal/dashboard/calendar', label: 'Program Calendar', icon: Calendar, description: 'Schedule at a glance' },
-  { href: '/portal/dashboard/manage-team', label: 'Practitioner Network', icon: Heart, description: 'Roles & capabilities' },
+  { href: '/portal/dashboard/programs', label: 'Active Programs', icon: Layers, description: 'Pipeline overview', section: 'Programs' },
+  { href: '/portal/dashboard/programs/new', label: 'Create Program', icon: Sparkles, description: 'Design a new program', section: null },
+  { href: '/portal/dashboard/staffing', label: 'Program Staffing', icon: Compass, description: 'Invitations & confirmations', section: null },
+  { href: '/portal/dashboard/calendar', label: 'Program Calendar', icon: Calendar, description: 'Schedule at a glance', section: null },
+  { href: '/portal/dashboard/manage-team', label: 'Practitioner Network', icon: Heart, description: 'Roles & capabilities', section: null },
+  { href: '/portal/dashboard/leadforge', label: 'LeadForge', icon: Target, description: 'Prospect intelligence', section: 'Intelligence' },
 ];
 
 const practitionerNavItems = [
@@ -81,41 +83,52 @@ export function Sidebar() {
           style={{ color: '#6b9a7d' }}>
           Navigation
         </p>
-        {navItems.map((item) => {
+        {navItems.map((item, idx) => {
           const active = isActive(item.href);
+          const showSectionLabel = 'section' in item && item.section !== null && item.section !== 'Programs';
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all group',
+            <div key={item.href}>
+              {showSectionLabel && (
+                <>
+                  <div className="my-3 mx-2" style={{ borderTop: '1px solid rgba(93,171,121,0.12)' }} />
+                  <p className="px-3 text-[10px] font-semibold uppercase tracking-[0.18em] mb-2 mt-1"
+                    style={{ color: '#6b9a7d' }}>
+                    {(item as any).section}
+                  </p>
+                </>
               )}
-              style={active ? {
-                background: 'rgba(93,171,121,0.12)',
-                color: '#1a3a2a',
-                border: '1px solid rgba(93,171,121,0.3)',
-              } : {
-                color: '#3d6b4f',
-                border: '1px solid transparent',
-              }}
-            >
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all"
-                style={active
-                  ? { background: '#1a3a2a', color: '#ffffff' }
-                  : { background: 'rgba(93,171,121,0.1)', color: '#5dab79' }
-                }>
-                <item.icon size={16} strokeWidth={1.8} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="truncate leading-tight text-[13px]">{item.label}</p>
-                <p className="text-[11px] truncate mt-0.5" style={{
-                  color: active ? '#5dab79' : '#6b9a7d',
-                  fontWeight: 400,
-                }}>
-                  {item.description}
-                </p>
-              </div>
-            </Link>
+              <Link
+                href={item.href}
+                className={cn(
+                  'flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all group',
+                )}
+                style={active ? {
+                  background: 'rgba(93,171,121,0.12)',
+                  color: '#1a3a2a',
+                  border: '1px solid rgba(93,171,121,0.3)',
+                } : {
+                  color: '#3d6b4f',
+                  border: '1px solid transparent',
+                }}
+              >
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all"
+                  style={active
+                    ? { background: '#1a3a2a', color: '#ffffff' }
+                    : { background: 'rgba(93,171,121,0.1)', color: '#5dab79' }
+                  }>
+                  <item.icon size={16} strokeWidth={1.8} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="truncate leading-tight text-[13px]">{item.label}</p>
+                  <p className="text-[11px] truncate mt-0.5" style={{
+                    color: active ? '#5dab79' : '#6b9a7d',
+                    fontWeight: 400,
+                  }}>
+                    {item.description}
+                  </p>
+                </div>
+              </Link>
+            </div>
           );
         })}
 
