@@ -20,9 +20,9 @@ export const pageMetadata = {
 
 
 const AUDIENCE_MATRIX = [
-  { level: "Emerging Leaders", color: "rgba(74,124,90,0.20)", textColor: "#4a7c5a" },
-  { level: "Senior Leaders", color: "rgba(74,124,90,0.14)", textColor: "#4a7c5a" },
-  { level: "C-Suite & Board", color: "rgba(74,124,90,0.08)", textColor: "#4a7c5a" },
+  { level: "Emerging Leaders", color: "rgba(93,171,121,0.12)", textColor: "#5dab79" },
+  { level: "Senior Leaders", color: "rgba(93,171,121,0.08)", textColor: "#5dab79" },
+  { level: "C-Suite & Board", color: "rgba(93,171,121,0.05)", textColor: "#5dab79" },
 ]
 
 const AI_PHASE_INTEGRATION = [
@@ -40,10 +40,10 @@ function InteractiveLifecycle() {
     <div className="relative">
       {/* Connection line */}
       <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 -translate-y-8 z-0"
-        style={{ background: "linear-gradient(90deg, transparent 2%, rgba(193,154,91,0.3) 15%, rgba(193,154,91,0.3) 85%, transparent 98%)" }}
+        style={{ background: "linear-gradient(90deg, transparent 2%, rgba(93,171,121,0.4) 15%, rgba(93,171,121,0.4) 85%, transparent 98%)" }}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 relative z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 relative z-10 items-stretch">
         {LIFECYCLE_PHASES.map((phase, i) => (
           <motion.div
             key={phase.id}
@@ -51,45 +51,46 @@ function InteractiveLifecycle() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="flex"
           >
             <button
               onClick={() => setActivePhase(activePhase === i ? null : i)}
-              className={`w-full relative text-left p-6 rounded-2xl border transition-all duration-400 group ${
+              className={`w-full h-full flex flex-col relative text-left p-6 rounded-2xl border transition-all duration-400 group ${
                 activePhase === i
-                  ? "border-gold-500 shadow-2xl scale-[1.02]"
-                  : "border-white/10 hover:border-gold-500/40"
+                  ? "border-forest-500 shadow-2xl scale-[1.02]"
+                  : "border-forest-200 hover:border-forest-400"
               }`}
               style={{
                 background:
                   activePhase === i
-                    ? "linear-gradient(135deg, rgba(193,154,91,0.15) 0%, rgba(193,154,91,0.08) 100%)"
-                    : "rgba(255,255,255,0.03)",
+                    ? "linear-gradient(135deg, rgba(93,171,121,0.15) 0%, rgba(93,171,121,0.08) 100%)"
+                    : "white",
               }}
             >
               {/* Phase number */}
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-800 mb-5"
                 style={{
-                  background: activePhase === i ? "var(--color-gold-500)" : "rgba(193,154,91,0.1)",
-                  color: activePhase === i ? "var(--color-navy-900)" : "var(--color-gold-500)",
+                  background: activePhase === i ? "var(--color-forest-600)" : "var(--color-forest-100)",
+                  color: activePhase === i ? "white" : "var(--color-forest-700)",
                   fontWeight: 800,
                 }}
               >
                 {phase.number}
               </div>
 
-              <h3 className="font-700 text-white text-xl mb-1" style={{ fontWeight: 700 }}>
+              <h3 className="font-700 text-forest-900 text-xl mb-1" style={{ fontWeight: 700 }}>
                 {phase.title}
               </h3>
-              <p className="text-sm text-white/40 mb-4">{phase.subtitle}</p>
-              <p className="text-sm text-white/60 leading-relaxed">
+              <p className="text-sm text-forest-600/70 mb-4">{phase.subtitle}</p>
+              <p className="text-sm text-forest-800/60 leading-relaxed flex-1">
                 {phase.description.substring(0, 90)}...
               </p>
 
               {/* Expand indicator */}
               <div
                 className={`mt-4 text-xs font-600 transition-colors ${
-                  activePhase === i ? "text-gold-400" : "text-white/30 group-hover:text-gold-500"
+                  activePhase === i ? "text-forest-600" : "text-forest-400 group-hover:text-forest-600"
                 }`}
                 style={{ fontWeight: 600 }}
               >
@@ -115,17 +116,17 @@ function InteractiveLifecycle() {
               const phase = LIFECYCLE_PHASES[activePhase]
               return (
                 <div
-                  className="p-8 rounded-2xl border border-gold-500/20 flex flex-col md:flex-row gap-8"
-                  style={{ background: "rgba(193,154,91,0.05)" }}
+                  className="p-8 rounded-2xl border border-forest-300 flex flex-col md:flex-row gap-8"
+                  style={{ background: "white" }}
                 >
                   <div className="flex-1">
                     <p
-                      className="text-xs font-700 tracking-widest uppercase text-gold-500 mb-3"
+                      className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-3"
                       style={{ fontWeight: 700 }}
                     >
                       Phase {phase.number} — {phase.title}: {phase.subtitle}
                     </p>
-                    <p className="text-white/70 leading-relaxed mb-6 text-base">{phase.description}</p>
+                    <p className="text-forest-800/80 leading-relaxed mb-6 text-base">{phase.description}</p>
                     <Link href={phase.link}>
                       <Button variant="primary" size="sm">
                         Explore {phase.title} Solutions →
@@ -134,15 +135,15 @@ function InteractiveLifecycle() {
                   </div>
                   <div className="md:w-72">
                     <p
-                      className="text-xs font-700 tracking-widest uppercase text-white/30 mb-4"
+                      className="text-xs font-700 tracking-widest uppercase text-forest-500 mb-4"
                       style={{ fontWeight: 700 }}
                     >
                       What We Deliver
                     </p>
                     <ul className="space-y-2.5">
                       {phase.details.map((detail) => (
-                        <li key={detail} className="flex items-start gap-3 text-sm text-white/60">
-                          <span className="text-gold-500 shrink-0 mt-0.5">✓</span>
+                        <li key={detail} className="flex items-start gap-3 text-sm text-forest-700">
+                          <span className="text-forest-500 shrink-0 mt-0.5">✓</span>
                           {detail}
                         </li>
                       ))}
@@ -164,11 +165,11 @@ export default function LifecyclePage() {
       {/* ── HERO ──────────────────────────────────────────── */}
       <section
         className="relative pt-40 pb-24"
-        style={{ background: "linear-gradient(160deg, #162a1e 0%, #1e3d2e 60%, #162a1e 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}
       >
-        <div className="absolute inset-0 opacity-30"
+        <div className="absolute inset-0"
           style={{
-            backgroundImage: "radial-gradient(at 70% 30%, rgba(74,124,90,0.15) 0px, transparent 60%)",
+            backgroundImage: "radial-gradient(at 70% 30%, rgba(93,171,121,0.12) 0px, transparent 60%)",
           }}
         />
         <div className="container-content relative z-10 text-center max-w-4xl mx-auto">
@@ -177,17 +178,17 @@ export default function LifecyclePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            <p className="text-sm font-700 tracking-[0.15em] uppercase text-navy-300 mb-5" style={{ fontWeight: 700 }}>
+            <p className="text-sm font-700 tracking-[0.15em] uppercase text-forest-600 mb-5" style={{ fontWeight: 700 }}>
               {LIFECYCLE_FRAMEWORK_NAME}
             </p>
-            <h1 className="display-lg text-white mb-6">
+            <h1 className="display-lg text-forest-950 mb-6">
               One Partner. Every Phase.{" "}
-              <span style={{ color: "var(--color-navy-300)" }}>Complete</span> Leadership Development.
+              <span style={{ color: "var(--color-forest-600)" }}>Complete</span> Leadership Development.
             </h1>
-            <p className="text-xl text-white/60 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-xl text-forest-800/70 leading-relaxed max-w-2xl mx-auto">
               We are the only firm that delivers integrated solutions across the entire leadership development lifecycle — with no handoffs, no gaps, and no compromises.
             </p>
-            <p className="text-sm text-white/35 mt-5 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-sm text-forest-700/50 mt-5 max-w-2xl mx-auto leading-relaxed">
               {MESSAGING.connectionChain}
             </p>
           </motion.div>
@@ -195,16 +196,16 @@ export default function LifecyclePage() {
       </section>
 
       {/* ── LEADERSHIP TALENT VALUE CHAIN ─────────────────── */}
-      <section className="py-16" style={{ background: "#f0f5f1" }}>
+      <section className="py-16" style={{ background: "var(--color-forest-50)" }}>
         <div className="container-content">
           <div className="text-center mb-10">
-            <p className="text-xs font-700 tracking-widest uppercase text-navy-500 mb-3" style={{ fontWeight: 700 }}>The Bigger Picture</p>
-            <h2 className="display-md text-navy-900">Where development fits in the talent lifecycle</h2>
-            <p className="text-neutral-600 mt-4 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-3" style={{ fontWeight: 700 }}>The Bigger Picture</p>
+            <h2 className="display-md text-forest-950">Where development fits in the talent lifecycle</h2>
+            <p className="text-forest-800/70 mt-4 max-w-2xl mx-auto leading-relaxed">
               Organizations manage talent across six phases. Most vendors serve one. We deliver comprehensive solutions across the phases that generate the most long-term leadership leverage.
             </p>
           </div>
-          <div className="flex flex-col md:flex-row items-stretch rounded-2xl overflow-hidden border border-gray-200 mb-8">
+          <div className="flex flex-col md:flex-row items-stretch rounded-2xl overflow-hidden border border-forest-200 mb-8">
             {[
               { label: "Recruitment", desc: "Sourcing & hiring", focus: false },
               { label: "Assessment", desc: "Diagnosing capability & potential", focus: true },
@@ -217,29 +218,33 @@ export default function LifecyclePage() {
                 key={phase.label}
                 className="flex-1 p-5 relative"
                 style={{
-                  background: phase.primary ? "#162a1e" : phase.focus ? "#eaf4ec" : "white",
-                  borderRight: i < 5 ? "1px solid #e2ede5" : "none",
+                  background: phase.primary ? "var(--color-forest-900)" : phase.focus ? "var(--color-forest-50)" : "white",
+                  borderRight: i < 5 ? "1px solid var(--color-forest-200)" : "none",
                 }}
               >
                 {phase.primary && (
                   <span className="absolute top-2 right-2 text-[9px] font-700 px-2 py-0.5 rounded-full uppercase tracking-wider"
-                    style={{ background: "rgba(74,124,90,0.25)", color: "#8abf9a", fontWeight: 700 }}>
+                    style={{ background: "rgba(93,171,121,0.2)", color: "var(--color-forest-300)", fontWeight: 700 }}>
                     Core Focus
                   </span>
                 )}
                 <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold mb-3"
                   style={{
-                    background: phase.primary ? "rgba(74,124,90,0.3)" : phase.focus ? "#162a1e" : "#e5e5e5",
-                    color: phase.primary ? "#8abf9a" : phase.focus ? "white" : "#a3a3a3",
+                    background: phase.primary ? "rgba(93,171,121,0.25)" : phase.focus ? "var(--color-forest-900)" : "#e5e5e5",
+                    color: phase.primary ? "var(--color-forest-300)" : phase.focus ? "white" : "#a3a3a3",
                     fontWeight: 700,
                   }}>
                   {i + 1}
                 </div>
-                <p className={`text-sm font-700 mb-1`}
-                  style={{ fontWeight: 700, color: phase.primary ? "white" : phase.focus ? "#162a1e" : "#a3a3a3" }}>
+                <p className="text-sm font-700 mb-1" style={{
+                  fontWeight: 700,
+                  color: phase.primary ? "white" : phase.focus ? "var(--color-forest-950)" : "#a3a3a3"
+                }}>
                   {phase.label}
                 </p>
-                <p className="text-xs leading-relaxed" style={{ color: phase.primary ? "rgba(255,255,255,0.55)" : phase.focus ? "#737373" : "#a3a3a3" }}>
+                <p className="text-xs leading-relaxed" style={{
+                  color: phase.primary ? "rgba(255,255,255,0.55)" : phase.focus ? "var(--color-forest-700)" : "#a3a3a3"
+                }}>
                   {phase.desc}
                 </p>
               </div>
@@ -247,15 +252,15 @@ export default function LifecyclePage() {
           </div>
           <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-neutral-500">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded" style={{ background: "#162a1e" }} />
+              <div className="w-4 h-4 rounded" style={{ background: "var(--color-forest-900)" }} />
               <span>Core focus — deepest expertise</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded border" style={{ background: "#eaf4ec", borderColor: "#c8dece" }} />
+              <div className="w-4 h-4 rounded border border-forest-300" style={{ background: "var(--color-forest-50)" }} />
               <span>Adjacent capabilities we deliver</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded border border-gray-200" style={{ background: "white" }} />
+              <div className="w-4 h-4 rounded border border-gray-200 bg-white" />
               <span>Outside our scope</span>
             </div>
           </div>
@@ -265,14 +270,13 @@ export default function LifecyclePage() {
       {/* ── INTERACTIVE LIFECYCLE ─────────────────────────── */}
       <section
         className="section-padding"
-        style={{ background: "var(--color-navy-900)" }}
+        style={{ background: "var(--color-forest-100)" }}
       >
         <div className="container-content">
           <SectionHeading
             eyebrow="Five Phases. One System."
             title="The complete leadership development lifecycle"
             subtitle="Click any phase to explore what we deliver — and how each phase connects seamlessly to the next."
-            light
             className="mb-14"
           />
           <InteractiveLifecycle />
@@ -290,19 +294,17 @@ export default function LifecyclePage() {
           />
           <div className="overflow-x-auto">
             <div className="min-w-[640px]">
-              {/* Column headers */}
               <div className="grid grid-cols-3 gap-3 mb-3">
                 <div />
-                <div className="text-center p-4 rounded-xl" style={{ background: "#eaf4ec", border: "1px solid #c8dece" }}>
-                  <p className="text-sm font-700 text-navy-900" style={{ fontWeight: 700 }}>Transformational</p>
-                  <p className="text-xs text-neutral-500 mt-1">Identity, mindset & deep behavioral change</p>
+                <div className="text-center p-4 rounded-xl" style={{ background: "var(--color-forest-50)", border: "1px solid var(--color-forest-200)" }}>
+                  <p className="text-sm font-700 text-forest-900" style={{ fontWeight: 700 }}>Transformational</p>
+                  <p className="text-xs text-forest-700/70 mt-1">Identity, mindset & deep behavioral change</p>
                 </div>
-                <div className="text-center p-4 rounded-xl" style={{ background: "#f0f5f1", border: "1px solid #e2ede5" }}>
-                  <p className="text-sm font-700 text-navy-900" style={{ fontWeight: 700 }}>Foundational</p>
-                  <p className="text-xs text-neutral-500 mt-1">Skills, capabilities & knowledge building</p>
+                <div className="text-center p-4 rounded-xl" style={{ background: "var(--color-warm-50)", border: "1px solid var(--color-warm-200)" }}>
+                  <p className="text-sm font-700 text-forest-900" style={{ fontWeight: 700 }}>Foundational</p>
+                  <p className="text-xs text-forest-700/70 mt-1">Skills, capabilities & knowledge building</p>
                 </div>
               </div>
-              {/* Matrix rows */}
               {[
                 {
                   level: "Individual",
@@ -324,25 +326,25 @@ export default function LifecyclePage() {
                 },
               ].map((row) => (
                 <div key={row.level} className="grid grid-cols-3 gap-3 mb-3">
-                  <div className="p-4 rounded-xl flex flex-col justify-center" style={{ background: "#162a1e" }}>
+                  <div className="p-4 rounded-xl flex flex-col justify-center" style={{ background: "var(--color-forest-900)" }}>
                     <p className="text-sm font-700 text-white" style={{ fontWeight: 700 }}>{row.level}</p>
-                    <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.45)" }}>{row.desc}</p>
+                    <p className="text-xs mt-1 text-forest-300/60">{row.desc}</p>
                   </div>
-                  <div className="p-4 rounded-xl" style={{ background: "#eaf4ec", border: "1px solid #c8dece" }}>
+                  <div className="p-4 rounded-xl" style={{ background: "var(--color-forest-50)", border: "1px solid var(--color-forest-200)" }}>
                     <ul className="space-y-2">
                       {row.transformational.map(item => (
-                        <li key={item} className="flex items-start gap-2 text-xs text-navy-800">
-                          <span className="text-navy-500 shrink-0 mt-0.5">→</span>
+                        <li key={item} className="flex items-start gap-2 text-xs text-forest-800">
+                          <span className="text-forest-600 shrink-0 mt-0.5">→</span>
                           {item}
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <div className="p-4 rounded-xl" style={{ background: "#f0f5f1", border: "1px solid #e2ede5" }}>
+                  <div className="p-4 rounded-xl" style={{ background: "var(--color-warm-50)", border: "1px solid var(--color-warm-200)" }}>
                     <ul className="space-y-2">
                       {row.foundational.map(item => (
                         <li key={item} className="flex items-start gap-2 text-xs text-neutral-700">
-                          <span className="text-navy-400 shrink-0 mt-0.5">→</span>
+                          <span className="text-forest-500 shrink-0 mt-0.5">→</span>
                           {item}
                         </li>
                       ))}
@@ -352,8 +354,8 @@ export default function LifecyclePage() {
               ))}
             </div>
           </div>
-          <p className="text-center text-sm text-neutral-400 mt-8 max-w-2xl mx-auto">
-            Every offering is designed to integrate with adjacent solutions — creating a coherent development system, not a collection of standalone programs.
+          <p className="text-center text-sm text-forest-700/50 mt-8 max-w-2xl mx-auto">
+            Every offering integrates with adjacent solutions — creating a coherent development system, not a collection of standalone programs.
           </p>
         </div>
       </section>
@@ -425,13 +427,12 @@ export default function LifecyclePage() {
       </section>
 
       {/* ── AUDIENCE × LIFECYCLE MATRIX ───────────────────── */}
-      <section className="section-padding" style={{ background: "var(--color-navy-900)" }}>
+      <section className="section-padding" style={{ background: "var(--color-warm-white)" }}>
         <div className="container-content">
           <SectionHeading
             eyebrow="Lifecycle × Audience"
             title="The same lifecycle. Every level."
             subtitle="Our lifecycle isn't a one-size-fits-all framework — it's calibrated to the specific challenges, context, and needs of leaders at every stage of their career."
-            light
             className="mb-14"
           />
 
@@ -443,10 +444,10 @@ export default function LifecyclePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.12, duration: 0.5 }}
-                className="p-7 rounded-2xl border border-white/10"
+                className="p-7 rounded-2xl border border-forest-200 bg-white"
                 style={{ background: audience.color }}
               >
-                <h3 className="font-700 text-white text-xl mb-5" style={{ fontWeight: 700 }}>
+                <h3 className="font-700 text-forest-900 text-xl mb-5" style={{ fontWeight: 700 }}>
                   {audience.level}
                 </h3>
                 <div className="space-y-3">
@@ -456,14 +457,14 @@ export default function LifecyclePage() {
                         className="w-2 h-2 rounded-full shrink-0"
                         style={{ background: audience.textColor }}
                       />
-                      <span className="text-sm text-white/60">
-                        <span className="text-white/90 font-600" style={{ fontWeight: 600 }}>{phase.title}:</span>{" "}
+                      <span className="text-sm text-forest-700">
+                        <span className="text-forest-900 font-600" style={{ fontWeight: 600 }}>{phase.title}:</span>{" "}
                         {phase.subtitle}
                       </span>
                     </div>
                   ))}
                 </div>
-                <div className="mt-6 pt-5 border-t border-white/10">
+                <div className="mt-6 pt-5 border-t border-forest-200">
                   <Link
                     href={
                       i === 0
@@ -472,7 +473,7 @@ export default function LifecyclePage() {
                         ? "/solutions/senior-leaders"
                         : "/solutions/c-suite"
                     }
-                    className="text-sm font-600 text-navy-200 hover:text-white transition-colors"
+                    className="text-sm font-600 text-forest-600 hover:text-forest-800 transition-colors"
                     style={{ fontWeight: 600 }}
                   >
                     Explore {audience.level} solutions →
@@ -485,7 +486,7 @@ export default function LifecyclePage() {
       </section>
 
       {/* ── AI CALLOUT ────────────────────────────────────── */}
-      <section className="py-20" style={{ background: "linear-gradient(135deg, #061510 0%, #0f201a 100%)" }}>
+      <section className="py-20" style={{ background: "linear-gradient(135deg, #020817 0%, #040e1a 100%)" }}>
         <div className="container-content">
           <div className="max-w-4xl mx-auto">
             <div

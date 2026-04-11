@@ -13,16 +13,16 @@ export default function TeamPage() {
       {/* Hero */}
       <section
         className="pt-40 pb-24"
-        style={{ background: "linear-gradient(160deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}
       >
-        <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(at 60% 30%, rgba(193,154,91,0.07) 0px, transparent 50%)" }} />
+        <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(at 60% 30%, rgba(93,171,121,0.12) 0px, transparent 50%)" }} />
         <div className="container-content relative z-10">
           <Breadcrumbs crumbs={[{ label: "About", href: "/about" }, { label: "Leadership Team" }]} />
           <div className="max-w-3xl mt-8">
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-              <p className="text-xs font-700 tracking-widest uppercase text-gold-400 mb-4" style={{ fontWeight: 700 }}>Our Team</p>
-              <h1 className="display-lg text-white mb-5">World-class practitioners. A single, unified practice.</h1>
-              <p className="text-xl text-white/60 leading-relaxed">
+              <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-4" style={{ fontWeight: 700 }}>Our Team</p>
+              <h1 className="display-lg text-forest-950 mb-5">World-class practitioners. A single, unified practice.</h1>
+              <p className="text-xl text-forest-800/70 leading-relaxed">
                 Our team combines former executives, organizational psychologists, ICF master coaches, and AI strategists — all under one practice, one methodology, and one standard of excellence.
               </p>
             </motion.div>
@@ -102,9 +102,9 @@ export default function TeamPage() {
       </section>
 
       {/* Advisory Board */}
-      <section className="section-padding" style={{ background: "var(--color-navy-900)" }}>
+      <section className="section-padding" style={{ background: "var(--color-forest-100)" }}>
         <div className="container-content">
-          <SectionHeading eyebrow="Advisory Board" title="Guided by the best in the field." subtitle="Our advisory board brings decades of experience from the world's leading organizations, academic institutions, and government bodies." light className="mb-14" />
+          <SectionHeading eyebrow="Advisory Board" title="Guided by the best in the field." subtitle="Our advisory board brings decades of experience from the world's leading organizations, academic institutions, and government bodies." className="mb-14" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {ADVISORY_BOARD.map((advisor, i) => (
               <motion.div
@@ -113,18 +113,18 @@ export default function TeamPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="p-6 rounded-2xl"
-                style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+                className="p-6 rounded-2xl bg-white"
+                style={{ border: "1px solid var(--color-forest-200)" }}
               >
                 <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-700 text-white mb-4"
-                  style={{ background: "rgba(193,154,91,0.15)", fontWeight: 700 }}
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-700 text-forest-800 mb-4"
+                  style={{ background: "var(--color-forest-100)", fontWeight: 700 }}
                 >
                   {advisor.name.split(" ").filter(n => n[0] === n[0].toUpperCase() && n !== "Prof." && n !== "Dr." && n !== "Gen." && n !== "(Ret.)").map(n => n[0]).join("").slice(0, 2)}
                 </div>
-                <h3 className="font-700 text-white text-base mb-1" style={{ fontWeight: 700 }}>{advisor.name}</h3>
-                <p className="text-xs text-gold-600 mb-3 leading-snug">{advisor.title}</p>
-                <p className="text-xs text-white/40">{advisor.specialization}</p>
+                <h3 className="font-700 text-forest-900 text-base mb-1" style={{ fontWeight: 700 }}>{advisor.name}</h3>
+                <p className="text-xs text-forest-600 mb-3 leading-snug">{advisor.title}</p>
+                <p className="text-xs text-forest-500">{advisor.specialization}</p>
               </motion.div>
             ))}
           </div>

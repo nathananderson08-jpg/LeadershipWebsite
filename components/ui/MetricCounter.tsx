@@ -43,9 +43,9 @@ export function MetricCounter({ value, suffix = "", label, light = false, durati
 
   return (
     <div ref={ref} className="text-center">
-      <div className={`display-md font-800 ${light ? "text-white" : "text-navy-900"}`} style={{ fontWeight: 800 }}>
+      <div className={`display-md font-800 ${light ? "text-white" : "text-forest-900"}`} style={{ fontWeight: 800 }}>
         <span>{count.toLocaleString()}</span>
-        <span className={light ? "text-gold-400" : "text-gold-500"}>{suffix}</span>
+        <span className={light ? "text-forest-300" : "text-forest-500"}>{suffix}</span>
       </div>
       <p className={`text-sm font-600 tracking-wide mt-1 ${light ? "text-white/60" : "text-neutral-500"}`} style={{ fontWeight: 600 }}>
         {label}

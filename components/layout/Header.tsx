@@ -32,23 +32,23 @@ export function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "shadow-md border-b border-gray-100"
-            : "border-b border-gray-100"
+            ? "bg-white/95 backdrop-blur-md shadow-lg shadow-black/5"
+            : "bg-white/80 backdrop-blur-sm"
         }`}
         style={{ fontFamily: "var(--font-plus-jakarta)" }}
       >
         <div className="container-content">
-          <div className="flex items-center justify-between h-18" style={{ height: "4.5rem" }}>
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 shrink-0 group">
+          <div className="flex items-center justify-between h-24 lg:h-28" style={{ minHeight: "6rem" }}>
+            {/* Logo - Made prominent */}
+            <Link href="/" className="flex items-center gap-3 shrink-0 group" aria-label={`${FIRM_NAME} - Home`}>
               <Image
                 src="/logo.png"
-                alt={FIRM_NAME}
-                width={120}
-                height={44}
-                className="h-10 w-auto object-contain"
+                alt={`${FIRM_NAME} - Leadership Development`}
+                width={280}
+                height={90}
+                className="h-16 md:h-20 lg:h-24 w-auto object-contain transition-transform duration-200 group-hover:scale-[1.02]"
                 priority
               />
             </Link>
@@ -60,18 +60,17 @@ export function Header() {
                   <button
                     key={item.label}
                     onMouseEnter={() => setMegaOpen(true)}
-                    onMouseLeave={() => setMegaOpen(false)}
-                    className="px-4 py-2 text-sm font-600 text-neutral-700 hover:text-navy-900 transition-colors rounded-lg hover:bg-gray-50 relative"
+                    className="px-4 py-2 text-sm font-600 text-forest-800 hover:text-forest-950 transition-colors rounded-lg hover:bg-forest-50 relative"
                     style={{ fontWeight: 600 }}
                   >
                     {item.label}
-                    <span className="ml-1 text-neutral-400">▾</span>
+                    <span className="ml-1 text-forest-400">▾</span>
                   </button>
                 ) : (
                   <Link
                     key={item.label}
                     href={item.href}
-                    className="px-4 py-2 text-sm font-600 text-neutral-700 hover:text-navy-900 transition-colors rounded-lg hover:bg-gray-50"
+                    className="px-4 py-2 text-sm font-600 text-forest-800 hover:text-forest-950 transition-colors rounded-lg hover:bg-forest-50"
                     style={{ fontWeight: 600 }}
                   >
                     {item.label}
@@ -84,22 +83,10 @@ export function Header() {
             <div className="flex items-center gap-3">
               <Link
                 href="/portal"
-                className="hidden md:inline-flex items-center px-4 py-2 rounded-lg text-xs font-600 transition-colors"
+                className="hidden md:inline-flex items-center px-4 py-2 rounded-lg text-xs font-600 transition-colors text-forest-700 border border-forest-200 hover:border-forest-400 hover:text-forest-900 hover:bg-forest-50"
                 style={{
                   fontWeight: 600,
-                  color: "#162a1e",
-                  border: "1px solid rgba(22,42,30,0.25)",
                   letterSpacing: "0.04em",
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = "#162a1e"
-                  ;(e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(22,42,30,0.5)"
-                  ;(e.currentTarget as HTMLAnchorElement).style.background = "rgba(22,42,30,0.05)"
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = "#162a1e"
-                  ;(e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(22,42,30,0.25)"
-                  ;(e.currentTarget as HTMLAnchorElement).style.background = "transparent"
                 }}
               >
                 Practitioner Hub
@@ -110,7 +97,7 @@ export function Header() {
 
               {/* Mobile hamburger */}
               <button
-                className="lg:hidden flex flex-col gap-1.5 p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/5 transition-colors"
+                className="lg:hidden flex flex-col gap-1.5 p-2 rounded-lg text-forest-700 hover:text-forest-900 hover:bg-forest-50 transition-colors"
                 onClick={() => setMobileOpen(true)}
                 aria-label="Open menu"
               >
@@ -122,15 +109,15 @@ export function Header() {
           </div>
         </div>
 
-        {/* Mega Menu */}
-        {megaOpen && (
-          <div
-            onMouseEnter={() => setMegaOpen(true)}
-            onMouseLeave={() => setMegaOpen(false)}
-          >
-            <MegaMenu onClose={() => setMegaOpen(false)} />
-          </div>
-        )}
+        {/* Mega Menu with hover zone */}
+        <div
+          className={`absolute left-0 right-0 transition-all duration-200 ${megaOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
+          style={{ top: 'calc(100% - 12px)', paddingTop: '12px' }}
+          onMouseEnter={() => setMegaOpen(true)}
+          onMouseLeave={() => setMegaOpen(false)}
+        >
+          <MegaMenu onClose={() => setMegaOpen(false)} />
+        </div>
       </header>
 
       {/* Mobile Nav */}
