@@ -47,22 +47,22 @@ export function Sidebar() {
     <aside
       className="flex flex-col w-72 h-full rounded-2xl relative overflow-hidden"
       style={{
-        background: 'linear-gradient(180deg, #e8f0eb 0%, #f0f5f2 100%)',
-        border: '1px solid rgba(93,171,121,0.15)',
+        background: 'linear-gradient(180deg, #1a3a2a 0%, #0f2318 100%)',
+        border: '1px solid rgba(93,171,121,0.2)',
         padding: '12px',
       }}
     >
       {/* Subtle green radial glow at top */}
       <div className="absolute top-0 left-0 right-0 h-64 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse at 50% 0%, rgba(93,171,121,0.08) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse at 50% 0%, rgba(93,171,121,0.15) 0%, transparent 70%)',
       }} />
 
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-6 relative z-10"
-        style={{ borderBottom: '1px solid rgba(93,171,121,0.12)' }}>
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
         <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 overflow-hidden"
           style={{
-            background: '#1a3a2a',
+            background: '#ffffff',
           }}>
           <Image
             src="/logo.png"
@@ -73,10 +73,10 @@ export function Sidebar() {
           />
         </div>
         <div>
-          <h1 className="text-sm font-semibold tracking-tight" style={{ color: '#1a3a2a' }}>
+          <h1 className="text-sm font-semibold tracking-tight" style={{ color: '#ffffff' }}>
             Apex &amp; Origin
           </h1>
-          <p className="text-[11px] font-medium tracking-wide" style={{ color: '#5dab79' }}>
+          <p className="text-[11px] font-medium tracking-wide" style={{ color: '#7fb093' }}>
             {isAdmin ? 'Admin Portal' : 'Practitioner Hub'}
           </p>
         </div>
@@ -86,7 +86,7 @@ export function Sidebar() {
       <nav className="flex-1 min-h-0 px-3 relative z-10 overflow-y-auto"
         style={{ paddingTop: '20px', paddingBottom: '20px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
         <p className="px-3 text-[10px] font-semibold uppercase tracking-[0.18em] mb-3"
-          style={{ color: '#6b9a7d' }}>
+          style={{ color: 'rgba(255,255,255,0.4)' }}>
           Navigation
         </p>
         {navItems.map((item) => {
@@ -99,25 +99,25 @@ export function Sidebar() {
                 'flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all group',
               )}
               style={active ? {
-                background: 'rgba(93,171,121,0.12)',
-                color: '#3d6b4f',
+                background: 'rgba(93,171,121,0.2)',
+                color: '#7fb093',
                 border: '1px solid rgba(93,171,121,0.3)',
               } : {
-                color: '#3d6b4f',
+                color: 'rgba(255,255,255,0.7)',
                 border: '1px solid transparent',
               }}
             >
               <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all"
                 style={active
-                  ? { background: 'rgba(93,171,121,0.15)', color: '#5dab79' }
-                  : { background: 'rgba(93,171,121,0.08)', color: '#6b9a7d' }
+                  ? { background: 'rgba(93,171,121,0.25)', color: '#7fb093' }
+                  : { background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
                 }>
                 <item.icon size={16} strokeWidth={1.8} />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="truncate leading-tight text-[13px]">{item.label}</p>
                 <p className="text-[11px] truncate mt-0.5" style={{
-                  color: active ? '#5dab79' : '#6b9a7d',
+                  color: active ? 'rgba(127,176,147,0.8)' : 'rgba(255,255,255,0.35)',
                   fontWeight: 400,
                 }}>
                   {item.description}
@@ -127,7 +127,7 @@ export function Sidebar() {
           );
         })}
 
-        <div className="my-3 mx-2" style={{ borderTop: '1px solid rgba(93,171,121,0.12)' }} />
+        <div className="my-3 mx-2" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }} />
 
         <Link
           href="/portal/dashboard/settings"
@@ -135,24 +135,24 @@ export function Sidebar() {
             'flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all group',
           )}
           style={isActive('/portal/dashboard/settings') ? {
-            background: 'rgba(93,171,121,0.12)',
-            color: '#3d6b4f',
+            background: 'rgba(93,171,121,0.2)',
+            color: '#7fb093',
             border: '1px solid rgba(93,171,121,0.3)',
           } : {
-            color: '#3d6b4f',
+            color: 'rgba(255,255,255,0.7)',
             border: '1px solid transparent',
           }}
         >
           <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all"
             style={isActive('/portal/dashboard/settings')
-              ? { background: 'rgba(93,171,121,0.15)', color: '#5dab79' }
-              : { background: 'rgba(93,171,121,0.08)', color: '#6b9a7d' }
+              ? { background: 'rgba(93,171,121,0.25)', color: '#7fb093' }
+              : { background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
             }>
             <Settings size={16} strokeWidth={1.8} />
           </div>
           <div className="flex-1 min-w-0">
             <p className="truncate leading-tight text-[13px]">Settings</p>
-            <p className="text-[11px] truncate mt-0.5" style={{ color: '#6b9a7d', fontWeight: 400 }}>
+            <p className="text-[11px] truncate mt-0.5" style={{ color: 'rgba(255,255,255,0.35)', fontWeight: 400 }}>
               Account preferences
             </p>
           </div>
@@ -161,10 +161,10 @@ export function Sidebar() {
         <button
           onClick={signOut}
           className="flex items-center gap-3 w-full px-3 py-3 rounded-xl text-sm font-medium border border-transparent transition-all group"
-          style={{ color: '#6b9a7d' }}
+          style={{ color: 'rgba(255,255,255,0.5)' }}
         >
           <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-            style={{ background: 'rgba(93,171,121,0.08)', color: '#6b9a7d' }}>
+            style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.4)' }}>
             <LogOut size={16} strokeWidth={1.8} />
           </div>
           <div className="flex-1 min-w-0 text-left">
@@ -178,7 +178,7 @@ export function Sidebar() {
         <Link
           href="/"
           className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-[12px] transition-all"
-          style={{ color: '#6b9a7d', border: '1px solid rgba(93,171,121,0.15)' }}
+          style={{ color: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.1)' }}
         >
           <ExternalLink size={12} />
           Back to main site
@@ -186,8 +186,8 @@ export function Sidebar() {
       </div>
 
       {/* User card */}
-      <div className="px-3 py-3 relative z-10" style={{ borderTop: '1px solid rgba(93,171,121,0.12)' }}>
-        <div className="px-4 py-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(93,171,121,0.15)' }}>
+      <div className="px-3 py-3 relative z-10" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+        <div className="px-4 py-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold shrink-0"
               style={{
@@ -197,10 +197,10 @@ export function Sidebar() {
               {profile?.full_name?.charAt(0)?.toUpperCase() || '?'}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium truncate" style={{ color: '#1a3a2a' }}>
+              <p className="text-sm font-medium truncate" style={{ color: 'rgba(255,255,255,0.9)' }}>
                 {profile?.full_name}
               </p>
-              <p className="text-[11px] truncate" style={{ color: '#6b9a7d' }}>
+              <p className="text-[11px] truncate" style={{ color: 'rgba(255,255,255,0.4)' }}>
                 {profile?.email}
               </p>
             </div>

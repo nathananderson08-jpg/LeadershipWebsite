@@ -138,21 +138,21 @@ export default function PortalLoginPage() {
     <div className="flex min-h-screen" style={{ background: '#f8faf9' }}>
       {/* Left panel — brand */}
       <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden flex-col items-center justify-center p-12"
-        style={{ borderRight: '1px solid rgba(93,171,121,0.12)' }}>
+        style={{ background: 'linear-gradient(180deg, #1a3a2a 0%, #0f2318 100%)' }}>
         {/* Background radial glow */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: 'radial-gradient(ellipse at 50% 40%, rgba(93,171,121,0.12) 0%, transparent 65%)',
+          background: 'radial-gradient(ellipse at 50% 40%, rgba(93,171,121,0.2) 0%, transparent 65%)',
         }} />
         {/* Grid pattern */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{
-          backgroundImage: 'linear-gradient(rgba(93,171,121,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(93,171,121,0.5) 1px, transparent 1px)',
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
+          backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
           backgroundSize: '48px 48px',
         }} />
         <div className="relative z-10 text-center">
           {/* Logo mark */}
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-8 overflow-hidden"
             style={{
-              background: '#1a3a2a',
+              background: '#ffffff',
             }}>
             <img
               src="/logo.png"
@@ -160,21 +160,21 @@ export default function PortalLoginPage() {
               className="w-14 h-14 object-contain"
             />
           </div>
-          <h1 className="text-3xl font-bold mb-2" style={{ color: '#1a3a2a', letterSpacing: '-0.02em' }}>
+          <h1 className="text-3xl font-bold mb-2" style={{ color: '#ffffff', letterSpacing: '-0.02em' }}>
             Apex &amp; Origin
           </h1>
-          <p className="text-base mb-16" style={{ color: '#5dab79' }}>Practitioner Hub</p>
+          <p className="text-base mb-16" style={{ color: '#7fb093' }}>Practitioner Hub</p>
 
           {/* Lifecycle phases visual */}
           <div className="flex flex-col gap-3 text-left max-w-xs mx-auto">
             {['Assess', 'Coach', 'Develop', 'Transform', 'Sustain'].map((phase, i) => (
               <div key={phase} className="flex items-center gap-3 px-4 py-3 rounded-xl"
-                style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(93,171,121,0.15)' }}>
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
                 <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0"
-                  style={{ background: 'rgba(93,171,121,0.15)', color: '#5dab79' }}>
+                  style={{ background: 'rgba(93,171,121,0.25)', color: '#7fb093' }}>
                   {String(i + 1).padStart(2, '0')}
                 </div>
-                <span className="text-sm font-medium" style={{ color: '#3d6b4f' }}>{phase}</span>
+                <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>{phase}</span>
               </div>
             ))}
           </div>
