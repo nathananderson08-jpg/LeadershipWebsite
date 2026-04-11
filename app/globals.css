@@ -12,36 +12,36 @@
   --font-mono: "JetBrains Mono", "Courier New", monospace;
 
   /* 
-   * COLOR PALETTE — Light & Airy with Warmth
-   * Primary: Deep Forest Green (growth, nature, wisdom)
-   * Accent: Warm Sand/Cream (warmth, approachability)
-   * Neutral: Soft Grays with warm undertones
+   * COLOR PALETTE — From Logo
+   * Primary: Teal/Blue (trust, clarity, growth)
+   * Accent: Warm Orange (energy, warmth, transformation)
+   * Neutral: Soft Grays
    */
 
-  /* Primary — Forest Green (represents growth, stability, wisdom) */
-  --color-primary-950: #0a1f14;
-  --color-primary-900: #0f2e1e;
-  --color-primary-800: #14432c;
-  --color-primary-700: #1a5839;
-  --color-primary-600: #1f6d47;
-  --color-primary-500: #248255;
-  --color-primary-400: #3a9d6e;
-  --color-primary-300: #5fb88b;
-  --color-primary-200: #93d4ad;
-  --color-primary-100: #c9ebd6;
-  --color-primary-50: #edf8f1;
+  /* Primary — Teal/Blue (from logo - represents trust, growth, clarity) */
+  --color-primary-950: #042f2e;
+  --color-primary-900: #134e4a;
+  --color-primary-800: #115e59;
+  --color-primary-700: #0f766e;
+  --color-primary-600: #0d9488;
+  --color-primary-500: #14b8a6;
+  --color-primary-400: #2dd4bf;
+  --color-primary-300: #5eead4;
+  --color-primary-200: #99f6e4;
+  --color-primary-100: #ccfbf1;
+  --color-primary-50: #f0fdfa;
 
-  /* Accent — Warm Sand (warmth, approachability, humanity) */
-  --color-accent-900: #4a3c2a;
-  --color-accent-800: #6b5738;
-  --color-accent-700: #8c7246;
-  --color-accent-600: #a68b55;
-  --color-accent-500: #c4a76a;
-  --color-accent-400: #d4be8a;
-  --color-accent-300: #e4d5aa;
-  --color-accent-200: #f0e6c9;
-  --color-accent-100: #f8f3e4;
-  --color-accent-50: #fcfaf5;
+  /* Accent — Warm Orange (from logo - warmth, energy, transformation) */
+  --color-accent-900: #7c2d12;
+  --color-accent-800: #9a3412;
+  --color-accent-700: #c2410c;
+  --color-accent-600: #ea580c;
+  --color-accent-500: #f97316;
+  --color-accent-400: #fb923c;
+  --color-accent-300: #fdba74;
+  --color-accent-200: #fed7aa;
+  --color-accent-100: #ffedd5;
+  --color-accent-50: #fff7ed;
 
   /* Neutral — Warm Gray */
   --color-neutral-950: #0f0f0e;
@@ -65,13 +65,13 @@
   --color-card-foreground: #1a1a18;
   --color-border: #e2e2de;
   --color-input: #e2e2de;
-  --color-ring: #248255;
+  --color-ring: #0d9488;
 
-  /* AI accent — subtle teal for AI features */
+  /* AI accent — uses primary teal for AI features */
+  --color-ai-600: #0f766e;
   --color-ai-500: #0d9488;
   --color-ai-400: #14b8a6;
   --color-ai-300: #5eead4;
-  --color-ai-600: #0f766e;
   --color-ai-glow: rgba(13, 148, 136, 0.2);
 
   /* Custom spacing */
@@ -279,7 +279,7 @@ body {
 
 .btn-primary:hover {
   background: var(--color-primary-700);
-  box-shadow: 0 4px 12px rgba(36, 130, 85, 0.25);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
 }
 
 .btn-secondary {
@@ -307,15 +307,15 @@ body {
 }
 
 .btn-ai {
-  background: var(--color-ai-500);
+  background: var(--color-accent-500);
   color: white;
   padding: 0.75rem 1.5rem;
   border: none;
 }
 
 .btn-ai:hover {
-  background: var(--color-ai-600);
-  box-shadow: 0 4px 16px var(--color-ai-glow);
+  background: var(--color-accent-600);
+  box-shadow: 0 4px 16px rgba(249, 115, 22, 0.3);
 }
 
 .btn-lg {
@@ -418,7 +418,7 @@ body {
 .btn:focus-visible {
   outline: 2px solid var(--color-primary-500);
   outline-offset: 3px;
-  box-shadow: 0 0 0 4px rgba(36, 130, 85, 0.15);
+  box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.15);
 }
 
 /* Micro-interactions */

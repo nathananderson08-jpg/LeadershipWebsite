@@ -15,11 +15,11 @@ import { METRICS, LIFECYCLE_PHASES, SOLUTIONS, SAMPLE_ARTICLES, MESSAGING, LIFEC
 function HeroBackground() {
   return (
     <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-      {/* Base gradient — light warm background */}
+      {/* Base gradient — teal from logo */}
       <div
         className="absolute inset-0"
         style={{ 
-          background: "linear-gradient(180deg, #0f2e1e 0%, #14432c 50%, #1a5839 100%)" 
+          background: "linear-gradient(180deg, #134e4a 0%, #0f766e 50%, #0d9488 100%)" 
         }}
       />
 
@@ -32,7 +32,7 @@ function HeroBackground() {
           maxWidth: 800,
           maxHeight: 800,
           borderRadius: "50%",
-          background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.04) 0%, transparent 60%)",
+          background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.06) 0%, transparent 60%)",
           top: "-10%",
           right: "-15%",
         }}
@@ -43,6 +43,7 @@ function HeroBackground() {
         transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
       />
 
+      {/* Orange accent glow from logo */}
       <motion.div
         className="absolute"
         style={{
@@ -51,7 +52,7 @@ function HeroBackground() {
           maxWidth: 500,
           maxHeight: 500,
           borderRadius: "50%",
-          background: "radial-gradient(circle at 50% 50%, rgba(196, 167, 106, 0.06) 0%, transparent 60%)",
+          background: "radial-gradient(circle at 50% 50%, rgba(249, 115, 22, 0.08) 0%, transparent 60%)",
           bottom: "10%",
           left: "-10%",
         }}
@@ -228,7 +229,7 @@ function AISpotlight() {
                 { stat: "3x", desc: "faster adoption when AI change is led by AI-fluent leaders" },
               ].map((item) => (
                 <div key={item.stat} className="text-center">
-                  <div className="text-3xl font-semibold mb-2 text-ai-400">
+                  <div className="text-3xl font-semibold mb-2 text-accent-400">
                     {item.stat}
                   </div>
                   <p className="text-sm text-neutral-400 leading-relaxed">{item.desc}</p>
@@ -283,7 +284,7 @@ function SolutionsGrid() {
   }
 
   return (
-    <section className="section-padding bg-primary-900">
+    <section className="section-padding bg-primary-800">
       <div className="container-content">
         <SectionHeading
           eyebrow="Our Solutions"
@@ -306,14 +307,14 @@ function SolutionsGrid() {
                 href={solution.href}
                 className={`block h-full p-7 rounded-2xl transition-all duration-300 group ${
                   solution.featured
-                    ? "border border-ai-500/30 hover:border-ai-500/60 bg-ai-500/5"
+                    ? "border border-accent-500/30 hover:border-accent-500/60 bg-accent-500/5"
                     : "card-dark"
                 }`}
               >
                 {solution.featured && <AIBadge className="mb-4" />}
                 <div
                   className={`w-11 h-11 rounded-xl flex items-center justify-center mb-5 ${
-                    solution.featured ? "text-ai-400 bg-ai-500/10" : "text-primary-300 bg-primary-700/50"
+                    solution.featured ? "text-accent-400 bg-accent-500/10" : "text-primary-200 bg-primary-600/50"
                   }`}
                 >
                   {icons[solution.icon]}
@@ -323,7 +324,7 @@ function SolutionsGrid() {
                 </h3>
                 <p className="text-sm text-white/60 leading-relaxed mb-4">{solution.description}</p>
                 <span
-                  className={`text-sm font-medium ${solution.featured ? "text-ai-400" : "text-primary-300"} group-hover:gap-2 flex items-center gap-1 transition-all`}
+                  className={`text-sm font-medium ${solution.featured ? "text-accent-400" : "text-primary-200"} group-hover:gap-2 flex items-center gap-1 transition-all`}
                 >
                   Learn more
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -433,12 +434,12 @@ export function HomepageClient() {
           <div className="max-w-3xl">
             {/* Eyebrow */}
             <motion.p
-              className="text-sm font-medium tracking-[0.15em] uppercase mb-6 flex items-center gap-3 text-primary-200"
+              className="text-sm font-medium tracking-[0.15em] uppercase mb-6 flex items-center gap-3 text-primary-100"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
-              <span className="inline-block w-8 h-px bg-primary-300" />
+              <span className="inline-block w-8 h-px bg-accent-400" />
               Leadership Development
             </motion.p>
 
@@ -450,7 +451,7 @@ export function HomepageClient() {
               transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             >
               Grow leaders who transform{" "}
-              <span className="text-primary-200">organizations</span>
+              <span className="text-accent-400">organizations</span>
             </motion.h1>
 
             {/* Subheadline */}

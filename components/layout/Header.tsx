@@ -34,20 +34,20 @@ export function Header() {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-neutral-100"
-            : "bg-transparent"
+            ? "bg-white/98 backdrop-blur-md shadow-sm border-b border-neutral-100"
+            : "bg-white/90 backdrop-blur-sm"
         }`}
       >
         <div className="container-content">
           <div className="flex items-center justify-between h-[4.5rem]">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 shrink-0 group">
+            <Link href="/" className="flex items-center shrink-0 group">
               <Image
                 src="/logo.png"
                 alt={FIRM_NAME}
-                width={140}
-                height={48}
-                className="h-9 w-auto object-contain"
+                width={200}
+                height={60}
+                className="h-12 md:h-14 w-auto object-contain"
                 priority
               />
             </Link>
@@ -60,11 +60,7 @@ export function Header() {
                     key={item.label}
                     onMouseEnter={() => setMegaOpen(true)}
                     onMouseLeave={() => setMegaOpen(false)}
-                    className={`px-4 py-2 text-sm font-medium transition-colors rounded-lg relative ${
-                      scrolled
-                        ? "text-neutral-600 hover:text-primary-700 hover:bg-primary-50"
-                        : "text-white/90 hover:text-white hover:bg-white/10"
-                    }`}
+                    className="px-4 py-2 text-sm font-medium transition-colors rounded-lg relative text-neutral-600 hover:text-primary-700 hover:bg-primary-50"
                   >
                     {item.label}
                     <svg
@@ -81,11 +77,7 @@ export function Header() {
                   <Link
                     key={item.label}
                     href={item.href}
-                    className={`px-4 py-2 text-sm font-medium transition-colors rounded-lg ${
-                      scrolled
-                        ? "text-neutral-600 hover:text-primary-700 hover:bg-primary-50"
-                        : "text-white/90 hover:text-white hover:bg-white/10"
-                    }`}
+                    className="px-4 py-2 text-sm font-medium transition-colors rounded-lg text-neutral-600 hover:text-primary-700 hover:bg-primary-50"
                   >
                     {item.label}
                   </Link>
@@ -97,17 +89,13 @@ export function Header() {
             <div className="flex items-center gap-3">
               <Link
                 href="/portal"
-                className={`hidden md:inline-flex items-center px-3.5 py-2 rounded-lg text-xs font-medium tracking-wide transition-colors ${
-                  scrolled
-                    ? "text-neutral-500 border border-neutral-200 hover:text-primary-700 hover:border-primary-300"
-                    : "text-white/70 border border-white/20 hover:text-white hover:border-white/40"
-                }`}
+                className="hidden md:inline-flex items-center px-3.5 py-2 rounded-lg text-xs font-medium tracking-wide transition-colors text-neutral-500 border border-neutral-200 hover:text-primary-700 hover:border-primary-300"
               >
                 Practitioner Hub
               </Link>
               <Button 
                 href="/contact" 
-                variant={scrolled ? "primary" : "outline-white"} 
+                variant="primary" 
                 size="sm" 
                 className="hidden md:inline-flex"
               >
@@ -116,11 +104,7 @@ export function Header() {
 
               {/* Mobile hamburger */}
               <button
-                className={`lg:hidden flex flex-col gap-1.5 p-2 rounded-lg transition-colors ${
-                  scrolled
-                    ? "text-neutral-600 hover:text-primary-700 hover:bg-primary-50"
-                    : "text-white/90 hover:text-white hover:bg-white/10"
-                }`}
+                className="lg:hidden flex flex-col gap-1.5 p-2 rounded-lg transition-colors text-neutral-600 hover:text-primary-700 hover:bg-primary-50"
                 onClick={() => setMobileOpen(true)}
                 aria-label="Open menu"
               >
