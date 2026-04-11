@@ -22,15 +22,20 @@ export function VantaClouds({ className = "" }: VantaCloudsProps) {
     // Dynamically load Three.js and Vanta
     const loadVanta = async () => {
       try {
+        console.log("[v0] Loading Three.js...")
         // Load Three.js first
         const THREE = await import("three")
         // Vanta needs THREE on window
         ;(window as unknown as { THREE: typeof THREE }).THREE = THREE
+        console.log("[v0] Three.js loaded successfully")
 
         // Load Vanta clouds effect
+        console.log("[v0] Loading Vanta.js...")
         const VANTA = await import("vanta/dist/vanta.clouds.min")
+        console.log("[v0] Vanta.js loaded successfully", VANTA)
         
         if (vantaRef.current && !vantaEffect) {
+          console.log("[v0] Initializing Vanta effect...")
           const effect = VANTA.default({
             el: vantaRef.current,
             THREE: THREE,
@@ -50,9 +55,10 @@ export function VantaClouds({ className = "" }: VantaCloudsProps) {
             speed: 0.8, // gentle movement
           })
           setVantaEffect(effect)
+          console.log("[v0] Vanta effect initialized successfully")
         }
       } catch (error) {
-        console.error("Failed to load Vanta.js:", error)
+        console.error("[v0] Failed to load Vanta.js:", error)
       }
     }
 
