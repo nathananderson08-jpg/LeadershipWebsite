@@ -559,8 +559,11 @@ function ProspectDrawer({ prospect, onClose, onUpdate }: {
 // ── Add Prospect Modal ─────────────────────────────────────────────────────
 
 function AddProspectModal({ onClose, onSave }: { onClose: () => void; onSave: (p: CreateProspectInput, a?: CreateAccountInput) => Promise<void> }) {
+  const { accounts } = useAccounts();
   const [form, setForm] = useState<any>({ full_name: '', title: '', email: '', linkedin_url: '', icp_score: 50, stage: 'awareness', notes: '', warmth_score: 'cold', pipeline_stage: 'identified' });
-  const [companyName, setCompanyName] = useState('');
+  const [companyMode, setCompanyMode] = useState<'existing' | 'new'>('existing');
+  const [selectedAccountId, setSelectedAccountId] = useState('');
+  const [newCompanyName, setNewCompanyName] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -568,7 +571,14 @@ function AddProspectModal({ onClose, onSave }: { onClose: () => void; onSave: (p
     if (!form.full_name.trim()) { setError('Full name is required.'); return; }
     setSaving(true);
     try {
-      await onSave(form, companyName.trim() ? { company_name: companyName.trim() } : undefined);
+      if (companyMode === 'existing' && selectedAccountId) {
+        // Link to existing account directly
+        await onSave({ ...form, account_id: selectedAccountId });
+      } else if (companyMode === 'new' && newCompanyName.trim()) {
+        await onSave(form, { company_name: newCompanyName.trim() });
+      } else {
+        await onSave(form);
+      }
       onClose();
     } catch (e: any) {
       setError(e.message ?? 'Failed to save.');
@@ -597,8 +607,25 @@ function AddProspectModal({ onClose, onSave }: { onClose: () => void; onSave: (p
               <input style={inputStyle} value={form.title} onChange={e => setForm((f: any) => ({ ...f, title: e.target.value }))} placeholder="CHRO" />
             </div>
             <div>
-              <label style={labelStyle}>Company</label>
-              <input style={inputStyle} value={companyName} onChange={e => setCompanyName(e.target.value)} placeholder="Acme Corp" />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <label style={{ ...labelStyle, marginBottom: 0 }}>Company</label>
+                <div style={{ display: 'flex', gap: 4, background: 'var(--portal-bg-secondary)', borderRadius: 6, padding: 2 }}>
+                  {(['existing', 'new'] as const).map(m => (
+                    <button key={m} onClick={() => setCompanyMode(m)}
+                      style={{ padding: '2px 8px', borderRadius: 4, border: 'none', background: companyMode === m ? 'var(--portal-accent-subtle)' : 'transparent', color: companyMode === m ? 'var(--portal-accent)' : 'var(--portal-text-tertiary)', fontSize: 11, fontWeight: 600, cursor: 'pointer', textTransform: 'capitalize' as const }}>
+                      {m === 'existing' ? 'Existing' : 'New'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {companyMode === 'existing' ? (
+                <select style={{ ...inputStyle, cursor: 'pointer' }} value={selectedAccountId} onChange={e => setSelectedAccountId(e.target.value)}>
+                  <option value="">No account linked</option>
+                  {accounts.map(a => <option key={a.id} value={a.id}>{a.company_name}</option>)}
+                </select>
+              ) : (
+                <input style={inputStyle} value={newCompanyName} onChange={e => setNewCompanyName(e.target.value)} placeholder="Acme Corp" />
+              )}
             </div>
             <div>
               <label style={labelStyle}>Email</label>
