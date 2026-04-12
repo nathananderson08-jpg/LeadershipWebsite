@@ -455,9 +455,10 @@ export function useLeadForgeStats() {
     e => new Date(e.detected_at) >= thisWeekStart
   ).length;
 
-  const activeCampaigns = prospects.filter(
-    p => p.stage === 'outreach' || p.stage === 'value_delivery'
-  ).length;
+  const activeCampaigns = prospects.filter(p => {
+    const s = (p as any).pipeline_stage ?? p.stage;
+    return s === 'outreach' || s === 'engaged' || s === 'qualified' || s === 'proposal';
+  }).length;
 
   const pendingReview = content.filter(c => c.status === 'pending_review').length;
 

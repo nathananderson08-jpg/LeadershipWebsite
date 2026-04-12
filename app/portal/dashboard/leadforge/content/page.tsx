@@ -126,7 +126,7 @@ function GenerateModal({ onClose, onSave }: {
       const res = await fetch('/portal/api/leadforge/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prospect_id: prospectId, content_type: contentType }),
+        body: JSON.stringify({ prospect: selectedProspect, content_type: contentType }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Generation failed.');

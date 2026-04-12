@@ -149,6 +149,61 @@ function EnrichButton({ prospect, onUpdate }: { prospect: LeadForgeProspect; onU
 
 // ── Drawer Tabs ────────────────────────────────────────────────────────────
 
+function InlineEditField({ label, value, onSave, multiline, placeholder, accent }: {
+  label: string; value: string | null | undefined; onSave: (v: string | null) => Promise<void>;
+  multiline?: boolean; placeholder?: string; accent?: string;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value ?? '');
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await onSave(draft.trim() || null);
+      setEditing(false);
+    } finally { setSaving(false); }
+  };
+
+  const inputStyle: React.CSSProperties = { width: '100%', padding: '8px 10px', border: '1px solid var(--portal-border-default)', borderRadius: 8, fontSize: 12, color: 'var(--portal-text-primary)', background: 'var(--portal-bg-secondary)', outline: 'none', boxSizing: 'border-box', resize: 'vertical' as const, minHeight: multiline ? 64 : undefined, fontFamily: 'inherit' };
+
+  if (!editing) {
+    return (
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+          <p style={{ ...sectionLabel, color: accent ?? undefined, margin: 0 }}>{label}</p>
+          <button onClick={() => { setDraft(value ?? ''); setEditing(true); }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: 'var(--portal-accent)', fontWeight: 600, padding: 0 }}>
+            {value ? 'Edit' : '+ Add'}
+          </button>
+        </div>
+        {value ? (
+          <p style={{ fontSize: 12, color: 'var(--portal-text-secondary)', margin: 0, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{value}</p>
+        ) : (
+          <p style={{ fontSize: 12, color: 'var(--portal-text-tertiary)', margin: 0, fontStyle: 'italic' }}>{placeholder ?? 'Not set'}</p>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <p style={{ ...sectionLabel, color: accent ?? undefined }}>{label}</p>
+      {multiline ? (
+        <textarea style={inputStyle} value={draft} onChange={e => setDraft(e.target.value)} autoFocus rows={3} />
+      ) : (
+        <input style={inputStyle} value={draft} onChange={e => setDraft(e.target.value)} autoFocus />
+      )}
+      <div style={{ display: 'flex', gap: 6, marginTop: 6, justifyContent: 'flex-end' }}>
+        <button onClick={() => setEditing(false)} style={{ padding: '5px 12px', border: '1px solid var(--portal-border-default)', borderRadius: 7, background: 'none', fontSize: 12, fontWeight: 600, color: 'var(--portal-text-tertiary)', cursor: 'pointer' }}>Cancel</button>
+        <button onClick={handleSave} disabled={saving} style={{ padding: '5px 12px', border: 'none', borderRadius: 7, background: 'var(--portal-accent)', color: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer', opacity: saving ? 0.6 : 1 }}>
+          {saving ? 'Saving…' : 'Save'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ProfileTab({ prospect, onUpdate }: { prospect: LeadForgeProspect; onUpdate: (id: string, u: Partial<LeadForgeProspect>) => Promise<void> }) {
   const p = prospect as any;
   const [saving, setSaving] = useState(false);
@@ -232,29 +287,29 @@ function ProfileTab({ prospect, onUpdate }: { prospect: LeadForgeProspect; onUpd
         </div>
       </div>
 
-      {/* Why target */}
-      {p.trigger_context && (
-        <div style={{ padding: '12px 14px', background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 10 }}>
-          <p style={{ ...sectionLabel, color: '#f59e0b' }}>Why Target</p>
-          <p style={{ fontSize: 12, color: 'var(--portal-text-secondary)', margin: 0, lineHeight: 1.6 }}>{p.trigger_context}</p>
-        </div>
-      )}
-
-      {/* Next action */}
-      {p.next_action && (
-        <div style={{ padding: '12px 14px', background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.2)', borderRadius: 10 }}>
-          <p style={{ ...sectionLabel, color: '#6366f1' }}>Next Action</p>
-          <p style={{ fontSize: 12, color: 'var(--portal-text-secondary)', margin: 0 }}>{p.next_action}</p>
-        </div>
-      )}
-
-      {/* Notes */}
-      {prospect.notes && (
-        <div>
-          <p style={sectionLabel}>Notes</p>
-          <p style={{ fontSize: 12, color: 'var(--portal-text-secondary)', margin: 0, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{prospect.notes}</p>
-        </div>
-      )}
+      {/* Editable fields */}
+      <InlineEditField
+        label="Why Target"
+        value={p.trigger_context}
+        placeholder="Why is this person worth pursuing right now?"
+        accent="#f59e0b"
+        multiline
+        onSave={v => onUpdate(prospect.id, { trigger_context: v } as any)}
+      />
+      <InlineEditField
+        label="Next Action"
+        value={p.next_action}
+        placeholder="What's the next step with this prospect?"
+        accent="#6366f1"
+        onSave={v => onUpdate(prospect.id, { next_action: v } as any)}
+      />
+      <InlineEditField
+        label="Notes"
+        value={prospect.notes}
+        placeholder="Connections, context, background…"
+        multiline
+        onSave={v => onUpdate(prospect.id, { notes: v } as any)}
+      />
     </div>
   );
 }
