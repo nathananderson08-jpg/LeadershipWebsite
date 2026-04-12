@@ -5,6 +5,7 @@ import {
   Search, Plus, X, ChevronUp, ChevronDown, Mail, ExternalLink,
   MoreHorizontal, Clock, Zap, FileText, Loader2, CheckCircle,
   MessageSquare, Calendar, Phone, Users, AlertTriangle, Send,
+  Download, Trash2, CheckSquare, Square,
 } from 'lucide-react';
 import {
   useProspects, useAccounts, useActivities, useLeadForgeContent,
@@ -702,6 +703,115 @@ function AddProspectModal({ onClose, onSave }: { onClose: () => void; onSave: (p
   );
 }
 
+// ── CSV Export ────────────────────────────────────────────────────────────
+
+function exportToCSV(prospects: LeadForgeProspect[]) {
+  const headers = ['Name', 'Title', 'Company', 'Email', 'LinkedIn', 'ICP Score', 'Stage', 'Warmth', 'Next Action', 'Why Target', 'Notes', 'Added'];
+  const rows = prospects.map(p => {
+    const pa = p as any;
+    return [
+      p.full_name,
+      p.title ?? '',
+      p.account?.company_name ?? '',
+      p.email ?? '',
+      p.linkedin_url ?? '',
+      p.icp_score,
+      pa.pipeline_stage ?? 'identified',
+      pa.warmth_score ?? 'cold',
+      pa.next_action ?? '',
+      pa.trigger_context ?? '',
+      p.notes ?? '',
+      new Date(p.created_at).toLocaleDateString('en-US'),
+    ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');
+  });
+  const csv = [headers.map(h => `"${h}"`).join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `leadforge-prospects-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── Bulk Action Bar ────────────────────────────────────────────────────────
+
+function BulkActionBar({ selected, total, prospects, onClearSelection, onBulkDelete, onBulkStageChange }: {
+  selected: Set<string>;
+  total: number;
+  prospects: LeadForgeProspect[];
+  onClearSelection: () => void;
+  onBulkDelete: () => void;
+  onBulkStageChange: (stage: string) => void;
+}) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [stagePickerOpen, setStagePickerOpen] = useState(false);
+  const count = selected.size;
+  const selectedProspects = prospects.filter(p => selected.has(p.id));
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'var(--portal-accent-subtle)', border: '1px solid var(--portal-border-accent)', borderRadius: 12, flexWrap: 'wrap' }}>
+      <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--portal-accent)' }}>{count} selected</span>
+      <span style={{ fontSize: 12, color: 'var(--portal-text-tertiary)' }}>of {total}</span>
+      <div style={{ flex: 1 }} />
+
+      {/* Export */}
+      <button
+        onClick={() => exportToCSV(selectedProspects)}
+        style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', border: '1px solid var(--portal-border-default)', borderRadius: 8, background: 'var(--portal-bg-secondary)', fontSize: 12, fontWeight: 600, color: 'var(--portal-text-secondary)', cursor: 'pointer' }}
+      >
+        <Download size={12} /> Export CSV
+      </button>
+
+      {/* Stage change */}
+      <div style={{ position: 'relative' }}>
+        <button
+          onClick={() => { setStagePickerOpen(o => !o); setConfirmDelete(false); }}
+          style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', border: '1px solid var(--portal-border-default)', borderRadius: 8, background: 'var(--portal-bg-secondary)', fontSize: 12, fontWeight: 600, color: 'var(--portal-text-secondary)', cursor: 'pointer' }}
+        >
+          Move Stage ▾
+        </button>
+        {stagePickerOpen && (
+          <div style={{ position: 'absolute', top: '110%', right: 0, background: 'var(--portal-bg-secondary)', border: '1px solid var(--portal-border-default)', borderRadius: 12, boxShadow: '0 8px 24px rgba(0,0,0,0.12)', zIndex: 100, minWidth: 160, padding: 6 }}>
+            {PIPELINE_STAGES.map(s => (
+              <button key={s.id} onClick={() => { onBulkStageChange(s.id); setStagePickerOpen(false); }}
+                style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', borderRadius: 8, background: 'none', textAlign: 'left', fontSize: 12, fontWeight: 600, color: s.color, cursor: 'pointer' }}
+                onMouseEnter={e => (e.currentTarget.style.background = s.bg)}
+                onMouseLeave={e => (e.currentTarget.style.background = 'none')}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Delete */}
+      {!confirmDelete ? (
+        <button
+          onClick={() => setConfirmDelete(true)}
+          style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8, background: 'rgba(239,68,68,0.05)', fontSize: 12, fontWeight: 600, color: '#ef4444', cursor: 'pointer' }}
+        >
+          <Trash2 size={12} /> Delete
+        </button>
+      ) : (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ fontSize: 12, color: '#ef4444', fontWeight: 600 }}>Delete {count}?</span>
+          <button onClick={() => { onBulkDelete(); setConfirmDelete(false); }}
+            style={{ padding: '5px 10px', border: 'none', borderRadius: 7, background: '#ef4444', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>Yes</button>
+          <button onClick={() => setConfirmDelete(false)}
+            style={{ padding: '5px 10px', border: '1px solid var(--portal-border-default)', borderRadius: 7, background: 'none', fontSize: 12, fontWeight: 600, color: 'var(--portal-text-tertiary)', cursor: 'pointer' }}>No</button>
+        </div>
+      )}
+
+      {/* Clear */}
+      <button onClick={onClearSelection} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--portal-text-tertiary)', padding: 4 }}>
+        <X size={15} />
+      </button>
+    </div>
+  );
+}
+
 // ── Sort ───────────────────────────────────────────────────────────────────
 
 type SortField = 'icp_score' | 'full_name' | 'last_activity_at' | 'pipeline_stage' | 'warmth_score';
@@ -725,6 +835,38 @@ export default function ProspectsPage() {
   const [sortDir, setSortDir] = useState<SortDir>('desc');
   const [showModal, setShowModal] = useState(false);
   const [drawerProspect, setDrawerProspect] = useState<LeadForgeProspect | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  const toggleSelect = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filtered.length && filtered.length > 0) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filtered.map(p => p.id)));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    for (const id of Array.from(selectedIds)) {
+      await deleteProspect(id);
+    }
+    setSelectedIds(new Set());
+  };
+
+  const handleBulkStageChange = async (stage: string) => {
+    for (const id of Array.from(selectedIds)) {
+      await updateProspect(id, { pipeline_stage: stage } as any);
+    }
+    setSelectedIds(new Set());
+  };
 
   const handleSave = async (input: CreateProspectInput, accountInput?: CreateAccountInput) => {
     let account_id: string | undefined;
@@ -780,10 +922,30 @@ export default function ProspectsPage() {
             {prospects.length} total · {filtered.length} shown
           </p>
         </div>
-        <button onClick={() => setShowModal(true)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', border: 'none', borderRadius: 10, background: 'var(--portal-accent)', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-          <Plus size={15} strokeWidth={2} /> Add Manually
-        </button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {filtered.length > 0 && selectedIds.size === 0 && (
+            <button onClick={() => exportToCSV(filtered)}
+              style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '9px 14px', border: '1px solid var(--portal-border-default)', borderRadius: 10, background: 'var(--portal-bg-secondary)', fontSize: 13, fontWeight: 600, color: 'var(--portal-text-secondary)', cursor: 'pointer' }}>
+              <Download size={14} /> Export
+            </button>
+          )}
+          <button onClick={() => setShowModal(true)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', border: 'none', borderRadius: 10, background: 'var(--portal-accent)', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            <Plus size={15} strokeWidth={2} /> Add Manually
+          </button>
+        </div>
       </div>
+
+      {/* Bulk action bar */}
+      {selectedIds.size > 0 && (
+        <BulkActionBar
+          selected={selectedIds}
+          total={filtered.length}
+          prospects={prospects}
+          onClearSelection={() => setSelectedIds(new Set())}
+          onBulkDelete={handleBulkDelete}
+          onBulkStageChange={handleBulkStageChange}
+        />
+      )}
 
       {/* Filters */}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -825,7 +987,12 @@ export default function ProspectsPage() {
         </div>
       ) : (
         <div style={{ background: 'var(--portal-bg-secondary)', border: '1px solid var(--portal-border-default)', borderRadius: 14, overflow: 'hidden' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.2fr 1fr 1fr 1fr 80px', borderBottom: '1px solid var(--portal-border-default)', background: 'var(--portal-bg-hover)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '40px 2fr 1.2fr 1fr 1fr 1fr 80px', borderBottom: '1px solid var(--portal-border-default)', background: 'var(--portal-bg-hover)' }}>
+            <div style={{ ...thStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onClick={toggleSelectAll}>
+              {selectedIds.size > 0 && selectedIds.size === filtered.length
+                ? <CheckSquare size={14} color="var(--portal-accent)" />
+                : <Square size={14} color="var(--portal-text-tertiary)" />}
+            </div>
             <div style={thStyle}>Prospect</div>
             <div style={thClick} onClick={() => handleSort('pipeline_stage')}><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>Stage <SortIcon field="pipeline_stage" current={sortField} dir={sortDir} /></span></div>
             <div style={thClick} onClick={() => handleSort('icp_score')}><span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>ICP <SortIcon field="icp_score" current={sortField} dir={sortDir} /></span></div>
@@ -839,13 +1006,19 @@ export default function ProspectsPage() {
             const lastActivity = pa.last_activity_at ?? p.created_at;
             const daysSince = Math.floor((Date.now() - new Date(lastActivity).getTime()) / (1000 * 60 * 60 * 24));
             const isStale = daysSince > 14;
+            const isSelected = selectedIds.has(p.id);
             return (
               <div key={p.id}
                 onClick={() => setDrawerProspect(p)}
-                style={{ display: 'grid', gridTemplateColumns: '2fr 1.2fr 1fr 1fr 1fr 80px', borderBottom: '1px solid var(--portal-border-default)', cursor: 'pointer' }}
-                onMouseEnter={e => (e.currentTarget.style.background = 'var(--portal-bg-hover)')}
-                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                style={{ display: 'grid', gridTemplateColumns: '40px 2fr 1.2fr 1fr 1fr 1fr 80px', borderBottom: '1px solid var(--portal-border-default)', cursor: 'pointer', background: isSelected ? 'var(--portal-accent-subtle)' : 'transparent' }}
+                onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = 'var(--portal-bg-hover)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = isSelected ? 'var(--portal-accent-subtle)' : 'transparent'; }}
               >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 0 0 4px' }} onClick={e => toggleSelect(p.id, e)}>
+                  {isSelected
+                    ? <CheckSquare size={14} color="var(--portal-accent)" />
+                    : <Square size={14} color="var(--portal-text-tertiary)" style={{ opacity: 0.5 }} />}
+                </div>
                 <div style={{ padding: '13px 14px' }}>
                   <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--portal-text-primary)', margin: 0 }}>{p.full_name}</p>
                   <p style={{ fontSize: 11, color: 'var(--portal-text-tertiary)', margin: '2px 0 0' }}>
