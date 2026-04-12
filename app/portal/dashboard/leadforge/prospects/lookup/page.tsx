@@ -291,8 +291,8 @@ export default function ProspectLookupPage() {
                       )}
                       {person.linkedin_url && (
                         <a href={person.linkedin_url} target="_blank" rel="noopener noreferrer"
-                          style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 11, color: 'var(--portal-accent)', textDecoration: 'none', fontWeight: 600 }}>
-                          <ExternalLink size={10} /> LinkedIn
+                          style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#0a66c2', textDecoration: 'none', fontWeight: 700, background: 'rgba(10,102,194,0.08)', padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(10,102,194,0.2)' }}>
+                          <ExternalLink size={11} /> LinkedIn
                         </a>
                       )}
                       <button
@@ -306,10 +306,21 @@ export default function ProspectLookupPage() {
 
                   {/* Expanded relevance */}
                   {isExpanded && (
-                    <div style={{ padding: '0 16px 14px', borderTop: '1px solid var(--portal-border-default)', paddingTop: 12 }}>
-                      <p style={{ fontSize: 12, color: 'var(--portal-text-secondary)', margin: 0, lineHeight: 1.6 }}>
-                        <strong style={{ color: 'var(--portal-text-primary)' }}>Why target: </strong>{person.relevance}
-                      </p>
+                    <div style={{ padding: '12px 16px 14px', borderTop: '1px solid var(--portal-border-default)' }}>
+                      {person.relevance && (
+                        <p style={{ fontSize: 12, color: 'var(--portal-text-secondary)', margin: '0 0 8px', lineHeight: 1.6 }}>
+                          <strong style={{ color: 'var(--portal-text-primary)' }}>Why target: </strong>{person.relevance}
+                        </p>
+                      )}
+                      {person.linkedin_url && (
+                        <p style={{ fontSize: 11, color: 'var(--portal-text-tertiary)', margin: '0 0 6px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <strong style={{ color: 'var(--portal-text-secondary)' }}>LinkedIn:</strong>
+                          <a href={person.linkedin_url} target="_blank" rel="noopener noreferrer"
+                            style={{ color: '#0a66c2', textDecoration: 'none', fontFamily: 'monospace', fontSize: 11, wordBreak: 'break-all' }}>
+                            {person.linkedin_url}
+                          </a>
+                        </p>
+                      )}
                       {person.email_pattern && (
                         <p style={{ fontSize: 11, color: 'var(--portal-text-tertiary)', margin: '6px 0 0' }}>
                           Email pattern at {result.company_name}: <code style={{ background: 'var(--portal-bg-hover)', padding: '1px 6px', borderRadius: 4 }}>{person.email_pattern}</code>

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
-import { searchPeopleAtCompany, emailConfidenceFromStatus, type ApolloPerson } from '@/lib/integrations/apollo';
+import { findOrganization, searchPeopleByOrgId, searchPeopleAtCompany, emailConfidenceFromStatus, type ApolloPerson } from '@/lib/integrations/apollo';
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -100,37 +100,50 @@ export async function POST(req: NextRequest) {
     let apolloWorked = false;
 
     try {
-      const apolloResult = await searchPeopleAtCompany(query.trim());
+      // Step 1: Resolve org ID for precise current-employee search
+      const org = await findOrganization(query.trim());
 
-      if (apolloResult.people && apolloResult.people.length > 0) {
-        apolloWorked = true;
+      let rawPeople: ApolloPerson[] = [];
 
-        // Get company info from first result
-        const firstPerson = apolloResult.people[0];
-        if (firstPerson.organization) {
+      if (org) {
+        // Precise: only returns people currently at this org
+        const apolloResult = await searchPeopleByOrgId(org.id);
+        rawPeople = apolloResult.people ?? [];
+        companyName = org.name;
+        domain = org.primary_domain;
+        if (org.estimated_num_employees) headcount = org.estimated_num_employees.toLocaleString();
+      } else {
+        // Fallback: fuzzy name search (may include past employees)
+        const apolloResult = await searchPeopleAtCompany(query.trim());
+        rawPeople = apolloResult.people ?? [];
+        const firstPerson = rawPeople[0];
+        if (firstPerson?.organization) {
           companyName = firstPerson.organization.name ?? query.trim();
           domain = firstPerson.organization.primary_domain;
           const emp = firstPerson.organization.estimated_num_employees;
           if (emp) headcount = emp.toLocaleString();
         }
+      }
+
+      // Only include people with a verified LinkedIn presence (current role confirmed)
+      rawPeople = rawPeople.filter(p => p.linkedin_url);
+
+      if (rawPeople.length > 0) {
+        apolloWorked = true;
 
         // Derive email pattern from verified emails
-        const verifiedEmails = apolloResult.people
+        const verifiedEmails = rawPeople
           .filter(p => p.email && p.email_status === 'verified' && domain)
           .map(p => p.email!);
 
         if (verifiedEmails.length > 0 && domain) {
-          const patterns = verifiedEmails.map(email => {
-            const local = email.split('@')[0];
-            const name = firstPerson.name.toLowerCase().replace(/\s+/g, '');
-            if (local.includes('.')) return 'firstname.lastname@' + domain;
-            if (local === name) return 'firstnamelastname@' + domain;
-            return 'firstname@' + domain;
-          });
-          emailPattern = patterns[0] ?? null;
+          const firstEmail = verifiedEmails[0];
+          const local = firstEmail.split('@')[0];
+          if (local.includes('.')) emailPattern = 'firstname.lastname@' + domain;
+          else emailPattern = 'firstname@' + domain;
         }
 
-        people = apolloResult.people.map(apolloToLookupPerson);
+        people = rawPeople.map(apolloToLookupPerson);
       }
     } catch (apolloErr) {
       console.warn('Apollo lookup failed, falling back to Claude:', apolloErr);
