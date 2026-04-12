@@ -15,7 +15,7 @@ export default function TechnologyPage() {
       heroSubtitle="Technology companies move faster than any other sector. Leaders in tech must build culture, ship product, manage distributed teams, and navigate AI transformation — all at once."
       challenges={[
         { title: "Technical-to-Leadership Transition", desc: "The jump from individual contributor to engineering manager is one of the most difficult in any industry — and most technology companies underprepare their people for it." },
-        { title: "Distributed & Remote Leadership", desc: "Most technology companies are distributed by design. Leading across time zones, cultures, and async communication requires deliberate development." },
+        { title: "Distributed & Remote Leadership", desc: "Most technology companies are distributed by design. Leading across time zones, cultures, and async communication requires deliberate leadership development." },
         { title: "Hypergrowth Leadership", desc: "Scaling from 50 to 500 to 5,000 people requires leaders who grow with the organization — or organizations that develop them fast enough to stay ahead." },
         { title: "AI-Native Leadership", desc: "Technology leaders must understand and work with AI not just as users, but as strategists — shaping how AI is deployed, governed, and led within their organizations." },
       ]}

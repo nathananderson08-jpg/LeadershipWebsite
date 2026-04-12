@@ -5,7 +5,7 @@ import { FIRM_NAME } from "@/lib/constants"
 export const metadata: Metadata = {
   title: `Executive Coaching — Deep Coaching & Breakthrough Programs | ${FIRM_NAME}`,
   description:
-    "Transform leadership performance through deep executive coaching, breakthrough programs, and inner development work. ICF-certified coaches integrated with assessment and development.",
+    "Transform leadership performance through deep executive coaching, breakthrough programs, and inner leadership development work. ICF-certified coaches integrated with assessment and leadership development.",
 }
 
 export default function CoachingPage() {
@@ -15,9 +15,9 @@ export default function CoachingPage() {
       phase="02 — Coach"
       phaseIndex={1}
       heroTitle="The most direct path to leadership transformation."
-      heroSubtitle="Our coaches bring deep expertise across industries and leadership levels — and every coaching engagement is anchored in assessment data and connected to broader development goals for maximum, lasting impact."
+      heroSubtitle="Our coaches bring deep expertise across industries and leadership levels — and every coaching engagement is anchored in assessment data and connected to broader leadership development goals for maximum, lasting impact."
       challengeTitle="Coaching only works if it's connected to something real."
-      challengeBody="Standalone coaching — disconnected from diagnostic data, development programs, and organizational context — delivers limited, short-lived results. Leaders need coaching embedded in a broader system of growth, not another vendor relationship that starts from scratch."
+      challengeBody="Standalone coaching — disconnected from diagnostic data, leadership development programs, and organizational context — delivers limited, short-lived results. Leaders need coaching embedded in a broader system of growth, not another vendor relationship that starts from scratch."
       challengePoints={[
         "Coaching that starts without diagnostic data misses the leader's most critical developmental gaps.",
         "Coaches without organizational context can't help leaders navigate the systemic barriers they actually face.",
@@ -40,12 +40,12 @@ export default function CoachingPage() {
         {
           icon: "🌱",
           title: "Inner Development & Character Work",
-          description: "Coaching that addresses the inner game of leadership: values alignment, psychological patterns, emotional intelligence, and leadership character. Essential for leaders whose technical capability has outpaced their inner development.",
+          description: "Coaching that addresses the inner game of leadership: values alignment, psychological patterns, emotional intelligence, and leadership character. Essential for leaders whose technical capability has outpaced their inner leadership development.",
         },
         {
           icon: "👥",
           title: "Group & Cohort Coaching",
-          description: "Cohort-based coaching that builds shared language, peer accountability, and collective capability — typically paired with development programs. Accelerates learning and creates lasting peer networks.",
+          description: "Cohort-based coaching that builds shared language, peer accountability, and collective capability — typically paired with leadership development programs. Accelerates learning and creates lasting peer networks.",
         },
         {
           icon: "🔄",
@@ -67,11 +67,11 @@ export default function CoachingPage() {
         },
         {
           title: "6-Month Development Partnership",
-          description: "Deep coaching relationship covering multiple developmental priorities. Bi-weekly sessions plus assessment integration, development planning, and mid-point review.",
+          description: "Deep coaching relationship covering multiple developmental priorities. Bi-weekly sessions plus assessment integration, leadership development planning, and mid-point review.",
         },
         {
           title: "12–18 Month Executive Partnership",
-          description: "Long-term strategic coaching relationship for executives requiring sustained development. Monthly deep-dive sessions plus ongoing availability between sessions.",
+          description: "Long-term strategic coaching relationship for executives requiring sustained leadership development. Monthly deep-dive sessions plus ongoing availability between sessions.",
         },
       ]}
       relatedSolutions={[

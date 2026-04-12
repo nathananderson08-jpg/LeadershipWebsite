@@ -15,7 +15,7 @@ const METHODOLOGY_PILLARS = [
   {
     number: "02",
     title: "Systems Integration",
-    desc: "We design from the whole, not the parts. Each solution connects to the next — assessment feeds coaching, coaching informs development, development enables transformation.",
+    desc: "We design from the whole, not the parts. Each solution connects to the next — assessment feeds coaching, coaching informs leadership development, leadership development enables transformation.",
   },
   {
     number: "03",
@@ -116,7 +116,7 @@ export default function MethodologyPage() {
         <div className="container-content">
           <SectionHeading eyebrow="Methodology in Practice" title="How our methodology spans the full lifecycle" subtitle="The same evidence-based principles that guide our coaching also guide our assessments, our programs, our transformation work, and our succession planning. That consistency is what produces integrated results." className="mb-14" />
           <div className="flex flex-col items-center gap-4 max-w-3xl mx-auto">
-            {["Assessment grounded in validated psychometrics", "Coaching built on adult development theory", "Programs designed for behavioral transfer", "Transformation using organizational change science", "Succession driven by evidence-based potential assessment"].map((step, i) => (
+            {["Assessment grounded in validated psychometrics", "Coaching built on adult leadership development theory", "Programs designed for behavioral transfer", "Transformation using organizational change science", "Succession driven by evidence-based potential assessment"].map((step, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 16 }}

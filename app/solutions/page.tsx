@@ -14,7 +14,7 @@ type FilterTab = "all" | "lifecycle" | "audience"
 const LIFECYCLE_SOLUTIONS = [
   {
     title: "Assessment & Diagnostics",
-    description: "360 reviews, leadership audits, and organizational diagnostics that feed directly into development plans.",
+    description: "360 reviews, leadership audits, and organizational diagnostics that feed directly into leadership development plans.",
     href: "/solutions/assessment",
     phase: "01 Assess",
     featured: false,

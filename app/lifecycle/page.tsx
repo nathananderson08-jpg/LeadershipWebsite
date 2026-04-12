@@ -15,7 +15,7 @@ import { LIFECYCLE_PHASES, FIRM_NAME, LIFECYCLE_FRAMEWORK_NAME, MESSAGING } from
 export const pageMetadata = {
   title: `The Leadership Development Lifecycle — End-to-End Solutions | ${FIRM_NAME}`,
   description:
-    "Explore the only end-to-end leadership development lifecycle: from assessment and coaching to development, transformation, and succession.",
+    "Explore the only end-to-end leadership development lifecycle: from assessment and coaching to leadership development, transformation, and succession.",
 }
 
 
@@ -27,7 +27,7 @@ const AUDIENCE_MATRIX = [
 
 const AI_PHASE_INTEGRATION = [
   { phase: "Assess", detail: "AI readiness diagnostics & leadership potential modeling" },
-  { phase: "Coach", detail: "AI strategy coaching & AI-augmented development insights" },
+  { phase: "Coach", detail: "AI strategy coaching & AI-augmented leadership development insights" },
   { phase: "Develop", detail: "AI fluency curriculum & human-AI collaboration programs" },
   { phase: "Transform", detail: "AI adoption change management & culture transformation" },
   { phase: "Sustain", detail: "Identifying AI-ready successors & future-proof pipelines" },
@@ -289,7 +289,7 @@ export default function LifecyclePage() {
           <SectionHeading
             eyebrow="Our Framework"
             title="Every level. Every type of change."
-            subtitle="Our solutions span three levels of leadership and two modes of development — ensuring complete coverage no matter where your challenge sits."
+            subtitle="Our solutions span three levels of leadership and two modes of leadership development — ensuring complete coverage no matter where your challenge sits."
             className="mb-14"
           />
           <div className="overflow-x-auto">
@@ -374,10 +374,10 @@ export default function LifecyclePage() {
             {[
               {
                 title: "The fragmented model fails leaders.",
-                body: "When a leader works with three different vendors across three years, there's no common language, no shared data, and no one holding the thread. Every engagement starts from scratch. The insights from an assessment never inform the coaching. The coaching never reinforces the development program. Leaders feel it — they describe it as 'a lot of activity with not enough impact.'",
+                body: "When a leader works with three different vendors across three years, there's no common language, no shared data, and no one holding the thread. Every engagement starts from scratch. The insights from an assessment never inform the coaching. The coaching never reinforces the leadership development program. Leaders feel it — they describe it as 'a lot of activity with not enough impact.'",
               },
               {
-                title: "Integration is what makes development stick.",
+                title: "Integration is what makes leadership development stick.",
                 body: "Our lifecycle methodology creates a continuous through-line from first assessment to last succession plan. The data from Phase 1 informs Phase 2. Coaching insights shape Phase 3 curriculum. Phase 4 transformation outcomes define Phase 5 pipeline priorities. Because one team holds the whole picture, nothing gets lost between handoffs — because there are none.",
               },
               {
@@ -386,7 +386,7 @@ export default function LifecyclePage() {
               },
               {
                 title: "The outcome is a leadership system, not a program.",
-                body: "Our clients don't just run better leadership programs — they build a self-reinforcing leadership system. Assessment feeds coaching, which informs development, which enables transformation, which sustains through succession. That system outlasts any individual program, coach, or initiative. It becomes part of how the organization develops people, permanently.",
+                body: "Our clients don't just run better leadership programs — they build a self-reinforcing leadership system. Assessment feeds coaching, which informs leadership development, which enables transformation, which sustains through succession. That system outlasts any individual program, coach, or initiative. It becomes part of how the organization develops people, permanently.",
               },
             ].map((item, i) => (
               <motion.div

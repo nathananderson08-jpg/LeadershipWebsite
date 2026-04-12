@@ -35,12 +35,12 @@ export default function ProgramsPage() {
         {
           icon: "⚡",
           title: "Executive Breakthrough Programs",
-          description: "High-impact development experiences for senior leaders: immersive workshops, action learning projects, and structured peer challenge. Typically 3–6 months. Combines group learning with individual coaching.",
+          description: "High-impact leadership development experiences for senior leaders: immersive workshops, action learning projects, and structured peer challenge. Typically 3–6 months. Combines group learning with individual coaching.",
         },
         {
           icon: "🌱",
           title: "Inner Development & Character Work",
-          description: "Programs addressing the inner dimension of leadership — values, purpose, identity, psychological patterns, and leadership character. Often integrated into academy programs or offered as stand-alone development interventions.",
+          description: "Programs addressing the inner dimension of leadership — values, purpose, identity, psychological patterns, and leadership character. Often integrated into academy programs or offered as stand-alone leadership development interventions.",
         },
         {
           icon: "🤝",
@@ -62,7 +62,7 @@ export default function ProgramsPage() {
         "Organizations building systematic leadership pipelines for emerging, mid-level, or senior populations",
         "HR and L&D teams deploying structured programs for defined leadership cohorts",
         "Companies launching leadership academies and needing end-to-end design and facilitation",
-        "Organizations with distributed workforces requiring consistent, scalable development experiences",
+        "Organizations with distributed workforces requiring consistent, scalable leadership development experiences",
         "Leaders and teams preparing for AI adoption or significant organizational transformation",
       ]}
       engagementModels={[

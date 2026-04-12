@@ -49,7 +49,7 @@ const WHO_NEEDS_THIS = [
   },
   {
     role: "CHROs",
-    challenge: "Rethinking talent architecture, leadership competencies, and development investment for the AI era.",
+    challenge: "Rethinking talent architecture, leadership competencies, and leadership development investment for the AI era.",
     icon: "◇",
   },
   {

@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     siteName: `${FIRM_NAME}`,
     title: `${FIRM_NAME} | End-to-End Leadership Development`,
-    description: "The only leadership company delivering end-to-end solutions across assessment, coaching, development, transformation, and succession planning.",
+    description: "The only leadership company delivering end-to-end solutions across assessment, coaching, leadership development, transformation, and succession planning.",
     images: [
       {
         url: "/og/default.png",

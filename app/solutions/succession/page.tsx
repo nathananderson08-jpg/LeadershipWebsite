@@ -19,13 +19,13 @@ export default function SuccessionPage() {
       challengeTitle="Most organizations plan for succession too late and too narrowly."
       challengeBody="Succession planning often happens in crisis mode — when a departure forces the question. This reactive approach leads to rushed decisions, costly external hires, and significant disruption. Great succession planning is a continuous capability, not an emergency procedure."
       challengePoints={[
-        "Organizations that don't identify high-potentials early miss the critical window for development.",
+        "Organizations that don't identify high-potentials early miss the critical window for leadership development.",
         "Succession plans that cover only the CEO underestimate the depth of leadership risk.",
-        "Pipeline assessments without development plans produce readiness data with no path to readiness.",
+        "Pipeline assessments without leadership development plans produce readiness data with no path to readiness.",
         "Board-level succession planning requires a different rigor and confidentiality than corporate planning.",
       ]}
       approachTitle="Succession as a strategic capability, not a compliance exercise."
-      approachBody="We build succession systems that identify, develop, and track potential at every level — integrated with assessment, coaching, and development so leaders are ready when the moment comes."
+      approachBody="We build succession systems that identify, develop, and track potential at every level — integrated with assessment, coaching, and leadership development so leaders are ready when the moment comes."
       features={[
         {
           icon: "🗺️",
@@ -40,7 +40,7 @@ export default function SuccessionPage() {
         {
           icon: "🔄",
           title: "Accelerated Development",
-          description: "Targeted development programs for identified successors — including stretch assignments, coaching, mentoring, and programmatic learning.",
+          description: "Targeted leadership development programs for identified successors — including stretch assignments, coaching, mentoring, and programmatic learning.",
         },
         {
           icon: "🤝",
@@ -50,13 +50,13 @@ export default function SuccessionPage() {
         {
           icon: "🏛️",
           title: "Board Advisory",
-          description: "CEO and board succession advisory, including board effectiveness assessments, director development, and governance frameworks for succession oversight.",
+          description: "CEO and board succession advisory, including board effectiveness assessments, director leadership development, and governance frameworks for succession oversight.",
         },
       ]}
       audiences={[
         "Boards and CHROs managing CEO and C-suite succession risk",
         "Organizations with significant leadership retirements in the next 3-5 years",
-        "Companies with rapid growth requiring rapid leadership pipeline development",
+        "Companies with rapid growth requiring rapid leadership pipeline leadership development",
         "PE-backed companies requiring leadership due diligence and transition planning",
         "Any organization that has experienced unexpected leadership departures",
       ]}
@@ -67,7 +67,7 @@ export default function SuccessionPage() {
         },
         {
           title: "High-Potential Program",
-          description: "12-18 month accelerated development program for identified successors — combining assessment, coaching, cohort learning, and stretch assignments.",
+          description: "12-18 month accelerated leadership development program for identified successors — combining assessment, coaching, cohort learning, and stretch assignments.",
         },
         {
           title: "Succession System Build",

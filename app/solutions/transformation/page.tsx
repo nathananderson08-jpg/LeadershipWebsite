@@ -22,7 +22,7 @@ export default function TransformationPage() {
         "Culture transformation programs that don't address leader behavior in specific terms don't change culture.",
         "Team alignment workshops that end without sustained coaching produce temporary alignment at best.",
         "Change management frameworks equip leaders technically but leave them psychologically unprepared.",
-        "Organizational design changes without leadership capability development create new structures with old behaviors.",
+        "Organizational design changes without leadership capability leadership development create new structures with old behaviors.",
       ]}
       approachTitle="We change behavior, not just structure."
       approachBody="Our transformation practice works at three levels simultaneously: individual leaders, teams, and organizational systems. Lasting change requires all three to shift together — which is why our engagements integrate coaching, team facilitation, and enterprise design in a single coordinated approach."
@@ -50,7 +50,7 @@ export default function TransformationPage() {
         {
           icon: "🔗",
           title: "Leadership Pipeline Development",
-          description: "Building a robust pipeline of leaders at every level — from first-time managers to C-suite successors. Includes pipeline assessment, targeted development programs, and succession integration.",
+          description: "Building a robust pipeline of leaders at every level — from first-time managers to C-suite successors. Includes pipeline assessment, targeted leadership development programs, and succession integration.",
         },
       ]}
       audiences={[

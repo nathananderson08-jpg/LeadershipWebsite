@@ -22,7 +22,7 @@ export default function EducationPage() {
       lifecycleApplication={[
         { phase: "01 Assess", detail: "Leadership readiness assessments for aspiring administrators, department chair effectiveness diagnostics, and institutional culture surveys that reveal alignment between stated and lived values." },
         { phase: "02 Coach", detail: "Executive coaching for presidents, provosts, and superintendents; transition coaching for new principals and department chairs; and team coaching for senior leadership teams navigating institutional change." },
-        { phase: "03 Develop", detail: "Principal leadership academies, mid-level administrator development programs, and cohort-based curricula for faculty on the path to academic leadership roles." },
+        { phase: "03 Develop", detail: "Principal leadership academies, mid-level administrator leadership development programs, and cohort-based curricula for faculty on the path to academic leadership roles." },
         { phase: "04 Transform", detail: "Strategic planning facilitation, culture alignment work, and change leadership programs for institutions navigating enrollment shifts, technology adoption, or structural reorganization." },
         { phase: "05 Sustain", detail: "Succession planning for key administrative roles, high-potential identification for the next generation of institutional leaders, and leadership pipeline mapping across the organization." },
       ]}

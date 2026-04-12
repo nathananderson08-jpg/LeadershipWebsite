@@ -27,7 +27,7 @@ export default function EmergingLeadersPage() {
           <SectionHeading eyebrow="The First Leadership Transition" title="The leap from individual contributor to leader is the hardest one." subtitle="Research shows that 60% of new managers fail within the first two years — not because they lack technical skills, but because nobody invested in their leadership development." className="mb-14" />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
-              { title: "Assessment-Based Development", desc: "We start by understanding where each emerging leader is — their strengths, development edges, and leadership style — and design from there." },
+              { title: "Assessment-Based Development", desc: "We start by understanding where each emerging leader is — their strengths, leadership development edges, and leadership style — and design from there." },
               { title: "Cohort-Based Learning", desc: "Emerging leaders learn best with peers who share the same challenges. Our cohort programs build networks and accountability that outlast the program." },
               { title: "Manager Effectiveness", desc: "The skills that made them great individual contributors are not the skills that will make them great managers. We build the new skills deliberately." },
               { title: "Coaching Integration", desc: "Group coaching embedded in our programs gives every emerging leader individual attention alongside the cohort experience." },

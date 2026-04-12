@@ -12,9 +12,9 @@ export default function HealthcarePage() {
     <IndustryPageTemplate
       industryName="Healthcare"
       heroTitle="Leadership at the intersection of mission and margin."
-      heroSubtitle="Healthcare leaders carry a unique burden: every decision has human consequences. Developing leaders who can navigate that weight — while managing complexity, burnout, and digital transformation — requires a different kind of development partner."
+      heroSubtitle="Healthcare leaders carry a unique burden: every decision has human consequences. Developing leaders who can navigate that weight — while managing complexity, burnout, and digital transformation — requires a different kind of leadership development partner."
       challenges={[
-        { title: "Clinical-to-Administrative Transition", desc: "The most capable clinicians often become the least prepared administrators. Bridging the gap between clinical excellence and organizational leadership is a critical development challenge." },
+        { title: "Clinical-to-Administrative Transition", desc: "The most capable clinicians often become the least prepared administrators. Bridging the gap between clinical excellence and organizational leadership is a critical leadership development challenge." },
         { title: "Burnout & Psychological Safety", desc: "Healthcare faces a leadership crisis driven by burnout, turnover, and broken trust. Building psychologically safe cultures isn't optional — it's a patient safety issue." },
         { title: "Digital Health Transformation", desc: "AI diagnostics, digital records, telehealth, and precision medicine require clinical leaders who understand both the technology and the human experience it affects." },
         { title: "Workforce & Mission Alignment", desc: "Healthcare leaders must inspire a workforce that is simultaneously over-stretched and deeply mission-driven. Aligning management with mission is a complex leadership challenge." },

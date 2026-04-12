@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { usePathname } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { FIRM_NAME } from "@/lib/constants"
@@ -23,10 +22,6 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [megaOpen, setMegaOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const pathname = usePathname()
-  const isHomepage = pathname === "/"
-  const isTransparent = isHomepage && !scrolled
-
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener("scroll", handleScroll, { passive: true })
@@ -39,8 +34,6 @@ export function Header() {
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
             ? "bg-white/95 backdrop-blur-md shadow-lg shadow-black/5"
-            : isHomepage
-            ? "bg-transparent"
             : "bg-white/80 backdrop-blur-sm"
         }`}
         style={{ fontFamily: "var(--font-plus-jakarta)" }}
@@ -66,25 +59,17 @@ export function Header() {
                   <button
                     key={item.label}
                     onMouseEnter={() => setMegaOpen(true)}
-                    className={`px-4 py-2 text-sm transition-colors rounded-lg relative ${
-                      isTransparent
-                        ? "text-white/90 hover:text-white hover:bg-white/10"
-                        : "text-forest-800 hover:text-forest-950 hover:bg-forest-50"
-                    }`}
+                    className="px-4 py-2 text-sm font-600 text-forest-800 hover:text-forest-950 transition-colors rounded-lg hover:bg-forest-50 relative"
                     style={{ fontWeight: 600 }}
                   >
                     {item.label}
-                    <span className={`ml-1 ${isTransparent ? "text-white/60" : "text-forest-400"}`}>▾</span>
+                    <span className="ml-1 text-forest-400">▾</span>
                   </button>
                 ) : (
                   <Link
                     key={item.label}
                     href={item.href}
-                    className={`px-4 py-2 text-sm transition-colors rounded-lg ${
-                      isTransparent
-                        ? "text-white/90 hover:text-white hover:bg-white/10"
-                        : "text-forest-800 hover:text-forest-950 hover:bg-forest-50"
-                    }`}
+                    className="px-4 py-2 text-sm font-600 text-forest-800 hover:text-forest-950 transition-colors rounded-lg hover:bg-forest-50"
                     style={{ fontWeight: 600 }}
                   >
                     {item.label}
@@ -97,11 +82,7 @@ export function Header() {
             <div className="flex items-center gap-3">
               <Link
                 href="/portal"
-                className={`hidden md:inline-flex items-center px-4 py-2 rounded-lg text-xs transition-colors ${
-                  isTransparent
-                    ? "text-white/80 border border-white/30 hover:border-white/60 hover:text-white hover:bg-white/10"
-                    : "text-forest-700 border border-forest-200 hover:border-forest-400 hover:text-forest-900 hover:bg-forest-50"
-                }`}
+                className="hidden md:inline-flex items-center px-4 py-2 rounded-lg text-xs font-600 transition-colors text-forest-700 border border-forest-200 hover:border-forest-400 hover:text-forest-900 hover:bg-forest-50"
                 style={{
                   fontWeight: 600,
                   letterSpacing: "0.04em",
@@ -109,27 +90,13 @@ export function Header() {
               >
                 Practitioner Hub
               </Link>
-              {isTransparent ? (
-                <Link
-                  href="/contact"
-                  className="hidden md:inline-flex items-center px-4 py-2 rounded-lg text-sm border border-white/40 text-white hover:bg-white/15 hover:border-white/70 transition-colors"
-                  style={{ fontWeight: 600 }}
-                >
-                  Contact Us
-                </Link>
-              ) : (
-                <Button href="/contact" variant="primary" size="sm" className="hidden md:inline-flex">
-                  Contact Us
-                </Button>
-              )}
+              <Button href="/contact" variant="primary" size="sm" className="hidden md:inline-flex">
+                Contact Us
+              </Button>
 
               {/* Mobile hamburger */}
               <button
-                className={`lg:hidden flex flex-col gap-1.5 p-2 rounded-lg transition-colors ${
-                  isTransparent
-                    ? "text-white hover:bg-white/10"
-                    : "text-forest-700 hover:text-forest-900 hover:bg-forest-50"
-                }`}
+                className="lg:hidden flex flex-col gap-1.5 p-2 rounded-lg text-forest-700 hover:text-forest-900 hover:bg-forest-50 transition-colors"
                 onClick={() => setMobileOpen(true)}
                 aria-label="Open menu"
               >

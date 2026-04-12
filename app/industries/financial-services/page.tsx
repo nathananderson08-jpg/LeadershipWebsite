@@ -15,7 +15,7 @@ export default function FinancialServicesPage() {
       heroSubtitle="Financial services leaders navigate one of the most complex leadership environments in the world — regulatory pressure, talent competition, digital transformation, and AI disruption — simultaneously."
       challenges={[
         { title: "Regulatory & Risk Complexity", desc: "Leaders must balance regulatory compliance with commercial agility — a uniquely demanding leadership skill set that requires both judgment and decisiveness." },
-        { title: "Talent Competition", desc: "The war for talent in financial services has never been more intense. Leadership development is a retention and attraction strategy, not just a development strategy." },
+        { title: "Talent Competition", desc: "The war for talent in financial services has never been more intense. Leadership development is a retention and attraction strategy, not just a leadership development strategy." },
         { title: "Digital & AI Transformation", desc: "From algorithmic trading to AI underwriting, financial services leaders must be technically literate enough to lead digital transformation — not just sponsor it." },
         { title: "Culture & Conduct Risk", desc: "Post-2008 regulatory focus on culture has made leadership behavior a compliance issue. Firms need leaders who model the right culture — because the regulator is watching." },
       ]}

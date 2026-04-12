@@ -55,7 +55,7 @@ export default function CSuitePage() {
               },
               {
                 title: "Board Effectiveness",
-                desc: "Individual board member development, board team effectiveness, committee governance, and board succession planning — delivering both individual and collective improvement.",
+                desc: "Individual board member leadership development, board team effectiveness, committee governance, and board succession planning — delivering both individual and collective improvement.",
                 premium: false,
               },
               {

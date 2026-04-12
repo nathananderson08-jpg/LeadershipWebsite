@@ -11,7 +11,7 @@ const PLATFORM_FEATURES = [
   {
     icon: "🔬",
     title: "Assessment Engine",
-    desc: "Proprietary diagnostic tools that administer, score, and interpret psychometric instruments — then automatically generate development recommendations and coaching briefs.",
+    desc: "Proprietary diagnostic tools that administer, score, and interpret psychometric instruments — then automatically generate leadership development recommendations and coaching briefs.",
     techDetail: "360 reviews · Readiness evaluations · Psychometric scoring · Development plan generation",
   },
   {

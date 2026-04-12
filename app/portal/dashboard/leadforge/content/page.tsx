@@ -142,7 +142,7 @@ function TemplateEditorModal({ onClose, onSave, existing }: {
 
   const insertVar = (v: string) => {
     const ta = textareaRef.current;
-    if (!ta) { setBody(b => b + v); return; }
+    if (!ta) { setBody((b: string) => b + v); return; }
     const start = ta.selectionStart;
     const end   = ta.selectionEnd;
     const next  = body.slice(0, start) + v + body.slice(end);

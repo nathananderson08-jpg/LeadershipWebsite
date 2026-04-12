@@ -96,7 +96,7 @@ export const LIFECYCLE_PHASES = [
     title: "Develop",
     subtitle: "Build & Scale",
     description:
-      "Structured programs that build leadership capability at scale — from emerging managers to senior executives. While coaching is 1:1, development programs reach cohorts, teams, and entire leadership populations.",
+      "Structured programs that build leadership capability at scale — from emerging managers to senior executives. While coaching is 1:1, leadership development programs reach cohorts, teams, and entire leadership populations.",
     details: [
       "Custom leadership academies",
       "Cohort-based programs",
@@ -147,7 +147,7 @@ export const LIFECYCLE_PHASES = [
 export const SOLUTIONS = [
   {
     title: "Assessment & Diagnostics",
-    description: "360 reviews, leadership audits, and readiness evaluations that feed directly into coaching plans and development curricula.",
+    description: "360 reviews, leadership audits, and readiness evaluations that feed directly into coaching plans and leadership development curricula.",
     href: "/solutions/assessment",
     phase: "Assess",
     icon: "search",
@@ -232,12 +232,12 @@ export const INDUSTRIES = [
 
 // ── Key messaging ────────────────────────────────────────────
 export const MESSAGING = {
-  primaryClaim: "The only leadership company delivering end-to-end solutions across the entire development lifecycle.",
+  primaryClaim: "The only leadership company delivering end-to-end solutions across the entire leadership development lifecycle.",
   integrationMessage: "One partner, one methodology, one outcome.",
   lifecycleSpan: "From the first assessment to the last succession plan.",
   audienceSpan: "From first-time managers to the boardroom.",
   scaleSpan: "One executive or an entire organization.",
-  connectionChain: "Assessment that feeds coaching. Coaching that reinforces development. Development that enables transformation. Transformation that sustains through succession.",
+  connectionChain: "Assessment that feeds coaching. Coaching that reinforces leadership development. Development that enables transformation. Transformation that sustains through succession.",
   differentiator: "We don't hand off between phases. We don't fragment the journey. We don't lose the thread.",
   philosophy: "Leadership development should work as a system, not a series of disconnected events.",
   aiUrgency: "AI isn't a feature. It's a fundamental shift in what leadership means.",
@@ -357,7 +357,7 @@ export const TEAM_MEMBERS = [
   {
     name: "Alexandra Chen",
     title: "Founder & CEO",
-    bio: "Alexandra founded the firm after 25 years as a CHRO and organizational development leader at Fortune 200 companies. She witnessed firsthand how fragmented leadership development was failing the executives she served — and built this firm to solve it permanently.",
+    bio: "Alexandra founded the firm after 25 years as a CHRO and organizational leadership development leader at Fortune 200 companies. She witnessed firsthand how fragmented leadership development was failing the executives she served — and built this firm to solve it permanently.",
     credentials: [
       "PhD, Industrial-Organizational Psychology, Columbia University",
       "ICF Master Certified Coach (MCC)",
@@ -381,7 +381,7 @@ export const TEAM_MEMBERS = [
   {
     name: "Dr. Marcus Webb",
     title: "Chief Science Officer",
-    bio: "Marcus has spent 20 years advancing the science of leadership assessment and development. His research has been published in Harvard Business Review, Academy of Management Journal, and Journal of Applied Psychology. He designed our proprietary assessment instruments.",
+    bio: "Marcus has spent 20 years advancing the science of leadership assessment and leadership development. His research has been published in Harvard Business Review, Academy of Management Journal, and Journal of Applied Psychology. He designed our proprietary assessment instruments.",
     credentials: [
       "PhD, Organizational Psychology, London School of Economics",
       "Published: HBR, Academy of Management Journal",
@@ -441,7 +441,7 @@ export const TEAM_MEMBERS = [
   {
     name: "Dr. Thomas Park",
     title: "VP of Platform & Technology",
-    bio: "Thomas oversees the development of our Leadership Intelligence Platform. A former product leader at a leading HR technology company with a doctorate in learning science, he ensures our technology is as rigorous as our methodology.",
+    bio: "Thomas oversees the leadership development of our Leadership Intelligence Platform. A former product leader at a leading HR technology company with a doctorate in learning science, he ensures our technology is as rigorous as our methodology.",
     credentials: [
       "EdD, Learning Science, Stanford Graduate School of Education",
       "Former VP Product, HR Technology Company",

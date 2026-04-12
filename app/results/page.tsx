@@ -11,13 +11,13 @@ const OUR_METRICS = [
   { value: DETAILED_METRICS.coachReturnRate, label: "of coaching clients re-engage", subLabel: "Coach Return Rate" },
   { value: DETAILED_METRICS.programCompletionRate, label: "average program completion rate", subLabel: "vs. industry average of 68%" },
   { value: DETAILED_METRICS.netPromoterScore, label: "Net Promoter Score", subLabel: "Industry benchmark: 38" },
-  { value: DETAILED_METRICS.assessmentInstruments, label: "proprietary assessment instruments", subLabel: "Covering all development dimensions" },
+  { value: DETAILED_METRICS.assessmentInstruments, label: "proprietary assessment instruments", subLabel: "Covering all leadership development dimensions" },
 ]
 
 const COMMITMENTS = [
   {
     title: "We measure before we develop.",
-    body: "Every engagement starts with assessment — because development without diagnosis is just training. We establish baseline capability data that makes measurement possible.",
+    body: "Every engagement starts with assessment — because leadership development without diagnosis is just training. We establish baseline capability data that makes measurement possible.",
   },
   {
     title: "We define success before we start.",
@@ -29,13 +29,13 @@ const COMMITMENTS = [
   },
   {
     title: "We follow through past the program.",
-    body: "Standard engagements include 90-day post-program review. We track whether development transferred to the workplace — not just whether participants passed a satisfaction survey.",
+    body: "Standard engagements include 90-day post-program review. We track whether leadership development transferred to the workplace — not just whether participants passed a satisfaction survey.",
   },
 ]
 
 const MEASUREMENT_APPROACH = [
   { title: "Before & After Assessment", desc: "We assess leadership capability at program start and end — measuring real behavioral shift, not just satisfaction scores." },
-  { title: "90-Day Post-Program Review", desc: "Our standard engagement includes a 90-day follow-up assessment to measure whether development has transferred to the workplace." },
+  { title: "90-Day Post-Program Review", desc: "Our standard engagement includes a 90-day follow-up assessment to measure whether leadership development has transferred to the workplace." },
   { title: "Manager Observation Frameworks", desc: "We equip managers to observe and report on behavioral change — adding organizational validation to self-reported improvement." },
   { title: "Business Outcome Linkage", desc: "Where possible, we work with clients to link leadership development investment to business outcomes: retention, engagement, promotion rates, and performance metrics." },
 ]

@@ -4,7 +4,7 @@ import { FIRM_NAME } from "@/lib/constants"
 
 export const metadata: Metadata = {
   title: `Professional Services Leadership Development | ${FIRM_NAME}`,
-  description: "Leadership development for law firms, consulting firms, and advisory organizations. Partner development, talent retention, and client-facing culture — built for professional services.",
+  description: "Leadership development for law firms, consulting firms, and advisory organizations. Partner leadership development, talent retention, and client-facing culture — built for professional services.",
 }
 
 export default function ProfessionalServicesPage() {
@@ -20,11 +20,11 @@ export default function ProfessionalServicesPage() {
         { title: "Culture in Distributed Expert Networks", desc: "Firms with multiple offices, practice areas, or geographies struggle to maintain a consistent culture and leadership standard. Cohesion must be built intentionally." },
       ]}
       lifecycleApplication={[
-        { phase: "01 Assess", detail: "Partner readiness assessments, leadership potential evaluations for high-performers, and firm-wide culture diagnostics that identify strengths and development priorities." },
+        { phase: "01 Assess", detail: "Partner readiness assessments, leadership potential evaluations for high-performers, and firm-wide culture diagnostics that identify strengths and leadership development priorities." },
         { phase: "02 Coach", detail: "Executive coaching for managing partners and practice leads, group coaching for cohorts on the partner track, and transition coaching for new partners in their first year." },
-        { phase: "03 Develop", detail: "Partner development programs, client leadership skills curricula, and leadership academies designed for the demands of professional services career progression." },
+        { phase: "03 Develop", detail: "Partner leadership development programs, client leadership skills curricula, and leadership academies designed for the demands of professional services career progression." },
         { phase: "04 Transform", detail: "Culture alignment across offices and practices, team effectiveness for cross-functional client teams, and change management for firm mergers and strategic pivots." },
-        { phase: "05 Sustain", detail: "Succession planning for leadership positions, high-potential identification for long-term pipeline development, and continuity planning for key client relationships." },
+        { phase: "05 Sustain", detail: "Succession planning for leadership positions, high-potential identification for long-term pipeline leadership development, and continuity planning for key client relationships." },
       ]}
       insights={[
         { title: "Why the Best Advisors Often Make the Worst Partners — At First", category: "Professional Services" },

@@ -15,7 +15,7 @@ export default function ManufacturingPage() {
       heroSubtitle="Manufacturing leaders are navigating the most significant transformation in industrial history. Industry 4.0, automation, supply chain complexity, and workforce evolution require leaders built for deep operational change."
       challenges={[
         { title: "Industry 4.0 & Automation Leadership", desc: "Robotic process automation, AI-driven supply chains, and smart manufacturing require leaders who can lead both human workers and intelligent systems." },
-        { title: "Frontline Leadership Development", desc: "Manufacturing's largest leadership population — first-line supervisors and plant managers — is often the least invested-in. The business case for their development is enormous." },
+        { title: "Frontline Leadership Development", desc: "Manufacturing's largest leadership population — first-line supervisors and plant managers — is often the least invested-in. The business case for their leadership development is enormous." },
         { title: "Supply Chain Complexity", desc: "Global supply chains require leaders with cross-cultural competence, systemic thinking, and the ability to lead through uncertainty and disruption." },
         { title: "Workforce Transformation", desc: "The shift from manual to knowledge work within manufacturing requires leaders who can develop their people, manage change, and sustain engagement through major transitions." },
       ]}

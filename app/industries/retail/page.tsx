@@ -22,7 +22,7 @@ export default function RetailPage() {
       lifecycleApplication={[
         { phase: "01 Assess", detail: "Store manager effectiveness assessments, regional leadership audits, and organizational health diagnostics that identify where culture and performance gaps are largest." },
         { phase: "02 Coach", detail: "Executive coaching for retail C-suite navigating transformation; group coaching for district and regional managers; transition coaching for high-potential store managers moving into corporate roles." },
-        { phase: "03 Develop", detail: "Frontline manager development programs designed for high-volume deployment, regional leader academies, and brand ambassador leadership curricula that connect culture to performance." },
+        { phase: "03 Develop", detail: "Frontline manager leadership development programs designed for high-volume deployment, regional leader academies, and brand ambassador leadership curricula that connect culture to performance." },
         { phase: "04 Transform", detail: "Culture alignment for omnichannel organizations, change management for major operational pivots, and team effectiveness programs for headquarters functions." },
         { phase: "05 Sustain", detail: "High-potential identification across the store network, leadership pipeline mapping, and succession planning for district, regional, and executive roles." },
       ]}
