@@ -112,6 +112,13 @@ export async function POST(req: NextRequest) {
         companyName = org.name;
         domain = org.primary_domain;
         if (org.estimated_num_employees) headcount = org.estimated_num_employees.toLocaleString();
+
+        // Secondary verification: Apollo's own data says this person is currently at this org.
+        // Filters out stale associations where Apollo returned someone via org_id but their
+        // current organization.id points elsewhere (ex-employees, data errors).
+        rawPeople = rawPeople.filter(p =>
+          !p.organization || p.organization.id === org.id
+        );
       } else {
         // Fallback: fuzzy name search (may include past employees)
         const apolloResult = await searchPeopleAtCompany(query.trim());
@@ -125,8 +132,8 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // Only include people with a verified LinkedIn presence (current role confirmed)
-      rawPeople = rawPeople.filter(p => p.linkedin_url);
+      // Drop people whose title contains "former" — indicates Apollo has stale title data
+      rawPeople = rawPeople.filter(p => !p.title?.toLowerCase().includes('former'));
 
       if (rawPeople.length > 0) {
         apolloWorked = true;
