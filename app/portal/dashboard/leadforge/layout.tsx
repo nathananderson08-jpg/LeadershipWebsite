@@ -8,6 +8,7 @@ import Link from 'next/link';
 const subNavTabs = [
   { href: '/portal/dashboard/leadforge',           label: 'Overview',      exact: true  },
   { href: '/portal/dashboard/leadforge/prospects', label: 'Prospects',     exact: false },
+  { href: '/portal/dashboard/leadforge/accounts',  label: 'Accounts',      exact: false },
   { href: '/portal/dashboard/leadforge/actions',   label: 'Next Actions',  exact: false },
   { href: '/portal/dashboard/leadforge/triggers',  label: 'Trigger Events',exact: false },
   { href: '/portal/dashboard/leadforge/campaigns', label: 'Pipeline',      exact: false },

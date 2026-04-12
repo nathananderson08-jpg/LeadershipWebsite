@@ -109,7 +109,7 @@ export default function ProspectLookupPage() {
       const added = new Set(addedNames);
 
       for (const person of toAdd) {
-        await createProspect({
+        const newProspect = await createProspect({
           full_name: person.full_name,
           title: person.title,
           email: person.email_guess ?? undefined,
@@ -123,6 +123,17 @@ export default function ProspectLookupPage() {
           trigger_context: person.relevance,
           pipeline_stage: 'identified',
         } as any);
+        // Fire-and-forget HubSpot sync
+        if (newProspect) {
+          fetch('/portal/api/leadforge/hubspot', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'sync_prospect',
+              prospect: { ...(newProspect as any), account: { company_name: result.company_name, domain: result.domain } },
+            }),
+          }).catch(() => {});
+        }
         added.add(person.full_name);
       }
 
