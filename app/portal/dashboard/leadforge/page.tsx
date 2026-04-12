@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Target, FileText, Zap, AlertCircle, TrendingUp, AlertTriangle, Clock, ChevronRight } from 'lucide-react';
-import { useLeadForgeStats } from '@/hooks/portal/useLeadForge';
+import { Target, FileText, Zap, AlertCircle, TrendingUp, AlertTriangle, Clock, ChevronRight, Building2 } from 'lucide-react';
+import { useLeadForgeStats, useAccounts } from '@/hooks/portal/useLeadForge';
 
 function IcpBadge({ score }: { score: number }) {
   const color = score >= 80 ? '#4ade80' : score >= 60 ? '#f59e0b' : '#ef4444';
@@ -29,8 +29,52 @@ function StageDot({ stage }: { stage: string }) {
   return <span style={{ width: 7, height: 7, borderRadius: '50%', background: c, display: 'inline-block', flexShrink: 0 }} />;
 }
 
+const PIPELINE_STAGES_ORDERED = [
+  { id: 'identified',  label: 'Identified',  color: '#94a3b8' },
+  { id: 'researched',  label: 'Researched',  color: '#6366f1' },
+  { id: 'warming',     label: 'Warming',     color: '#f59e0b' },
+  { id: 'outreach',    label: 'Outreach',    color: '#f97316' },
+  { id: 'engaged',     label: 'Engaged',     color: '#8b5cf6' },
+  { id: 'qualified',   label: 'Qualified',   color: '#22c55e' },
+  { id: 'proposal',    label: 'Proposal',    color: '#4ade80' },
+  { id: 'client',      label: 'Client',      color: '#5dab79' },
+];
+
+function PipelineFunnel({ prospects }: { prospects: any[] }) {
+  const maxCount = Math.max(...PIPELINE_STAGES_ORDERED.map(s =>
+    prospects.filter(p => (p.pipeline_stage ?? 'identified') === s.id).length
+  ), 1);
+
+  return (
+    <div style={{ background: 'var(--portal-bg-secondary)', border: '1px solid var(--portal-border-default)', borderRadius: 16, padding: '20px 24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <p style={{ fontWeight: 700, fontSize: '13px', color: 'var(--portal-text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <TrendingUp size={14} color="var(--portal-accent)" /> Pipeline Funnel
+        </p>
+        <Link href="/portal/dashboard/leadforge/campaigns" style={{ fontSize: '11px', color: 'var(--portal-accent)', textDecoration: 'none' }}>Open Kanban →</Link>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+        {PIPELINE_STAGES_ORDERED.map(stage => {
+          const count = prospects.filter(p => (p.pipeline_stage ?? 'identified') === stage.id).length;
+          const widthPct = Math.max((count / maxCount) * 100, 2);
+          return (
+            <div key={stage.id} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--portal-text-tertiary)', width: 68, textAlign: 'right', flexShrink: 0 }}>{stage.label}</span>
+              <div style={{ flex: 1, height: 20, background: 'var(--portal-bg-hover)', borderRadius: 4, overflow: 'hidden' }}>
+                <div style={{ width: `${widthPct}%`, height: '100%', background: stage.color, borderRadius: 4, transition: 'width 0.4s ease', opacity: count === 0 ? 0.15 : 1 }} />
+              </div>
+              <span style={{ fontSize: 11, fontWeight: 700, color: count > 0 ? stage.color : 'var(--portal-text-tertiary)', width: 22, flexShrink: 0 }}>{count}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function LeadForgePage() {
   const { prospectsTotal, triggerEventsThisWeek, activeCampaigns, pendingReview, loading, prospects, events } = useLeadForgeStats();
+  const { accounts } = useAccounts();
 
   const now = Date.now();
 
@@ -61,7 +105,8 @@ export default function LeadForgePage() {
   const recentEvents = events.slice(0, 4);
 
   const statCards = [
-    { label: 'Total Prospects',         value: prospectsTotal,         href: '/portal/dashboard/leadforge/prospects', badge: null },
+    { label: 'Total Prospects',          value: prospectsTotal,         href: '/portal/dashboard/leadforge/prospects', badge: null },
+    { label: 'Target Accounts',          value: accounts.length,        href: '/portal/dashboard/leadforge/accounts',  badge: null },
     { label: 'Trigger Events This Week', value: triggerEventsThisWeek,  href: '/portal/dashboard/leadforge/triggers',  badge: null },
     { label: 'Active Pipeline',          value: activeCampaigns,        href: '/portal/dashboard/leadforge/campaigns', badge: null },
     { label: 'Actions Needed',           value: staleProspects.length,  href: '/portal/dashboard/leadforge/actions',   badge: staleProspects.length > 0 ? '!' : null },
@@ -81,7 +126,7 @@ export default function LeadForgePage() {
       </div>
 
       {/* Stat cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '14px' }}>
         {statCards.map((s) => (
           <Link key={s.label} href={s.href} style={{ textDecoration: 'none' }}>
             <div style={{ background: 'var(--portal-bg-secondary)', border: '1px solid var(--portal-border-default)', borderRadius: 16, padding: '18px 22px', cursor: 'pointer', transition: 'border-color 0.15s' }}
@@ -194,6 +239,9 @@ export default function LeadForgePage() {
           )}
         </div>
       </div>
+
+      {/* Pipeline funnel */}
+      {!loading && prospects.length > 0 && <PipelineFunnel prospects={prospects} />}
 
       {/* Recent trigger events */}
       <div style={{ background: 'var(--portal-bg-secondary)', border: '1px solid var(--portal-border-default)', borderRadius: 16, padding: '20px 24px' }}>
