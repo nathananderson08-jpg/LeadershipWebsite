@@ -1,17 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { searchPeopleAtCompany, emailConfidenceFromStatus, type ApolloPerson } from '@/lib/integrations/apollo';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export interface LookupPerson {
   full_name: string;
   title: string;
   seniority: 'C-Suite' | 'VP' | 'Director' | 'Senior Manager';
-  relevance: string;          // why they matter for leadership consulting
+  relevance: string;
   linkedin_url: string | null;
   email_guess: string | null;
-  email_confidence: 'inferred' | 'unknown';
+  email_confidence: 'verified' | 'inferred' | 'unknown';
   email_pattern: string | null;
+  apollo_id: string | null;
+  source: 'apollo' | 'claude';
 }
 
 export interface LookupResult {
@@ -22,6 +25,65 @@ export interface LookupResult {
   people: LookupPerson[];
 }
 
+function seniorityFromTitle(title: string): LookupPerson['seniority'] {
+  const t = title.toLowerCase();
+  if (t.includes('chief') || t.includes('cpo') || t.includes('chro') || t.includes('clo') || t.startsWith('c ')) return 'C-Suite';
+  if (t.includes('svp') || t.includes('vp ') || t.includes('vice president')) return 'VP';
+  if (t.includes('director') || t.includes('head of')) return 'Director';
+  return 'Senior Manager';
+}
+
+function apolloToLookupPerson(p: ApolloPerson): LookupPerson {
+  return {
+    full_name: p.name,
+    title: p.title ?? '—',
+    seniority: seniorityFromTitle(p.title ?? ''),
+    relevance: '',  // filled in by Claude below
+    linkedin_url: p.linkedin_url,
+    email_guess: p.email,
+    email_confidence: emailConfidenceFromStatus(p.email_status),
+    email_pattern: null,
+    apollo_id: p.id,
+    source: 'apollo',
+  };
+}
+
+async function getRelevanceFromClaude(
+  people: LookupPerson[],
+  companyName: string
+): Promise<LookupPerson[]> {
+  if (!people.length) return people;
+
+  const list = people.map((p, i) => `${i + 1}. ${p.full_name} — ${p.title}`).join('\n');
+
+  const prompt = `You are a B2B sales advisor for a senior leadership consulting firm (executive coaching, CHRO advisory, leadership development programs).
+
+For each person below at ${companyName}, write a 1–2 sentence "why target" — specific, intelligent, no fluff. Reference role urgency, common mandates for this title, or signals that create buying intent.
+
+${list}
+
+Respond ONLY with a JSON array of objects in this exact format:
+[{"index": 1, "relevance": "..."}, {"index": 2, "relevance": "..."}, ...]`;
+
+  try {
+    const msg = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1024,
+      messages: [{ role: 'user', content: prompt }],
+    });
+    const text = msg.content[0].type === 'text' ? msg.content[0].text : '[]';
+    const jsonMatch = text.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) return people;
+    const relevances: { index: number; relevance: string }[] = JSON.parse(jsonMatch[0]);
+    return people.map((p, i) => ({
+      ...p,
+      relevance: relevances.find(r => r.index === i + 1)?.relevance ?? '',
+    }));
+  } catch {
+    return people;
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { query } = await req.json();
@@ -29,65 +91,110 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Query is required.' }, { status: 400 });
     }
 
-    const prompt = `You are a B2B sales research assistant helping a leadership consulting firm identify senior HR and People leaders to target.
+    // Try Apollo first
+    let people: LookupPerson[] = [];
+    let companyName = query.trim();
+    let domain: string | null = null;
+    let headcount: string | null = null;
+    let emailPattern: string | null = null;
+    let apolloWorked = false;
 
-Given the company name or stock ticker: "${query.trim()}"
+    try {
+      const apolloResult = await searchPeopleAtCompany(query.trim());
 
-Your task:
-1. Identify the company (resolve ticker to company name if needed)
-2. List the top 8–12 senior HR/People leaders at this company — focus on:
-   - CHRO, CPO, Chief People Officer, Chief Talent Officer
-   - SVP/VP of HR, Talent, Learning & Development, Organizational Effectiveness, People Operations
-   - Head of Leadership Development, Director of Talent Management
-   - CLO (Chief Learning Officer)
-   DO NOT include general HR managers or non-people-leadership roles.
-3. For each person, estimate their likely corporate email based on common patterns at that company
-4. Provide their likely LinkedIn URL pattern (linkedin.com/in/firstname-lastname or similar)
+      if (apolloResult.people && apolloResult.people.length > 0) {
+        apolloWorked = true;
 
-Respond ONLY with valid JSON in this exact structure:
+        // Get company info from first result
+        const firstPerson = apolloResult.people[0];
+        if (firstPerson.organization) {
+          companyName = firstPerson.organization.name ?? query.trim();
+          domain = firstPerson.organization.primary_domain;
+          const emp = firstPerson.organization.estimated_num_employees;
+          if (emp) headcount = emp.toLocaleString();
+        }
+
+        // Derive email pattern from verified emails
+        const verifiedEmails = apolloResult.people
+          .filter(p => p.email && p.email_status === 'verified' && domain)
+          .map(p => p.email!);
+
+        if (verifiedEmails.length > 0 && domain) {
+          const patterns = verifiedEmails.map(email => {
+            const local = email.split('@')[0];
+            const name = firstPerson.name.toLowerCase().replace(/\s+/g, '');
+            if (local.includes('.')) return 'firstname.lastname@' + domain;
+            if (local === name) return 'firstnamelastname@' + domain;
+            return 'firstname@' + domain;
+          });
+          emailPattern = patterns[0] ?? null;
+        }
+
+        people = apolloResult.people.map(apolloToLookupPerson);
+      }
+    } catch (apolloErr) {
+      console.warn('Apollo lookup failed, falling back to Claude:', apolloErr);
+    }
+
+    // If Apollo returned nothing or failed, fall back to Claude
+    if (!apolloWorked) {
+      const prompt = `You are a B2B sales research assistant for a leadership consulting firm.
+
+Given company name or ticker: "${query.trim()}"
+
+Find 8–10 senior HR/People leaders (CHRO, CPO, VP HR, VP People, CLO, Head of People, etc.) and for each provide:
+- Full name, title, seniority (C-Suite/VP/Director/Senior Manager)
+- Why they're worth targeting (1-2 sentences, specific to their role)
+- Likely LinkedIn URL
+- Inferred email based on company email pattern
+
+Respond ONLY with this JSON structure:
 {
-  "company_name": "Full Company Name",
-  "domain": "company.com",
-  "email_pattern": "firstname.lastname@company.com",
+  "company_name": "...",
+  "domain": "...",
+  "email_pattern": "firstname.lastname@domain.com",
   "headcount_estimate": "10,000–50,000",
   "people": [
     {
-      "full_name": "Jane Smith",
-      "title": "Chief People Officer",
-      "seniority": "C-Suite",
-      "relevance": "Decision maker for all leadership development spend. New in role since Jan 2024 — high urgency window.",
-      "linkedin_url": "https://www.linkedin.com/in/jane-smith",
-      "email_guess": "jane.smith@company.com",
-      "email_confidence": "inferred",
-      "email_pattern": "firstname.lastname@company.com"
+      "full_name": "...", "title": "...", "seniority": "C-Suite",
+      "relevance": "...", "linkedin_url": "...", "email_guess": "...",
+      "email_confidence": "inferred", "email_pattern": "..."
     }
   ]
-}
+}`;
 
-Seniority levels: "C-Suite", "VP", "Director", "Senior Manager"
-email_confidence: "inferred" if you used a pattern, "unknown" if genuinely uncertain
+      const msg = await anthropic.messages.create({
+        model: 'claude-opus-4-6',
+        max_tokens: 2048,
+        messages: [{ role: 'user', content: prompt }],
+      });
 
-If you cannot identify the company or find relevant people, return:
-{ "company_name": null, "domain": null, "email_pattern": null, "headcount_estimate": null, "people": [] }`;
+      const text = msg.content[0].type === 'text' ? msg.content[0].text : '';
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        return NextResponse.json({ company_name: null, domain: null, email_pattern: null, headcount_estimate: null, people: [] });
+      }
 
-    const message = await client.messages.create({
-      model: 'claude-opus-4-6',
-      max_tokens: 2048,
-      messages: [{ role: 'user', content: prompt }],
-    });
-
-    const text = message.content[0].type === 'text' ? message.content[0].text : '';
-
-    // Extract JSON from response
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      return NextResponse.json({ error: 'Could not parse response.' }, { status: 500 });
+      const claudeResult = JSON.parse(jsonMatch[0]);
+      return NextResponse.json({
+        ...claudeResult,
+        people: (claudeResult.people ?? []).map((p: any) => ({ ...p, apollo_id: null, source: 'claude' })),
+      });
     }
 
-    const result: LookupResult = JSON.parse(jsonMatch[0]);
-    return NextResponse.json(result);
+    // Add Claude relevance to Apollo results
+    people = await getRelevanceFromClaude(people, companyName);
+
+    return NextResponse.json({
+      company_name: companyName,
+      domain,
+      email_pattern: emailPattern,
+      headcount_estimate: headcount,
+      people,
+    } as LookupResult);
+
   } catch (err: any) {
-    console.error('LeadForge lookup error:', err);
+    console.error('Lookup error:', err);
     return NextResponse.json({ error: err.message ?? 'Lookup failed.' }, { status: 500 });
   }
 }

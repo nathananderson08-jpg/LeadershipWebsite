@@ -89,6 +89,64 @@ function ActivityIcon({ type }: { type: string }) {
   );
 }
 
+// ── HubSpot sync helper (fire-and-forget from client) ─────────────────────
+
+async function syncToHubSpot(prospect: LeadForgeProspect) {
+  try {
+    await fetch('/portal/api/leadforge/hubspot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'sync_prospect', prospect }),
+    });
+  } catch {
+    // non-blocking — don't surface HubSpot errors to user
+  }
+}
+
+// ── Enrich Button ──────────────────────────────────────────────────────────
+
+function EnrichButton({ prospect, onUpdate }: { prospect: LeadForgeProspect; onUpdate: (id: string, u: Partial<LeadForgeProspect>) => Promise<void> }) {
+  const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'not_found' | 'error'>('idle');
+
+  const handleEnrich = async () => {
+    setStatus('loading');
+    try {
+      const res = await fetch('/portal/api/leadforge/enrich', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prospect }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      if (!data.found || !Object.keys(data.updates).length) {
+        setStatus('not_found');
+        setTimeout(() => setStatus('idle'), 3000);
+        return;
+      }
+      await onUpdate(prospect.id, data.updates);
+      setStatus('done');
+      setTimeout(() => setStatus('idle'), 3000);
+    } catch {
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 3000);
+    }
+  };
+
+  const label = status === 'loading' ? 'Enriching…' : status === 'done' ? '✓ Enriched' : status === 'not_found' ? 'Not found' : status === 'error' ? 'Failed' : 'Enrich via Apollo';
+  const color = status === 'done' ? '#4ade80' : status === 'not_found' || status === 'error' ? '#ef4444' : 'var(--portal-accent)';
+
+  return (
+    <button
+      onClick={handleEnrich}
+      disabled={status === 'loading' || status === 'done'}
+      style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px', border: `1px solid ${color}40`, borderRadius: 7, background: 'transparent', color, fontSize: 11, fontWeight: 600, cursor: status === 'idle' ? 'pointer' : 'default', opacity: status === 'loading' ? 0.7 : 1 }}
+    >
+      {status === 'loading' ? <Loader2 size={10} style={{ animation: 'spin 0.8s linear infinite' }} /> : <Zap size={10} />}
+      {label}
+    </button>
+  );
+}
+
 // ── Drawer Tabs ────────────────────────────────────────────────────────────
 
 function ProfileTab({ prospect, onUpdate }: { prospect: LeadForgeProspect; onUpdate: (id: string, u: Partial<LeadForgeProspect>) => Promise<void> }) {
@@ -148,7 +206,10 @@ function ProfileTab({ prospect, onUpdate }: { prospect: LeadForgeProspect; onUpd
 
       {/* Contact */}
       <div style={{ padding: '12px 14px', background: 'var(--portal-bg-hover)', borderRadius: 12 }}>
-        <p style={sectionLabel}>Contact</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+          <p style={{ ...sectionLabel, margin: 0 }}>Contact</p>
+          <EnrichButton prospect={prospect} onUpdate={onUpdate} />
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
           {prospect.email ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -166,7 +227,7 @@ function ProfileTab({ prospect, onUpdate }: { prospect: LeadForgeProspect; onUpd
             </div>
           ) : null}
           {!prospect.email && !prospect.linkedin_url && (
-            <p style={{ fontSize: 12, color: 'var(--portal-text-tertiary)', margin: 0 }}>No contact info yet</p>
+            <p style={{ fontSize: 12, color: 'var(--portal-text-tertiary)', margin: 0 }}>No contact info — click Enrich to find via Apollo</p>
           )}
         </div>
       </div>
@@ -550,11 +611,16 @@ export default function ProspectsPage() {
 
   const handleSave = async (input: CreateProspectInput, accountInput?: CreateAccountInput) => {
     let account_id: string | undefined;
+    let accountForSync: { company_name: string; domain?: string } | undefined;
     if (accountInput) {
       const acct = await createAccount(accountInput);
       account_id = (acct as any).id;
+      accountForSync = { company_name: accountInput.company_name, domain: accountInput.domain };
     }
-    await createProspect({ ...input, account_id });
+    const newProspect = await createProspect({ ...input, account_id });
+    if (newProspect) {
+      syncToHubSpot({ ...(newProspect as any), account: accountForSync ? { company_name: accountForSync.company_name, domain: accountForSync.domain } : undefined });
+    }
   };
 
   const handleSort = (field: SortField) => {
