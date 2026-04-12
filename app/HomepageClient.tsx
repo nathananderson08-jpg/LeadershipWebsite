@@ -10,98 +10,38 @@ import { AIBadge } from "@/components/ui/AIBadge"
 import { CTABanner } from "@/components/sections/CTABanner"
 import { METRICS, LIFECYCLE_PHASES, SOLUTIONS, SAMPLE_ARTICLES, MESSAGING, LIFECYCLE_FRAMEWORK_NAME } from "@/lib/constants"
 
-// ── Living gradient mesh background ─────────────────────────
+// ── Video background hero ────────────────────────────────────
 function HeroBackground() {
   return (
     <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-      {/* Base layer - Light, airy gradient */}
+      {/* Fullscreen background video */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "center",
+        }}
+      >
+        <source src="/Video.mp4" type="video/mp4" />
+      </video>
+
+      {/* Dark overlay — ensures text is legible */}
       <div
         className="absolute inset-0"
-        style={{ background: "linear-gradient(160deg, #f3faf5 0%, #e3f2e8 55%, #f8f8f6 100%)" }}
+        style={{ background: "linear-gradient(135deg, rgba(10,28,18,0.72) 0%, rgba(10,28,18,0.52) 60%, rgba(10,28,18,0.65) 100%)" }}
       />
 
-      {/* Mesh orb 1 — Soft sage green top-right, slow drift */}
-      <motion.div
-        className="absolute"
-        style={{
-          width: "80vw",
-          height: "80vw",
-          maxWidth: 1000,
-          maxHeight: 1000,
-          borderRadius: "50%",
-          background: "radial-gradient(circle at 50% 50%, rgba(93,171,121,0.15) 0%, rgba(93,171,121,0.05) 35%, transparent 65%)",
-          top: "-25%",
-          right: "-20%",
-          willChange: "transform",
-        }}
-        animate={{
-          x: [0, 40, -20, 0],
-          y: [0, -30, 20, 0],
-          scale: [1, 1.06, 0.97, 1],
-        }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-      />
-
-      {/* Mesh orb 2 — Warm earth tone bottom-left, counter-drift */}
-      <motion.div
-        className="absolute"
-        style={{
-          width: "60vw",
-          height: "60vw",
-          maxWidth: 800,
-          maxHeight: 800,
-          borderRadius: "50%",
-          background: "radial-gradient(circle at 50% 50%, rgba(201,168,138,0.12) 0%, rgba(201,168,138,0.04) 40%, transparent 65%)",
-          bottom: "-20%",
-          left: "-15%",
-          willChange: "transform",
-        }}
-        animate={{
-          x: [0, -35, 25, 0],
-          y: [0, 25, -15, 0],
-          scale: [1, 1.1, 0.95, 1],
-        }}
-        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-      />
-
-      {/* Mesh orb 3 — Light green mid-center, subtle pulse */}
-      <motion.div
-        className="absolute"
-        style={{
-          width: "45vw",
-          height: "45vw",
-          maxWidth: 600,
-          maxHeight: 600,
-          borderRadius: "50%",
-          background: "radial-gradient(circle at 50% 50%, rgba(122,184,146,0.1) 0%, transparent 60%)",
-          top: "30%",
-          left: "30%",
-          willChange: "transform",
-        }}
-        animate={{
-          x: [0, 20, -30, 10, 0],
-          y: [0, -20, 10, 30, 0],
-          scale: [1, 1.04, 1.08, 1.02, 1],
-          opacity: [0.5, 0.7, 0.5, 0.8, 0.5],
-        }}
-        transition={{ duration: 28, repeat: Infinity, ease: "easeInOut", delay: 7 }}
-      />
-
-      {/* Subtle texture for organic feel */}
+      {/* Subtle bottom fade to blend with next section */}
       <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E\")",
-          opacity: 0.3,
-        }}
-      />
-
-      {/* Subtle soft vignette */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: "radial-gradient(ellipse 80% 70% at 50% 50%, transparent 50%, rgba(243,250,245,0.5) 100%)",
-        }}
+        className="absolute bottom-0 left-0 right-0"
+        style={{ height: "180px", background: "linear-gradient(to bottom, transparent, rgba(10,28,18,0.4))" }}
       />
     </div>
   )
@@ -488,21 +428,22 @@ export function HomepageClient() {
               {/* Eyebrow */}
               <motion.p
                 className="text-sm font-700 tracking-[0.18em] uppercase mb-6 flex items-center gap-3"
-                style={{ fontWeight: 700, color: "var(--color-forest-600)" }}
+                style={{ fontWeight: 700, color: "rgba(134,212,163,0.9)" }}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               >
                 <span
                   className="inline-block w-6 h-px"
-                  style={{ background: "var(--color-forest-500)" }}
+                  style={{ background: "rgba(134,212,163,0.7)" }}
                 />
                 {LIFECYCLE_FRAMEWORK_NAME}
               </motion.p>
 
               {/* H1 */}
               <motion.h1
-                className="display-xl text-forest-950 mb-6"
+                className="display-xl mb-6"
+                style={{ color: "rgba(255,255,255,0.97)" }}
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
@@ -511,7 +452,7 @@ export function HomepageClient() {
                 delivering{" "}
                 <span
                   className="relative inline-block"
-                  style={{ color: "var(--color-forest-600)" }}
+                  style={{ color: "rgba(134,212,163,1)" }}
                 >
                   end-to-end solutions
                   <motion.svg
@@ -527,7 +468,7 @@ export function HomepageClient() {
                   >
                     <motion.path
                       d="M0 2 Q25 0 50 2 Q75 4 100 2"
-                      stroke="var(--color-forest-500)"
+                      stroke="rgba(134,212,163,0.8)"
                       strokeWidth="2"
                       fill="none"
                     />
@@ -538,7 +479,8 @@ export function HomepageClient() {
 
               {/* Subheadline */}
               <motion.p
-                className="text-xl text-forest-800/70 mb-4 max-w-2xl leading-relaxed"
+                className="text-xl mb-4 max-w-2xl leading-relaxed"
+                style={{ color: "rgba(255,255,255,0.78)" }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
@@ -548,7 +490,8 @@ export function HomepageClient() {
 
               {/* Integration message */}
               <motion.p
-                className="text-sm text-forest-700/50 mb-10 max-w-xl tracking-wide"
+                className="text-sm mb-10 max-w-xl tracking-wide"
+                style={{ color: "rgba(255,255,255,0.48)" }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -590,14 +533,14 @@ export function HomepageClient() {
                   <div className="flex items-center gap-2">
                     <motion.div
                       className="w-1.5 h-1.5 rounded-full"
-                      style={{ background: "var(--color-forest-500)" }}
-                      animate={{ scale: [1, 1.4, 1], opacity: [0.7, 1, 0.7] }}
+                      style={{ background: "rgba(134,212,163,0.8)" }}
+                      animate={{ scale: [1, 1.4, 1], opacity: [0.6, 1, 0.6] }}
                       transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 }}
                     />
-                    <span className="text-sm text-forest-700/60 font-500" style={{ fontWeight: 500 }}>{phase.title}</span>
+                    <span className="text-sm font-500" style={{ color: "rgba(255,255,255,0.5)", fontWeight: 500 }}>{phase.title}</span>
                   </div>
                   {i < LIFECYCLE_PHASES.length - 1 && (
-                    <div className="w-6 h-px" style={{ background: "rgba(93,171,121,0.3)" }} />
+                    <div className="w-6 h-px" style={{ background: "rgba(255,255,255,0.15)" }} />
                   )}
                 </motion.div>
               ))}
@@ -611,8 +554,8 @@ export function HomepageClient() {
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
         >
-          <div className="w-px h-10 bg-gradient-to-b from-transparent to-forest-500/40" />
-          <div className="w-1 h-1 rounded-full bg-forest-500/40" />
+          <div className="w-px h-10" style={{ background: "linear-gradient(to bottom, transparent, rgba(134,212,163,0.5))" }} />
+          <div className="w-1 h-1 rounded-full" style={{ background: "rgba(134,212,163,0.5)" }} />
         </motion.div>
       </section>
 
