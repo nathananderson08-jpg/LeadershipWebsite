@@ -5,7 +5,7 @@ import {
   Search, Plus, X, ChevronUp, ChevronDown, Mail, ExternalLink,
   MoreHorizontal, Clock, Zap, FileText, Loader2, CheckCircle,
   MessageSquare, Calendar, Phone, Users, AlertTriangle, Send,
-  Download, Trash2, CheckSquare, Square,
+  Download, Trash2, CheckSquare, Square, LayoutList, Kanban,
 } from 'lucide-react';
 import {
   useProspects, useAccounts, useActivities, useLeadForgeContent,
@@ -812,6 +812,113 @@ function BulkActionBar({ selected, total, prospects, onClearSelection, onBulkDel
   );
 }
 
+// ── Kanban Board ──────────────────────────────────────────────────────────
+
+function KanbanBoard({ prospects, onOpen, onStageChange }: {
+  prospects: LeadForgeProspect[];
+  onOpen: (p: LeadForgeProspect) => void;
+  onStageChange: (id: string, stage: string) => Promise<void>;
+}) {
+  const [dragging, setDragging] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState<string | null>(null);
+  const [moving, setMoving] = useState<string | null>(null);
+
+  const handleDragStart = (id: string) => setDragging(id);
+  const handleDragEnd   = () => { setDragging(null); setDragOver(null); };
+
+  const handleDrop = async (stageId: string) => {
+    if (!dragging || dragOver === stageId) return;
+    setDragOver(null);
+    const prospect = prospects.find(p => p.id === dragging);
+    const currentStage = (prospect as any)?.pipeline_stage ?? 'identified';
+    if (currentStage === stageId) return;
+    setMoving(dragging);
+    try {
+      await onStageChange(dragging, stageId);
+    } finally {
+      setMoving(null);
+      setDragging(null);
+    }
+  };
+
+  return (
+    <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 8, alignItems: 'flex-start' }}>
+      {PIPELINE_STAGES.map(stage => {
+        const stageProspects = prospects.filter(p => ((p as any).pipeline_stage ?? 'identified') === stage.id);
+        const isDropTarget = dragOver === stage.id;
+
+        return (
+          <div
+            key={stage.id}
+            onDragOver={e => { e.preventDefault(); setDragOver(stage.id); }}
+            onDragLeave={() => setDragOver(null)}
+            onDrop={() => handleDrop(stage.id)}
+            style={{
+              minWidth: 200, maxWidth: 220, flexShrink: 0,
+              background: isDropTarget ? `${stage.color}12` : 'var(--portal-bg-hover)',
+              border: `1px solid ${isDropTarget ? stage.color : 'var(--portal-border-default)'}`,
+              borderRadius: 14, padding: '12px 10px', transition: 'border-color 0.15s, background 0.15s',
+            }}
+          >
+            {/* Column header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: stage.color, display: 'inline-block' }} />
+                <span style={{ fontSize: 12, fontWeight: 700, color: stage.color }}>{stage.label}</span>
+              </div>
+              <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--portal-text-tertiary)', background: 'var(--portal-bg-secondary)', padding: '2px 7px', borderRadius: 999 }}>{stageProspects.length}</span>
+            </div>
+
+            {/* Cards */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+              {stageProspects.length === 0 ? (
+                <div style={{ height: 60, border: `1.5px dashed ${stage.color}40`, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ fontSize: 11, color: 'var(--portal-text-tertiary)' }}>Drop here</span>
+                </div>
+              ) : (
+                stageProspects.map(p => {
+                  const pa = p as any;
+                  const isDragging = dragging === p.id;
+                  const isMoving   = moving === p.id;
+                  return (
+                    <div
+                      key={p.id}
+                      draggable
+                      onDragStart={() => handleDragStart(p.id)}
+                      onDragEnd={handleDragEnd}
+                      onClick={() => onOpen(p)}
+                      style={{
+                        padding: '11px 12px', background: isDragging ? `${stage.color}18` : 'var(--portal-bg-secondary)',
+                        border: `1px solid ${isDragging ? stage.color : 'var(--portal-border-default)'}`,
+                        borderRadius: 10, cursor: 'grab', opacity: isMoving ? 0.5 : isDragging ? 0.7 : 1,
+                        transition: 'opacity 0.15s, border-color 0.15s',
+                        userSelect: 'none',
+                      }}
+                    >
+                      <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--portal-text-primary)', margin: '0 0 2px', lineHeight: 1.3 }}>{p.full_name}</p>
+                      {p.title && <p style={{ fontSize: 11, color: 'var(--portal-text-tertiary)', margin: '0 0 6px' }}>{p.title}</p>}
+                      {p.account && <p style={{ fontSize: 10, color: 'var(--portal-accent)', fontWeight: 600, margin: '0 0 6px' }}>{p.account.company_name}</p>}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <IcpBadge score={p.icp_score} />
+                        <WarmthDot warmth={pa.warmth_score} />
+                      </div>
+                      {pa.next_action && (
+                        <p style={{ fontSize: 10, color: '#6366f1', margin: '6px 0 0', fontStyle: 'italic', lineHeight: 1.4, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as any }}>
+                          → {pa.next_action}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── Sort ───────────────────────────────────────────────────────────────────
 
 type SortField = 'icp_score' | 'full_name' | 'last_activity_at' | 'pipeline_stage' | 'warmth_score';
@@ -836,6 +943,7 @@ export default function ProspectsPage() {
   const [showModal, setShowModal] = useState(false);
   const [drawerProspect, setDrawerProspect] = useState<LeadForgeProspect | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [viewMode, setViewMode] = useState<'table' | 'board'>('table');
 
   const toggleSelect = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -922,8 +1030,19 @@ export default function ProspectsPage() {
             {prospects.length} total · {filtered.length} shown
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          {filtered.length > 0 && selectedIds.size === 0 && (
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {/* View toggle */}
+          <div style={{ display: 'flex', gap: 2, padding: 3, background: 'var(--portal-bg-hover)', borderRadius: 9, border: '1px solid var(--portal-border-default)' }}>
+            <button onClick={() => setViewMode('table')}
+              style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 10px', borderRadius: 7, border: 'none', fontSize: 12, fontWeight: 600, cursor: 'pointer', background: viewMode === 'table' ? 'var(--portal-bg-secondary)' : 'transparent', color: viewMode === 'table' ? 'var(--portal-text-primary)' : 'var(--portal-text-tertiary)', boxShadow: viewMode === 'table' ? '0 1px 4px rgba(0,0,0,0.07)' : 'none' }}>
+              <LayoutList size={13} /> List
+            </button>
+            <button onClick={() => setViewMode('board')}
+              style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 10px', borderRadius: 7, border: 'none', fontSize: 12, fontWeight: 600, cursor: 'pointer', background: viewMode === 'board' ? 'var(--portal-bg-secondary)' : 'transparent', color: viewMode === 'board' ? 'var(--portal-text-primary)' : 'var(--portal-text-tertiary)', boxShadow: viewMode === 'board' ? '0 1px 4px rgba(0,0,0,0.07)' : 'none' }}>
+              <Kanban size={13} /> Board
+            </button>
+          </div>
+          {filtered.length > 0 && selectedIds.size === 0 && viewMode === 'table' && (
             <button onClick={() => exportToCSV(filtered)}
               style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '9px 14px', border: '1px solid var(--portal-border-default)', borderRadius: 10, background: 'var(--portal-bg-secondary)', fontSize: 13, fontWeight: 600, color: 'var(--portal-text-secondary)', cursor: 'pointer' }}>
               <Download size={14} /> Export
@@ -970,8 +1089,23 @@ export default function ProspectsPage() {
         </select>
       </div>
 
+      {/* Board view */}
+      {!loading && viewMode === 'board' && (
+        <KanbanBoard
+          prospects={filtered}
+          onOpen={setDrawerProspect}
+          onStageChange={async (id, stage) => {
+            await updateProspect(id, { pipeline_stage: stage } as any);
+            // if drawer is open for this prospect, update it too
+            if (drawerProspect?.id === id) {
+              setDrawerProspect(prev => prev ? { ...prev, pipeline_stage: stage } as any : null);
+            }
+          }}
+        />
+      )}
+
       {/* Table */}
-      {loading ? (
+      {viewMode === 'table' && (loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}>
           <div style={{ width: 28, height: 28, borderRadius: '50%', border: '2px solid var(--portal-accent)', borderTopColor: 'transparent', animation: 'spin 0.8s linear infinite' }} />
         </div>
@@ -1055,7 +1189,7 @@ export default function ProspectsPage() {
             );
           })}
         </div>
-      )}
+      ))}
 
       {showModal && <AddProspectModal onClose={() => setShowModal(false)} onSave={handleSave} />}
       {drawerProspect && (
