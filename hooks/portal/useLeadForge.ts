@@ -115,6 +115,30 @@ export interface CreateContentInput {
   body: string;
 }
 
+export interface LeadForgeActivity {
+  id: string;
+  prospect_id: string | null;
+  account_id: string | null;
+  activity_type: string;
+  direction: string;
+  subject: string | null;
+  notes: string | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+  created_by: string;
+}
+
+export interface CreateActivityInput {
+  prospect_id?: string;
+  account_id?: string;
+  activity_type: string;
+  direction?: string;
+  subject?: string;
+  notes?: string;
+  metadata?: Record<string, unknown>;
+  created_by?: string;
+}
+
 // ── useProspects ───────────────────────────────────────────────
 
 export function useProspects() {
@@ -265,6 +289,42 @@ export function useTriggerEvents() {
       .select()
       .single();
     if (error) throw error;
+
+    // Auto-flag all prospects at this account
+    if (input.account_id) {
+      const { data: linkedProspects } = await supabase
+        .from('leadforge_prospects')
+        .select('id, warmth_score')
+        .eq('account_id', input.account_id);
+
+      if (linkedProspects && linkedProspects.length > 0) {
+        // Log a trigger_flagged activity for each prospect
+        await supabase.from('leadforge_activities').insert(
+          linkedProspects.map((p: { id: string; warmth_score: string | null }) => ({
+            prospect_id: p.id,
+            account_id: input.account_id,
+            activity_type: 'trigger_flagged',
+            direction: 'inbound',
+            subject: `Trigger: ${input.event_type.replace(/_/g, ' ')}`,
+            notes: input.description,
+            metadata: { priority: input.priority, event_type: input.event_type },
+            created_by: 'system',
+          }))
+        );
+
+        // Bump warmth from cold → warm for critical/high priority events
+        if (input.priority === 'critical' || input.priority === 'high') {
+          const coldProspects = linkedProspects.filter((p: { id: string; warmth_score: string | null }) => !p.warmth_score || p.warmth_score === 'cold');
+          if (coldProspects.length > 0) {
+            await supabase
+              .from('leadforge_prospects')
+              .update({ warmth_score: 'warm', last_activity_at: new Date().toISOString() })
+              .in('id', coldProspects.map((p: { id: string }) => p.id));
+          }
+        }
+      }
+    }
+
     await load();
     return data;
   };
@@ -331,6 +391,54 @@ export function useLeadForgeContent() {
   };
 
   return { content, loading, createContent, updateStatus, reload: load };
+}
+
+// ── useActivities ──────────────────────────────────────────────
+
+export function useActivities(prospect_id: string) {
+  const [activities, setActivities] = useState<LeadForgeActivity[]>([]);
+  const [loading, setLoading] = useState(true);
+  const supabase = createPortalClient();
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('leadforge_activities')
+        .select('*')
+        .eq('prospect_id', prospect_id)
+        .order('created_at', { ascending: false });
+      if (!error && data) setActivities(data as LeadForgeActivity[]);
+    } catch {
+      // silently fail
+    } finally {
+      setLoading(false);
+    }
+  }, [supabase, prospect_id]);
+
+  useEffect(() => {
+    load();
+    const channel = supabase
+      .channel(`leadforge-activities-${prospect_id}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'leadforge_activities', filter: `prospect_id=eq.${prospect_id}` }, load)
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [load, supabase, prospect_id]);
+
+  const logActivity = async (input: CreateActivityInput) => {
+    const { error } = await supabase
+      .from('leadforge_activities')
+      .insert({ ...input, prospect_id });
+    if (error) throw error;
+    // also stamp last_activity_at on the prospect
+    await supabase
+      .from('leadforge_prospects')
+      .update({ last_activity_at: new Date().toISOString() })
+      .eq('id', prospect_id);
+    await load();
+  };
+
+  return { activities, loading, logActivity };
 }
 
 // ── useLeadForgeStats ──────────────────────────────────────────
