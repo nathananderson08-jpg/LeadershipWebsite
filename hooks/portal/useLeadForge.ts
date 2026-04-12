@@ -12,6 +12,10 @@ export interface LeadForgeAccount {
   size: string | null;
   revenue_range: string | null;
   hq_location: string | null;
+  domain: string | null;
+  headcount: number | null;
+  icp_fit: string | null;
+  key_challenges: string | null;
   created_at: string;
 }
 
@@ -26,6 +30,17 @@ export interface LeadForgeProspect {
   stage: 'awareness' | 'value_delivery' | 'outreach' | 'conversion';
   notes: string | null;
   created_at: string;
+  // CRM fields (added via migration)
+  warmth_score: string | null;
+  pipeline_stage: string | null;
+  role_start_date: string | null;
+  last_activity_at: string | null;
+  next_action: string | null;
+  next_action_date: string | null;
+  email_confidence: string | null;
+  enrichment_source: string | null;
+  bio_summary: string | null;
+  trigger_context: string | null;
   account?: LeadForgeAccount;
 }
 
@@ -61,6 +76,16 @@ export interface CreateProspectInput {
   stage?: string;
   notes?: string;
   account_id?: string;
+  // CRM fields
+  warmth_score?: string;
+  pipeline_stage?: string;
+  role_start_date?: string;
+  next_action?: string;
+  next_action_date?: string;
+  email_confidence?: string;
+  enrichment_source?: string;
+  bio_summary?: string;
+  trigger_context?: string;
 }
 
 export interface CreateAccountInput {
@@ -69,6 +94,10 @@ export interface CreateAccountInput {
   size?: string;
   revenue_range?: string;
   hq_location?: string;
+  domain?: string;
+  headcount?: number;
+  icp_fit?: string;
+  key_challenges?: string;
 }
 
 export interface CreateTriggerInput {
@@ -134,7 +163,7 @@ export function useProspects() {
   const updateProspect = async (id: string, updates: Partial<LeadForgeProspect>) => {
     const { error } = await supabase
       .from('leadforge_prospects')
-      .update(updates)
+      .update({ ...updates, last_activity_at: new Date().toISOString() })
       .eq('id', id);
     if (error) throw error;
     await load();

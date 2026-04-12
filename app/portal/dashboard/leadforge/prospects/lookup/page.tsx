@@ -1,0 +1,368 @@
+'use client';
+
+import { useState } from 'react';
+import { Search, Loader2, Building2, CheckCircle, Plus, AlertCircle, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { useProspects, useAccounts } from '@/hooks/portal/useLeadForge';
+import type { LookupResult, LookupPerson } from '@/app/portal/api/leadforge/lookup/route';
+
+const SENIORITY_CONFIG: Record<string, { color: string; bg: string }> = {
+  'C-Suite': { color: '#4ade80', bg: 'rgba(74,222,128,0.1)' },
+  VP: { color: '#6366f1', bg: 'rgba(99,102,241,0.1)' },
+  Director: { color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
+  'Senior Manager': { color: '#94a3b8', bg: 'rgba(148,163,184,0.1)' },
+};
+
+function SeniorityBadge({ level }: { level: string }) {
+  const s = SENIORITY_CONFIG[level] ?? SENIORITY_CONFIG['Senior Manager'];
+  return (
+    <span style={{ ...s, fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 999 }}>{level}</span>
+  );
+}
+
+export default function ProspectLookupPage() {
+  const { createProspect } = useProspects();
+  const { accounts, createAccount } = useAccounts();
+
+  const [query, setQuery] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<LookupResult | null>(null);
+  const [error, setError] = useState('');
+  const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [expanded, setExpanded] = useState<Set<number>>(new Set());
+  const [adding, setAdding] = useState(false);
+  const [addedNames, setAddedNames] = useState<Set<string>>(new Set());
+  const [addError, setAddError] = useState('');
+
+  const handleSearch = async () => {
+    if (!query.trim()) return;
+    setLoading(true);
+    setResult(null);
+    setError('');
+    setSelected(new Set());
+    setExpanded(new Set());
+    setAddedNames(new Set());
+
+    try {
+      const res = await fetch('/portal/api/leadforge/lookup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: query.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Lookup failed.');
+      if (!data.company_name) {
+        setError('Could not identify this company. Try the full company name.');
+        setLoading(false);
+        return;
+      }
+      setResult(data);
+    } catch (e: any) {
+      setError(e.message ?? 'Something went wrong.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleSelect = (i: number) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      next.has(i) ? next.delete(i) : next.add(i);
+      return next;
+    });
+  };
+
+  const toggleExpand = (i: number) => {
+    setExpanded(prev => {
+      const next = new Set(prev);
+      next.has(i) ? next.delete(i) : next.add(i);
+      return next;
+    });
+  };
+
+  const selectAll = () => {
+    if (!result) return;
+    setSelected(new Set(result.people.map((_, i) => i)));
+  };
+
+  const handleAddSelected = async () => {
+    if (!result || selected.size === 0) return;
+    setAdding(true);
+    setAddError('');
+
+    try {
+      // Find or create account
+      let account_id: string | undefined;
+      const existing = accounts.find(a =>
+        a.company_name.toLowerCase() === result.company_name.toLowerCase()
+      );
+      if (existing) {
+        account_id = existing.id;
+      } else {
+        const acct = await createAccount({
+          company_name: result.company_name,
+          ...(result.domain ? { industry: undefined } : {}),
+        }) as any;
+        account_id = acct?.id;
+      }
+
+      const toAdd = [...selected].map(i => result.people[i]);
+      const added = new Set(addedNames);
+
+      for (const person of toAdd) {
+        await createProspect({
+          full_name: person.full_name,
+          title: person.title,
+          email: person.email_guess ?? undefined,
+          linkedin_url: person.linkedin_url ?? undefined,
+          icp_score: person.seniority === 'C-Suite' ? 85 : person.seniority === 'VP' ? 70 : 55,
+          stage: 'awareness',
+          notes: person.relevance,
+          account_id,
+          enrichment_source: 'ai_lookup',
+          email_confidence: person.email_confidence,
+          trigger_context: person.relevance,
+          pipeline_stage: 'identified',
+        } as any);
+        added.add(person.full_name);
+      }
+
+      setAddedNames(added);
+      setSelected(new Set());
+    } catch (e: any) {
+      setAddError(e.message ?? 'Failed to add some prospects.');
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  const inputStyle = {
+    flex: 1,
+    padding: '12px 16px',
+    border: '1px solid var(--portal-border-default)',
+    borderRadius: 12,
+    fontSize: 14,
+    color: 'var(--portal-text-primary)',
+    background: 'var(--portal-bg-secondary)',
+    outline: 'none',
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      {/* Header */}
+      <div>
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--portal-text-primary)', margin: 0 }}>
+          Prospect Lookup
+        </h2>
+        <p style={{ fontSize: 13, color: 'var(--portal-text-tertiary)', margin: '4px 0 0' }}>
+          Enter a company name or stock ticker — Claude will identify senior HR &amp; People leaders and enrich their contact info.
+        </p>
+      </div>
+
+      {/* Search bar */}
+      <div style={{ display: 'flex', gap: 10 }}>
+        <div style={{ position: 'relative', flex: 1 }}>
+          <Search size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--portal-text-tertiary)' }} />
+          <input
+            style={{ ...inputStyle, paddingLeft: 42 }}
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && !loading && handleSearch()}
+            placeholder="e.g. Microsoft, Salesforce, MSFT, HubSpot…"
+          />
+        </div>
+        <button
+          onClick={handleSearch}
+          disabled={loading || !query.trim()}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8, padding: '12px 20px',
+            border: 'none', borderRadius: 12, background: 'var(--portal-accent)', color: 'white',
+            fontSize: 13, fontWeight: 600, cursor: loading ? 'default' : 'pointer',
+            opacity: loading || !query.trim() ? 0.6 : 1,
+          }}
+        >
+          {loading ? <Loader2 size={15} style={{ animation: 'spin 0.8s linear infinite' }} /> : <Search size={15} />}
+          {loading ? 'Searching…' : 'Find People'}
+        </button>
+      </div>
+
+      {/* Error */}
+      {error && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 10 }}>
+          <AlertCircle size={15} color="#ef4444" />
+          <p style={{ fontSize: 13, color: '#ef4444', margin: 0 }}>{error}</p>
+        </div>
+      )}
+
+      {/* Results */}
+      {result && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {/* Company header */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', background: 'var(--portal-bg-secondary)', border: '1px solid var(--portal-border-default)', borderRadius: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--portal-accent-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Building2 size={18} color="var(--portal-accent)" />
+              </div>
+              <div>
+                <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--portal-text-primary)', margin: 0 }}>{result.company_name}</p>
+                <p style={{ fontSize: 12, color: 'var(--portal-text-tertiary)', margin: '2px 0 0' }}>
+                  {[result.domain, result.headcount_estimate ? `~${result.headcount_estimate} employees` : null, result.email_pattern ? `Email: ${result.email_pattern}` : null].filter(Boolean).join(' · ')}
+                </p>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <span style={{ fontSize: 13, color: 'var(--portal-text-tertiary)' }}>{result.people.length} people found</span>
+              <button
+                onClick={selectAll}
+                style={{ padding: '6px 14px', border: '1px solid var(--portal-border-accent)', borderRadius: 8, background: 'none', color: 'var(--portal-accent)', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+              >
+                Select All
+              </button>
+            </div>
+          </div>
+
+          {/* People list */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {result.people.map((person, i) => {
+              const isSelected = selected.has(i);
+              const isExpanded = expanded.has(i);
+              const wasAdded = addedNames.has(person.full_name);
+
+              return (
+                <div
+                  key={i}
+                  style={{
+                    background: 'var(--portal-bg-secondary)',
+                    border: `1px solid ${isSelected ? 'var(--portal-border-accent)' : 'var(--portal-border-default)'}`,
+                    borderRadius: 12,
+                    overflow: 'hidden',
+                    opacity: wasAdded ? 0.5 : 1,
+                    transition: 'border-color 0.15s',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px' }}>
+                    {/* Checkbox */}
+                    <button
+                      onClick={() => !wasAdded && toggleSelect(i)}
+                      disabled={wasAdded}
+                      style={{
+                        width: 20, height: 20, borderRadius: 6, border: `2px solid ${isSelected ? 'var(--portal-accent)' : 'var(--portal-border-default)'}`,
+                        background: isSelected ? 'var(--portal-accent)' : 'transparent',
+                        cursor: wasAdded ? 'default' : 'pointer', flexShrink: 0,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}
+                    >
+                      {isSelected && <span style={{ color: 'white', fontSize: 11, fontWeight: 800 }}>✓</span>}
+                    </button>
+
+                    {/* Name + title */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                        <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--portal-text-primary)', margin: 0 }}>
+                          {person.full_name}
+                        </p>
+                        <SeniorityBadge level={person.seniority} />
+                        {wasAdded && (
+                          <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600, color: '#4ade80' }}>
+                            <CheckCircle size={11} /> Added
+                          </span>
+                        )}
+                      </div>
+                      <p style={{ fontSize: 12, color: 'var(--portal-text-tertiary)', margin: '2px 0 0' }}>{person.title}</p>
+                    </div>
+
+                    {/* Contact hints */}
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
+                      {person.email_guess && (
+                        <span style={{ fontSize: 11, color: 'var(--portal-text-tertiary)', fontFamily: 'monospace', background: 'var(--portal-bg-hover)', padding: '3px 8px', borderRadius: 6 }}>
+                          {person.email_guess}
+                          {person.email_confidence === 'inferred' && <span style={{ color: '#f59e0b', marginLeft: 4 }}>~</span>}
+                        </span>
+                      )}
+                      {person.linkedin_url && (
+                        <a href={person.linkedin_url} target="_blank" rel="noopener noreferrer"
+                          style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 11, color: 'var(--portal-accent)', textDecoration: 'none', fontWeight: 600 }}>
+                          <ExternalLink size={10} /> LinkedIn
+                        </a>
+                      )}
+                      <button
+                        onClick={() => toggleExpand(i)}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--portal-text-tertiary)', padding: 4 }}
+                      >
+                        {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Expanded relevance */}
+                  {isExpanded && (
+                    <div style={{ padding: '0 16px 14px', borderTop: '1px solid var(--portal-border-default)', paddingTop: 12 }}>
+                      <p style={{ fontSize: 12, color: 'var(--portal-text-secondary)', margin: 0, lineHeight: 1.6 }}>
+                        <strong style={{ color: 'var(--portal-text-primary)' }}>Why target: </strong>{person.relevance}
+                      </p>
+                      {person.email_pattern && (
+                        <p style={{ fontSize: 11, color: 'var(--portal-text-tertiary)', margin: '6px 0 0' }}>
+                          Email pattern at {result.company_name}: <code style={{ background: 'var(--portal-bg-hover)', padding: '1px 6px', borderRadius: 4 }}>{person.email_pattern}</code>
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Add selected bar */}
+          {(selected.size > 0 || addError) && (
+            <div style={{
+              position: 'sticky', bottom: 0,
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '14px 20px', background: 'var(--portal-bg-secondary)',
+              border: '1px solid var(--portal-border-accent)', borderRadius: 14,
+              boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+            }}>
+              <p style={{ fontSize: 13, color: 'var(--portal-text-primary)', margin: 0, fontWeight: 600 }}>
+                {selected.size} prospect{selected.size !== 1 ? 's' : ''} selected
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                {addError && <p style={{ fontSize: 12, color: '#ef4444', margin: 0 }}>{addError}</p>}
+                <button
+                  onClick={() => setSelected(new Set())}
+                  style={{ padding: '8px 16px', border: '1px solid var(--portal-border-default)', borderRadius: 8, background: 'none', fontSize: 13, fontWeight: 600, color: 'var(--portal-text-secondary)', cursor: 'pointer' }}
+                >
+                  Clear
+                </button>
+                <button
+                  onClick={handleAddSelected}
+                  disabled={adding}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    padding: '8px 20px', border: 'none', borderRadius: 8,
+                    background: 'var(--portal-accent)', color: 'white',
+                    fontSize: 13, fontWeight: 600, cursor: adding ? 'default' : 'pointer',
+                    opacity: adding ? 0.7 : 1,
+                  }}
+                >
+                  {adding ? <Loader2 size={13} style={{ animation: 'spin 0.8s linear infinite' }} /> : <Plus size={13} />}
+                  {adding ? 'Adding…' : `Add to Prospects`}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Empty / initial state */}
+      {!result && !loading && !error && (
+        <div style={{ textAlign: 'center', padding: '80px 0', background: 'var(--portal-bg-secondary)', border: '1px solid var(--portal-border-default)', borderRadius: 16 }}>
+          <div style={{ width: 52, height: 52, borderRadius: 14, background: 'var(--portal-accent-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+            <Search size={24} strokeWidth={1.5} color="var(--portal-accent)" />
+          </div>
+          <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--portal-text-primary)', margin: '0 0 6px' }}>Search any company</p>
+          <p style={{ fontSize: 13, color: 'var(--portal-text-tertiary)', margin: 0, maxWidth: 340, marginInline: 'auto' }}>
+            Claude will find CHROs, CPOs, and senior People &amp; HR leaders along with their contact info and why they&apos;re relevant to target.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
