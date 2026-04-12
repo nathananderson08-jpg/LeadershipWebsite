@@ -441,6 +441,44 @@ export function useActivities(prospect_id: string) {
   return { activities, loading, logActivity };
 }
 
+// ── useAllActivities ──────────────────────────────────────────
+
+export function useAllActivities(limit = 20) {
+  const [activities, setActivities] = useState<LeadForgeActivity[]>([]);
+  const [loading, setLoading] = useState(true);
+  const supabase = createPortalClient();
+  const initialized = useRef(false);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('leadforge_activities')
+        .select('*, prospect:leadforge_prospects(full_name, title)')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+      if (!error && data) setActivities(data as any[]);
+    } catch {
+      // silently fail
+    } finally {
+      setLoading(false);
+    }
+  }, [supabase, limit]);
+
+  useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+    load();
+    const channel = supabase
+      .channel('leadforge-all-activities')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'leadforge_activities' }, load)
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [load, supabase]);
+
+  return { activities, loading };
+}
+
 // ── useLeadForgeStats ──────────────────────────────────────────
 
 export function useLeadForgeStats() {

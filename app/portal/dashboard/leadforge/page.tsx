@@ -2,7 +2,34 @@
 
 import Link from 'next/link';
 import { Target, FileText, Zap, AlertCircle, TrendingUp, AlertTriangle, Clock, ChevronRight, Building2 } from 'lucide-react';
-import { useLeadForgeStats, useAccounts } from '@/hooks/portal/useLeadForge';
+import { useLeadForgeStats, useAccounts, useAllActivities } from '@/hooks/portal/useLeadForge';
+
+const ACTIVITY_COLORS: Record<string, string> = {
+  note:             '#94a3b8',
+  email_sent:       '#6366f1',
+  email_received:   '#22c55e',
+  linkedin_message: '#0ea5e9',
+  call:             '#f59e0b',
+  meeting:          '#8b5cf6',
+  content_shared:   '#5dab79',
+  trigger_flagged:  '#ef4444',
+  stage_change:     '#4ade80',
+  warmth_change:    '#f97316',
+  referral:         '#f97316',
+};
+const ACTIVITY_LABELS: Record<string, string> = {
+  note:             'Note',
+  email_sent:       'Email Sent',
+  email_received:   'Email Received',
+  linkedin_message: 'LinkedIn Message',
+  call:             'Call',
+  meeting:          'Meeting',
+  content_shared:   'Content Shared',
+  trigger_flagged:  'Trigger Flagged',
+  stage_change:     'Stage Changed',
+  warmth_change:    'Warmth Updated',
+  referral:         'Referral',
+};
 
 function IcpBadge({ score }: { score: number }) {
   const color = score >= 80 ? '#4ade80' : score >= 60 ? '#f59e0b' : '#ef4444';
@@ -75,6 +102,7 @@ function PipelineFunnel({ prospects }: { prospects: any[] }) {
 export default function LeadForgePage() {
   const { prospectsTotal, triggerEventsThisWeek, activeCampaigns, pendingReview, loading, prospects, events } = useLeadForgeStats();
   const { accounts } = useAccounts();
+  const { activities } = useAllActivities(10);
 
   const now = Date.now();
 
@@ -273,6 +301,39 @@ export default function LeadForgePage() {
           </div>
         )}
       </div>
+
+      {/* Recent activity feed */}
+      {activities.length > 0 && (
+        <div style={{ background: 'var(--portal-bg-secondary)', border: '1px solid var(--portal-border-default)', borderRadius: 16, padding: '20px 24px' }}>
+          <p style={{ fontWeight: 700, fontSize: '13px', color: 'var(--portal-text-primary)', margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Clock size={13} color="var(--portal-accent)" /> Recent Activity
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            {activities.map((act: any, i) => {
+              const color = ACTIVITY_COLORS[act.activity_type] ?? '#94a3b8';
+              const label = ACTIVITY_LABELS[act.activity_type] ?? act.activity_type;
+              const date = new Date(act.created_at);
+              const diff = Math.floor((Date.now() - date.getTime()) / 60000);
+              const timeStr = diff < 60 ? `${diff}m ago` : diff < 1440 ? `${Math.floor(diff / 60)}h ago` : `${Math.floor(diff / 1440)}d ago`;
+              return (
+                <div key={act.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '9px 0', borderBottom: i < activities.length - 1 ? '1px solid var(--portal-border-default)' : 'none' }}>
+                  <div style={{ width: 7, height: 7, borderRadius: '50%', background: color, flexShrink: 0, marginTop: 5 }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--portal-text-primary)' }}>
+                        {act.prospect?.full_name ?? 'Unknown'}
+                      </span>
+                      <span style={{ fontSize: 11, fontWeight: 600, color, padding: '1px 6px', borderRadius: 999, background: `${color}18` }}>{label}</span>
+                    </div>
+                    {act.subject && <p style={{ fontSize: 11, color: 'var(--portal-text-secondary)', margin: '2px 0 0' }}>{act.subject}</p>}
+                  </div>
+                  <span style={{ fontSize: 10, color: 'var(--portal-text-tertiary)', flexShrink: 0 }}>{timeStr}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Quick actions */}
       <div>
