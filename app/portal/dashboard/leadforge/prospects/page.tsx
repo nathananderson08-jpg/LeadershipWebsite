@@ -496,13 +496,27 @@ const sectionLabel: React.CSSProperties = { fontSize: 11, fontWeight: 600, color
 
 type DrawerTab = 'profile' | 'timeline' | 'generate';
 
-function ProspectDrawer({ prospect, onClose, onUpdate }: {
+function ProspectDrawer({ prospect, onClose, onUpdate, onDelete }: {
   prospect: LeadForgeProspect;
   onClose: () => void;
   onUpdate: (id: string, updates: Partial<LeadForgeProspect>) => Promise<void>;
+  onDelete?: (id: string) => Promise<void>;
 }) {
   const [tab, setTab] = useState<DrawerTab>('profile');
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const p = prospect as any;
+
+  const handleDelete = async () => {
+    if (!onDelete) return;
+    setDeleting(true);
+    try {
+      await onDelete(prospect.id);
+      onClose();
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const tabStyle = (active: boolean): React.CSSProperties => ({
     flex: 1, padding: '8px 0', fontSize: 12, fontWeight: active ? 700 : 500, border: 'none',
@@ -524,7 +538,28 @@ function ProspectDrawer({ prospect, onClose, onUpdate }: {
                 {prospect.title ?? '—'}{prospect.account ? ` · ${prospect.account.company_name}` : ''}
               </p>
             </div>
-            <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--portal-text-tertiary)', padding: 4 }}><X size={17} /></button>
+            <div style={{ display: 'flex', gap: 4 }}>
+              {onDelete && !confirmDelete && (
+                <button onClick={() => setConfirmDelete(true)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--portal-text-tertiary)', padding: 4, fontSize: 11, fontWeight: 600 }}>
+                  Delete
+                </button>
+              )}
+              {confirmDelete && (
+                <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+                  <span style={{ fontSize: 11, color: '#ef4444', fontWeight: 600 }}>Delete?</span>
+                  <button onClick={handleDelete} disabled={deleting}
+                    style={{ padding: '3px 8px', border: 'none', borderRadius: 5, background: '#ef4444', color: 'white', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
+                    {deleting ? '…' : 'Yes'}
+                  </button>
+                  <button onClick={() => setConfirmDelete(false)}
+                    style={{ padding: '3px 8px', border: '1px solid var(--portal-border-default)', borderRadius: 5, background: 'none', fontSize: 11, fontWeight: 600, color: 'var(--portal-text-tertiary)', cursor: 'pointer' }}>
+                    No
+                  </button>
+                </div>
+              )}
+              <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--portal-text-tertiary)', padding: 4 }}><X size={17} /></button>
+            </div>
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <IcpBadge score={prospect.icp_score} />
@@ -680,7 +715,7 @@ function SortIcon({ field, current, dir }: { field: SortField; current: SortFiel
 // ── Main Page ──────────────────────────────────────────────────────────────
 
 export default function ProspectsPage() {
-  const { prospects, loading, createProspect, updateProspect } = useProspects();
+  const { prospects, loading, createProspect, updateProspect, deleteProspect } = useProspects();
   const { createAccount } = useAccounts();
   const [search, setSearch] = useState('');
   const [filterScore, setFilterScore] = useState('all');
@@ -854,9 +889,18 @@ export default function ProspectsPage() {
         <ProspectDrawer
           prospect={drawerProspect}
           onClose={() => setDrawerProspect(null)}
+          onDelete={async (id) => {
+            await deleteProspect(id);
+            setDrawerProspect(null);
+          }}
           onUpdate={async (id, updates) => {
             await updateProspect(id, updates);
             setDrawerProspect(prev => prev ? { ...prev, ...updates } : null);
+            // Sync stage change to HubSpot
+            if ((updates as any).pipeline_stage) {
+              const updatedProspect = { ...drawerProspect, ...updates };
+              syncToHubSpot(updatedProspect as LeadForgeProspect).catch(() => {});
+            }
           }}
         />
       )}
