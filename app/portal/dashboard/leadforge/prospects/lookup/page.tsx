@@ -235,8 +235,8 @@ export default function ProspectLookupPage() {
           trigger_context: person.relevance,
           pipeline_stage: 'identified',
         } as any);
-        if (newProspect) {
-          // Reveal email via Apollo after save (credit spent here, not during browse)
+        if (newProspect && !person.email_guess) {
+          // Only spend an Apollo credit if we don't already have the email from the search
           fetch('/portal/api/leadforge/enrich', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
