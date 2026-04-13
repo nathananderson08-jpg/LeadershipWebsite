@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   if (!q || q.length < 2) return NextResponse.json({ orgs: [] });
 
   try {
-    const res = await apollo<{ companies?: ApolloOrgMatch[]; organizations?: ApolloOrgMatch[] }>(
+    const res = await apollo<any>(
       'POST',
       '/mixed_companies/api_search',
       {
@@ -19,15 +19,19 @@ export async function GET(req: NextRequest) {
         per_page: 8,
       }
     );
-    const orgs = (res.companies ?? res.organizations ?? []).map(o => ({
+    // Log raw keys so we can see what Apollo actually returns
+    console.log('[org-search] Apollo raw keys:', Object.keys(res));
+    const rawList: ApolloOrgMatch[] = res.companies ?? res.organizations ?? res.accounts ?? res.results ?? [];
+    const orgs = rawList.map(o => ({
       id: o.id,
       name: o.name,
       domain: o.primary_domain,
       headcount: o.estimated_num_employees,
       industry: o.industry,
     }));
-    return NextResponse.json({ orgs });
+    return NextResponse.json({ orgs, _debug_keys: Object.keys(res) });
   } catch (err: any) {
-    return NextResponse.json({ orgs: [] });
+    console.error('[org-search] Apollo error:', err.message);
+    return NextResponse.json({ orgs: [], _debug_error: err.message });
   }
 }
