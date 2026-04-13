@@ -390,7 +390,7 @@ export default function ProspectLookupPage() {
 
                     {/* Contact hints */}
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
-                      {person.email_guess && (
+                      {person.email_guess ? (
                         <span style={{
                           fontSize: 11, fontFamily: 'monospace', padding: '3px 8px', borderRadius: 6,
                           color: person.email_confidence === 'verified' ? '#4ade80' : person.email_confidence === 'inferred' ? '#f59e0b' : 'var(--portal-text-tertiary)',
@@ -401,6 +401,10 @@ export default function ProspectLookupPage() {
                           <span style={{ marginLeft: 5, fontSize: 10, opacity: 0.8 }}>
                             {person.email_confidence === 'verified' ? '✓ verified' : person.email_confidence === 'inferred' ? '~ unverified' : '? unknown'}
                           </span>
+                        </span>
+                      ) : (
+                        <span style={{ fontSize: 11, color: 'var(--portal-text-tertiary)', padding: '3px 8px', borderRadius: 6, border: '1px solid var(--portal-border-default)', opacity: 0.6 }}>
+                          Email via enrich
                         </span>
                       )}
                       {person.linkedin_url ? (

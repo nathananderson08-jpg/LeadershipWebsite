@@ -54,9 +54,34 @@ const GENERATE_TYPES = [
 // ── Shared UI ──────────────────────────────────────────────────────────────
 
 function IcpBadge({ score }: { score: number }) {
+  const [tip, setTip] = useState(false);
   const color = score >= 80 ? '#4ade80' : score >= 60 ? '#f59e0b' : '#ef4444';
   const bg    = score >= 80 ? 'rgba(74,222,128,0.1)' : score >= 60 ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)';
-  return <span style={{ background: bg, color, fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 999 }}>ICP {score}</span>;
+  const explanation = score >= 80
+    ? 'High ICP (80–100): C-Suite HR/People leader — CHRO, CPO, CLO. Strong budget authority and strategic mandate for leadership programs.'
+    : score >= 60
+    ? 'Medium ICP (60–79): VP-level — VP HR, VP People, VP Talent. Significant influence over people programs and vendor selection.'
+    : 'Lower ICP (<60): Director or Senior Manager level. Relevant but typically limited buying authority for senior leadership programs.';
+  return (
+    <span
+      style={{ position: 'relative', background: bg, color, fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 999, cursor: 'default' }}
+      onMouseEnter={() => setTip(true)}
+      onMouseLeave={() => setTip(false)}
+    >
+      ICP {score}
+      {tip && (
+        <span style={{
+          position: 'absolute', bottom: 'calc(100% + 6px)', left: '50%', transform: 'translateX(-50%)',
+          background: 'var(--portal-bg-secondary)', border: '1px solid var(--portal-border-default)',
+          borderRadius: 8, padding: '8px 12px', fontSize: 11, fontWeight: 400, color: 'var(--portal-text-secondary)',
+          whiteSpace: 'normal', width: 220, lineHeight: 1.5, zIndex: 100,
+          boxShadow: '0 4px 16px rgba(0,0,0,0.12)', pointerEvents: 'none',
+        }}>
+          {explanation}
+        </span>
+      )}
+    </span>
+  );
 }
 
 function StagePill({ stage }: { stage: string }) {
