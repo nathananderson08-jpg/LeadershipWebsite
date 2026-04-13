@@ -34,8 +34,10 @@ function seniorityFromTitle(title: string): LookupPerson['seniority'] {
 }
 
 function apolloToLookupPerson(p: ApolloPerson): LookupPerson {
-  // api_search may return name as empty string while first_name/last_name are populated
-  const fullName = p.name?.trim() || `${p.first_name ?? ''} ${p.last_name ?? ''}`.trim() || '—';
+  // Prefer first_name+last_name when both are available — Apollo's name field
+  // sometimes contains only the first name, so combining parts is more reliable
+  const combined = `${p.first_name ?? ''} ${p.last_name ?? ''}`.trim();
+  const fullName = combined.includes(' ') ? combined : (p.name?.trim() || combined || '—');
   return {
     full_name: fullName,
     title: p.title ?? '—',
@@ -220,11 +222,6 @@ Respond ONLY with this JSON structure:
       email_pattern: emailPattern,
       headcount_estimate: headcount,
       people,
-      _debug_sample: people.slice(0, 2).map(p => ({
-        full_name: p.full_name,
-        linkedin_url: p.linkedin_url,
-        source: p.source,
-      })),
     } as LookupResult);
 
   } catch (err: any) {

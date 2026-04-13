@@ -21,7 +21,7 @@ function SeniorityBadge({ level }: { level: string }) {
 
 export default function ProspectLookupPage() {
   const { createProspect } = useProspects();
-  const { accounts, createAccount } = useAccounts();
+  const { accounts, createAccount, updateAccount } = useAccounts();
 
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
@@ -92,20 +92,27 @@ export default function ProspectLookupPage() {
     try {
       // Find or create account
       let account_id: string | undefined;
+      // Parse headcount from string like "50,000" or "10,000-50,000"
+      const parseHeadcount = (s: string | null): number | undefined => {
+        if (!s) return undefined;
+        const digits = s.replace(/[^0-9]/g, '');
+        const n = parseInt(digits);
+        return isNaN(n) ? undefined : n;
+      };
+
       const existing = accounts.find(a =>
         a.company_name.toLowerCase() === result.company_name.toLowerCase()
       );
       if (existing) {
         account_id = existing.id;
+        // Backfill domain/headcount if the existing account is missing them
+        const updates: Record<string, any> = {};
+        if (!existing.domain && result.domain) updates.domain = result.domain;
+        if (!existing.headcount && result.headcount_estimate) updates.headcount = parseHeadcount(result.headcount_estimate);
+        if (Object.keys(updates).length > 0) {
+          updateAccount(existing.id, updates).catch(() => {});
+        }
       } else {
-        // Parse headcount from string like "50,000" or "10,000-50,000"
-        const parseHeadcount = (s: string | null): number | undefined => {
-          if (!s) return undefined;
-          const digits = s.replace(/[^0-9]/g, '');
-          const n = parseInt(digits);
-          return isNaN(n) ? undefined : n;
-        };
-
         const acct = await createAccount({
           company_name: result.company_name,
           domain: result.domain ?? undefined,
@@ -298,11 +305,15 @@ export default function ProspectLookupPage() {
                           {person.email_confidence === 'inferred' && <span style={{ color: '#f59e0b', marginLeft: 4 }}>~</span>}
                         </span>
                       )}
-                      {person.linkedin_url && (
+                      {person.linkedin_url ? (
                         <a href={person.linkedin_url} target="_blank" rel="noopener noreferrer"
                           style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#0a66c2', textDecoration: 'none', fontWeight: 700, background: 'rgba(10,102,194,0.08)', padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(10,102,194,0.2)' }}>
                           <ExternalLink size={11} /> LinkedIn
                         </a>
+                      ) : (
+                        <span style={{ fontSize: 11, color: 'var(--portal-text-tertiary)', padding: '4px 10px', borderRadius: 6, border: '1px solid var(--portal-border-default)', opacity: 0.4 }}>
+                          No LinkedIn
+                        </span>
                       )}
                       <button
                         onClick={() => toggleExpand(i)}
