@@ -113,6 +113,8 @@ export default function AccountDetailPage() {
         if (!account.industry && data.industry) updates.industry = data.industry;
         if (!account.headcount && data.headcount) updates.headcount = data.headcount;
         if (!account.domain && data.domain) updates.domain = data.domain;
+        if (!(account as any).hq_location && data.hq_location) updates.hq_location = data.hq_location;
+        if (!(account as any).key_challenges && data.key_challenges) updates.key_challenges = data.key_challenges;
         if (Object.keys(updates).length > 0) {
           await updateAccount(id, updates);
         }
@@ -180,12 +182,12 @@ export default function AccountDetailPage() {
                   <ExternalLink size={12} /> {account.domain}
                 </a>
               )}
-              {enriching && <span style={{ fontSize: 12, color: 'var(--portal-text-tertiary)' }}>Enriching from Apollo…</span>}
+              {enriching && <span style={{ fontSize: 12, color: 'var(--portal-text-tertiary)' }}>Enriching…</span>}
               {enrichError && <span style={{ fontSize: 12, color: '#f59e0b' }}>{enrichError}</span>}
-              {enrichDone && !enriching && <span style={{ fontSize: 12, color: '#4ade80', display: 'flex', alignItems: 'center', gap: 4 }}><Check size={11} /> Apollo enriched</span>}
+              {enrichDone && !enriching && <span style={{ fontSize: 12, color: '#4ade80', display: 'flex', alignItems: 'center', gap: 4 }}><Check size={11} /> Enriched</span>}
               {!enriching && !enrichDone && (
                 <button onClick={runEnrichment} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 12px', border: '1px solid var(--portal-border-default)', borderRadius: 7, background: 'none', fontSize: 12, color: 'var(--portal-text-secondary)', cursor: 'pointer' }}>
-                  <Sparkles size={11} /> Enrich from Apollo
+                  <Sparkles size={11} /> Enrich
                 </button>
               )}
             </div>

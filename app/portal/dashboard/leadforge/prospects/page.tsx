@@ -966,6 +966,7 @@ export default function ProspectsPage() {
   const [filterSeniority, setFilterSeniority] = useState('all');
   const [filterEmail, setFilterEmail] = useState('all');
   const [filterNextAction, setFilterNextAction] = useState('all');
+  const [filterCompany, setFilterCompany] = useState('all');
   const [sortField, setSortField] = useState<SortField>('icp_score');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
   const [showModal, setShowModal] = useState(false);
@@ -1037,7 +1038,8 @@ export default function ProspectsPage() {
       const matchSeniority  = filterSeniority === 'all' || (filterSeniority === 'csuite' ? isCsuite : isVP);
       const matchEmail      = filterEmail === 'all' || (filterEmail === 'yes' ? !!p.email : !p.email);
       const matchNextAction = filterNextAction === 'all' || (filterNextAction === 'yes' ? !!pa.next_action : !pa.next_action);
-      return matchSearch && matchScore && matchStage && matchWarmth && matchSeniority && matchEmail && matchNextAction;
+      const matchCompany    = filterCompany === 'all' || (p.account?.company_name ?? '') === filterCompany;
+      return matchSearch && matchScore && matchStage && matchWarmth && matchSeniority && matchEmail && matchNextAction && matchCompany;
     })
     .sort((a, b) => {
       let av: any, bv: any;
@@ -1050,6 +1052,8 @@ export default function ProspectsPage() {
       if (av > bv) return sortDir === 'asc' ? 1 : -1;
       return 0;
     });
+
+  const companies = Array.from(new Set(prospects.map(p => p.account?.company_name).filter(Boolean))) as string[];
 
   const selectStyle: React.CSSProperties = { padding: '8px 12px', border: '1px solid var(--portal-border-default)', borderRadius: 10, fontSize: 13, color: 'var(--portal-text-secondary)', background: 'var(--portal-bg-secondary)', cursor: 'pointer', outline: 'none' };
   const thStyle: React.CSSProperties = { padding: '10px 14px', fontSize: 11, fontWeight: 600, color: 'var(--portal-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.07em', textAlign: 'left', userSelect: 'none', whiteSpace: 'nowrap' };
@@ -1137,6 +1141,12 @@ export default function ProspectsPage() {
           <option value="yes">Has Next Action</option>
           <option value="no">No Next Action</option>
         </select>
+        {companies.length > 0 && (
+          <select value={filterCompany} onChange={e => setFilterCompany(e.target.value)} style={selectStyle}>
+            <option value="all">All Companies</option>
+            {companies.sort().map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+        )}
       </div>
 
       {/* Board view */}

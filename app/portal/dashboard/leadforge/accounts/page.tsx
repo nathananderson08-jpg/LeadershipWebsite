@@ -412,6 +412,7 @@ export default function AccountsPage() {
   const [filterHeadcount, setFilterHeadcount] = useState('all');
   const [filterHasProspects, setFilterHasProspects] = useState('all');
   const [filterHasTriggers, setFilterHasTriggers] = useState('all');
+  const [filterStage, setFilterStage] = useState('all');
   const [showModal, setShowModal] = useState(false);
 
   const loading = accountsLoading || prospectsLoading || eventsLoading;
@@ -420,14 +421,16 @@ export default function AccountsPage() {
 
   const filtered = accounts.filter(a => {
     const hc = a.headcount ?? 0;
-    const hasProspects = prospects.some(p => (p as any).account_id === a.id);
+    const acctProspects = prospects.filter(p => (p as any).account_id === a.id);
+    const hasProspects = acctProspects.length > 0;
     const hasTriggers  = events.some(e => (e as any).account_id === a.id && e.response_status === 'pending');
     const matchSearch   = !search || a.company_name.toLowerCase().includes(search.toLowerCase()) || (a.industry ?? '').toLowerCase().includes(search.toLowerCase());
     const matchIndustry = filterIndustry === 'all' || a.industry === filterIndustry;
     const matchHC       = filterHeadcount === 'all' || (filterHeadcount === 'enterprise' ? hc >= 10000 : filterHeadcount === 'mid' ? hc >= 1000 && hc < 10000 : hc > 0 && hc < 1000);
     const matchProspects = filterHasProspects === 'all' || (filterHasProspects === 'yes' ? hasProspects : !hasProspects);
     const matchTriggers  = filterHasTriggers === 'all' || (filterHasTriggers === 'yes' ? hasTriggers : !hasTriggers);
-    return matchSearch && matchIndustry && matchHC && matchProspects && matchTriggers;
+    const matchStage     = filterStage === 'all' || acctProspects.some(p => ((p as any).pipeline_stage ?? 'identified') === filterStage);
+    return matchSearch && matchIndustry && matchHC && matchProspects && matchTriggers && matchStage;
   });
 
   // Sort: most prospects first
@@ -503,6 +506,10 @@ export default function AccountsPage() {
           <option value="all">All Signals</option>
           <option value="yes">Pending Triggers</option>
           <option value="no">No Triggers</option>
+        </select>
+        <select value={filterStage} onChange={e => setFilterStage(e.target.value)} style={{ padding: '8px 12px', border: '1px solid var(--portal-border-default)', borderRadius: 10, fontSize: 13, color: 'var(--portal-text-secondary)', background: 'var(--portal-bg-secondary)', cursor: 'pointer', outline: 'none' }}>
+          <option value="all">All Pipeline Stages</option>
+          {PIPELINE_STAGES.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
         </select>
       </div>
 
