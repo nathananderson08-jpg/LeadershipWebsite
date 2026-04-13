@@ -408,14 +408,27 @@ export default function AccountsPage() {
   const { prospects, loading: prospectsLoading } = useProspects();
   const { events, loading: eventsLoading } = useTriggerEvents();
   const [search, setSearch] = useState('');
+  const [filterIndustry, setFilterIndustry] = useState('all');
+  const [filterHeadcount, setFilterHeadcount] = useState('all');
+  const [filterHasProspects, setFilterHasProspects] = useState('all');
+  const [filterHasTriggers, setFilterHasTriggers] = useState('all');
   const [showModal, setShowModal] = useState(false);
 
   const loading = accountsLoading || prospectsLoading || eventsLoading;
 
-  const filtered = accounts.filter(a =>
-    !search || a.company_name.toLowerCase().includes(search.toLowerCase()) ||
-    (a.industry ?? '').toLowerCase().includes(search.toLowerCase())
-  );
+  const industries = Array.from(new Set(accounts.map(a => a.industry).filter(Boolean))) as string[];
+
+  const filtered = accounts.filter(a => {
+    const hc = a.headcount ?? 0;
+    const hasProspects = prospects.some(p => (p as any).account_id === a.id);
+    const hasTriggers  = events.some(e => (e as any).account_id === a.id && e.response_status === 'pending');
+    const matchSearch   = !search || a.company_name.toLowerCase().includes(search.toLowerCase()) || (a.industry ?? '').toLowerCase().includes(search.toLowerCase());
+    const matchIndustry = filterIndustry === 'all' || a.industry === filterIndustry;
+    const matchHC       = filterHeadcount === 'all' || (filterHeadcount === 'enterprise' ? hc >= 10000 : filterHeadcount === 'mid' ? hc >= 1000 && hc < 10000 : hc > 0 && hc < 1000);
+    const matchProspects = filterHasProspects === 'all' || (filterHasProspects === 'yes' ? hasProspects : !hasProspects);
+    const matchTriggers  = filterHasTriggers === 'all' || (filterHasTriggers === 'yes' ? hasTriggers : !hasTriggers);
+    return matchSearch && matchIndustry && matchHC && matchProspects && matchTriggers;
+  });
 
   // Sort: most prospects first
   const sorted = [...filtered].sort((a, b) => {
@@ -463,13 +476,35 @@ export default function AccountsPage() {
         ))}
       </div>
 
-      {/* Search */}
-      <input
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-        placeholder="Search accounts by name or industry…"
-        style={{ padding: '10px 16px', border: '1px solid var(--portal-border-default)', borderRadius: 10, fontSize: 13, color: 'var(--portal-text-primary)', background: 'var(--portal-bg-secondary)', outline: 'none', width: '100%', boxSizing: 'border-box' }}
-      />
+      {/* Search + Filters */}
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <input
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Search by name or industry…"
+          style={{ flex: 1, minWidth: 200, padding: '8px 14px', border: '1px solid var(--portal-border-default)', borderRadius: 10, fontSize: 13, color: 'var(--portal-text-primary)', background: 'var(--portal-bg-secondary)', outline: 'none', boxSizing: 'border-box' }}
+        />
+        <select value={filterIndustry} onChange={e => setFilterIndustry(e.target.value)} style={{ padding: '8px 12px', border: '1px solid var(--portal-border-default)', borderRadius: 10, fontSize: 13, color: 'var(--portal-text-secondary)', background: 'var(--portal-bg-secondary)', cursor: 'pointer', outline: 'none' }}>
+          <option value="all">All Industries</option>
+          {industries.map(i => <option key={i} value={i}>{i}</option>)}
+        </select>
+        <select value={filterHeadcount} onChange={e => setFilterHeadcount(e.target.value)} style={{ padding: '8px 12px', border: '1px solid var(--portal-border-default)', borderRadius: 10, fontSize: 13, color: 'var(--portal-text-secondary)', background: 'var(--portal-bg-secondary)', cursor: 'pointer', outline: 'none' }}>
+          <option value="all">All Sizes</option>
+          <option value="enterprise">Enterprise (10k+)</option>
+          <option value="mid">Mid-Market (1k–10k)</option>
+          <option value="small">Small (&lt;1k)</option>
+        </select>
+        <select value={filterHasProspects} onChange={e => setFilterHasProspects(e.target.value)} style={{ padding: '8px 12px', border: '1px solid var(--portal-border-default)', borderRadius: 10, fontSize: 13, color: 'var(--portal-text-secondary)', background: 'var(--portal-bg-secondary)', cursor: 'pointer', outline: 'none' }}>
+          <option value="all">All Accounts</option>
+          <option value="yes">Has Prospects</option>
+          <option value="no">No Prospects Yet</option>
+        </select>
+        <select value={filterHasTriggers} onChange={e => setFilterHasTriggers(e.target.value)} style={{ padding: '8px 12px', border: '1px solid var(--portal-border-default)', borderRadius: 10, fontSize: 13, color: 'var(--portal-text-secondary)', background: 'var(--portal-bg-secondary)', cursor: 'pointer', outline: 'none' }}>
+          <option value="all">All Signals</option>
+          <option value="yes">Pending Triggers</option>
+          <option value="no">No Triggers</option>
+        </select>
+      </div>
 
       {/* Account list */}
       {loading ? (

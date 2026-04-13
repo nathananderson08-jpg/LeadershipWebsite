@@ -963,6 +963,9 @@ export default function ProspectsPage() {
   const [filterScore, setFilterScore] = useState('all');
   const [filterStage, setFilterStage] = useState('all');
   const [filterWarmth, setFilterWarmth] = useState('all');
+  const [filterSeniority, setFilterSeniority] = useState('all');
+  const [filterEmail, setFilterEmail] = useState('all');
+  const [filterNextAction, setFilterNextAction] = useState('all');
   const [sortField, setSortField] = useState<SortField>('icp_score');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
   const [showModal, setShowModal] = useState(false);
@@ -1022,12 +1025,19 @@ export default function ProspectsPage() {
 
   const filtered = prospects
     .filter(p => {
+      const pa = p as any;
       const q = search.toLowerCase();
-      const matchSearch = !q || p.full_name.toLowerCase().includes(q) || (p.title ?? '').toLowerCase().includes(q) || (p.account?.company_name ?? '').toLowerCase().includes(q);
-      const matchScore  = filterScore === 'all' ? true : filterScore === '80+' ? p.icp_score >= 80 : filterScore === '60-79' ? p.icp_score >= 60 && p.icp_score < 80 : p.icp_score < 60;
-      const matchStage  = filterStage === 'all' || (p as any).pipeline_stage === filterStage;
-      const matchWarmth = filterWarmth === 'all' || (p as any).warmth_score === filterWarmth;
-      return matchSearch && matchScore && matchStage && matchWarmth;
+      const title = (p.title ?? '').toLowerCase();
+      const matchSearch     = !q || p.full_name.toLowerCase().includes(q) || title.includes(q) || (p.account?.company_name ?? '').toLowerCase().includes(q);
+      const matchScore      = filterScore === 'all' ? true : filterScore === '80+' ? p.icp_score >= 80 : filterScore === '60-79' ? p.icp_score >= 60 && p.icp_score < 80 : p.icp_score < 60;
+      const matchStage      = filterStage === 'all' || pa.pipeline_stage === filterStage;
+      const matchWarmth     = filterWarmth === 'all' || pa.warmth_score === filterWarmth;
+      const isCsuite        = title.includes('chief') || title.includes('ceo') || title.includes('coo') || title.includes('cfo') || title.includes('cto') || title.includes('cmo') || title.includes('cro') || title.includes('president');
+      const isVP            = title.includes('svp') || title.includes('vp ') || title.includes('vice president');
+      const matchSeniority  = filterSeniority === 'all' || (filterSeniority === 'csuite' ? isCsuite : isVP);
+      const matchEmail      = filterEmail === 'all' || (filterEmail === 'yes' ? !!p.email : !p.email);
+      const matchNextAction = filterNextAction === 'all' || (filterNextAction === 'yes' ? !!pa.next_action : !pa.next_action);
+      return matchSearch && matchScore && matchStage && matchWarmth && matchSeniority && matchEmail && matchNextAction;
     })
     .sort((a, b) => {
       let av: any, bv: any;
@@ -1111,6 +1121,21 @@ export default function ProspectsPage() {
           <option value="80+">80+ High</option>
           <option value="60-79">60–79 Medium</option>
           <option value="<60">Below 60</option>
+        </select>
+        <select value={filterSeniority} onChange={e => setFilterSeniority(e.target.value)} style={selectStyle}>
+          <option value="all">All Seniority</option>
+          <option value="csuite">C-Suite</option>
+          <option value="vp">VP / SVP</option>
+        </select>
+        <select value={filterEmail} onChange={e => setFilterEmail(e.target.value)} style={selectStyle}>
+          <option value="all">All Contacts</option>
+          <option value="yes">Has Email</option>
+          <option value="no">No Email</option>
+        </select>
+        <select value={filterNextAction} onChange={e => setFilterNextAction(e.target.value)} style={selectStyle}>
+          <option value="all">All Actions</option>
+          <option value="yes">Has Next Action</option>
+          <option value="no">No Next Action</option>
         </select>
       </div>
 
