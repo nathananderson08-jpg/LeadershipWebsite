@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Search, Loader2, Building2, CheckCircle, Plus, AlertCircle, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 import { useProspects, useAccounts } from '@/hooks/portal/useLeadForge';
 import type { LookupResult, LookupPerson } from '@/app/portal/api/leadforge/lookup/route';
@@ -22,6 +23,7 @@ function SeniorityBadge({ level }: { level: string }) {
 export default function ProspectLookupPage() {
   const { createProspect } = useProspects();
   const { accounts, createAccount, updateAccount } = useAccounts();
+  const searchParams = useSearchParams();
 
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,8 +35,9 @@ export default function ProspectLookupPage() {
   const [addedNames, setAddedNames] = useState<Set<string>>(new Set());
   const [addError, setAddError] = useState('');
 
-  const handleSearch = async () => {
-    if (!query.trim()) return;
+  const handleSearch = useCallback(async (searchQuery?: string) => {
+    const q = (searchQuery ?? query).trim();
+    if (!q) return;
     setLoading(true);
     setResult(null);
     setError('');
@@ -46,7 +49,7 @@ export default function ProspectLookupPage() {
       const res = await fetch('/portal/api/leadforge/lookup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: query.trim() }),
+        body: JSON.stringify({ query: q }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Lookup failed.');
@@ -61,7 +64,16 @@ export default function ProspectLookupPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [query]);
+
+  // Auto-run search if ?q= param is present (e.g. from account detail page)
+  useEffect(() => {
+    const q = searchParams.get('q');
+    if (q) {
+      setQuery(q);
+      handleSearch(q);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggleSelect = (i: number) => {
     setSelected(prev => {
@@ -198,7 +210,7 @@ export default function ProspectLookupPage() {
           />
         </div>
         <button
-          onClick={handleSearch}
+          onClick={() => handleSearch()}
           disabled={loading || !query.trim()}
           style={{
             display: 'flex', alignItems: 'center', gap: 8, padding: '12px 20px',
@@ -300,9 +312,16 @@ export default function ProspectLookupPage() {
                     {/* Contact hints */}
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
                       {person.email_guess && (
-                        <span style={{ fontSize: 11, color: 'var(--portal-text-tertiary)', fontFamily: 'monospace', background: 'var(--portal-bg-hover)', padding: '3px 8px', borderRadius: 6 }}>
+                        <span style={{
+                          fontSize: 11, fontFamily: 'monospace', padding: '3px 8px', borderRadius: 6,
+                          color: person.email_confidence === 'verified' ? '#4ade80' : person.email_confidence === 'inferred' ? '#f59e0b' : 'var(--portal-text-tertiary)',
+                          background: person.email_confidence === 'verified' ? 'rgba(74,222,128,0.08)' : person.email_confidence === 'inferred' ? 'rgba(245,158,11,0.08)' : 'var(--portal-bg-hover)',
+                          border: `1px solid ${person.email_confidence === 'verified' ? 'rgba(74,222,128,0.2)' : person.email_confidence === 'inferred' ? 'rgba(245,158,11,0.2)' : 'var(--portal-border-default)'}`,
+                        }}>
                           {person.email_guess}
-                          {person.email_confidence === 'inferred' && <span style={{ color: '#f59e0b', marginLeft: 4 }}>~</span>}
+                          <span style={{ marginLeft: 5, fontSize: 10, opacity: 0.8 }}>
+                            {person.email_confidence === 'verified' ? '✓ verified' : person.email_confidence === 'inferred' ? '~ unverified' : '? unknown'}
+                          </span>
                         </span>
                       )}
                       {person.linkedin_url ? (
