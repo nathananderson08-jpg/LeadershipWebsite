@@ -245,7 +245,16 @@ export function useAccounts() {
     return data;
   };
 
-  return { accounts, loading, createAccount, reload: load };
+  const updateAccount = async (id: string, updates: Partial<CreateAccountInput>) => {
+    const { error } = await supabase
+      .from('leadforge_accounts')
+      .update(updates)
+      .eq('id', id);
+    if (error) throw error;
+    await load();
+  };
+
+  return { accounts, loading, createAccount, updateAccount, reload: load };
 }
 
 // ── useTriggerEvents ───────────────────────────────────────────

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Building2, Users, Zap, TrendingUp, Plus, X, ChevronDown, ChevronUp, ExternalLink, AlertTriangle } from 'lucide-react';
 import {
   useAccounts, useProspects, useTriggerEvents,
@@ -179,7 +180,7 @@ function AccountCard({ account, prospectsForAccount, eventsForAccount }: {
         {/* Company info */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-            <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--portal-text-primary)', margin: 0 }}>{account.company_name}</p>
+            <Link href={`/portal/dashboard/leadforge/accounts/${account.id}`} style={{ fontSize: 15, fontWeight: 700, color: 'var(--portal-text-primary)', textDecoration: 'none' }}>{account.company_name}</Link>
             {avgIcp != null && (
               <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 999, background: icpBg, color: icpColor }}>
                 ICP {avgIcp}

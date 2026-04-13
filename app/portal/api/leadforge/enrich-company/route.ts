@@ -1,25 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { enrichCompany } from '@/lib/integrations/apollo';
+import { enrichCompany, findOrganization } from '@/lib/integrations/apollo';
 
 export async function POST(req: NextRequest) {
   try {
-    const { domain } = await req.json();
-    if (!domain?.trim()) {
-      return NextResponse.json({ error: 'domain is required.' }, { status: 400 });
+    const { domain, company_name } = await req.json();
+
+    let resolvedDomain = domain?.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '') || null;
+
+    // If no domain provided, try to find org by name to get domain
+    if (!resolvedDomain && company_name?.trim()) {
+      const org = await findOrganization(company_name.trim());
+      if (org?.primary_domain) resolvedDomain = org.primary_domain;
     }
 
-    const org = await enrichCompany(domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, ''));
-    if (!org) {
+    if (!resolvedDomain) {
+      return NextResponse.json({ found: false });
+    }
+
+    const orgData = await enrichCompany(resolvedDomain);
+    if (!orgData) {
       return NextResponse.json({ found: false });
     }
 
     return NextResponse.json({
       found: true,
-      industry: org.industry ?? null,
-      headcount: org.estimated_num_employees ?? null,
-      description: org.short_description ?? null,
-      linkedin_url: org.linkedin_url ?? null,
-      founded_year: org.founded_year ?? null,
+      domain: resolvedDomain,
+      industry: orgData.industry ?? null,
+      headcount: orgData.estimated_num_employees ?? null,
+      description: orgData.short_description ?? null,
+      linkedin_url: orgData.linkedin_url ?? null,
+      founded_year: orgData.founded_year ?? null,
     });
   } catch (err: any) {
     console.error('Company enrich error:', err);
