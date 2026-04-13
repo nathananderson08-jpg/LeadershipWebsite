@@ -34,11 +34,13 @@ function seniorityFromTitle(title: string): LookupPerson['seniority'] {
 }
 
 function apolloToLookupPerson(p: ApolloPerson): LookupPerson {
+  // api_search may return name as empty string while first_name/last_name are populated
+  const fullName = p.name?.trim() || `${p.first_name ?? ''} ${p.last_name ?? ''}`.trim() || '—';
   return {
-    full_name: p.name,
+    full_name: fullName,
     title: p.title ?? '—',
     seniority: seniorityFromTitle(p.title ?? ''),
-    relevance: '',  // filled in by Claude below
+    relevance: '',
     linkedin_url: p.linkedin_url,
     email_guess: p.email,
     email_confidence: emailConfidenceFromStatus(p.email_status),
@@ -104,10 +106,11 @@ export async function POST(req: NextRequest) {
     };
 
     try {
-      // Step 1: Resolve org ID for precise current-employee search.
-      const orgCandidate = await findOrganization(query.trim());
-      console.log('[LeadForge] orgCandidate:', JSON.stringify(orgCandidate));
-      _debug.orgCandidate = orgCandidate ? { id: orgCandidate.id, name: orgCandidate.name, domain: orgCandidate.primary_domain } : null;
+      // Run org lookup and name-based people search in parallel to save ~1-2s
+      const [orgCandidate, namePeopleResult] = await Promise.all([
+        findOrganization(query.trim()),
+        searchPeopleAtCompany(query.trim()),
+      ]);
 
       const queryLower = query.trim().toLowerCase();
       const org = orgCandidate && (
@@ -116,38 +119,30 @@ export async function POST(req: NextRequest) {
         (orgCandidate.primary_domain ?? '').toLowerCase().includes(queryLower.replace(/\s+/g, ''))
       ) ? orgCandidate : null;
 
+      _debug.orgCandidate = orgCandidate ? { id: orgCandidate.id, name: orgCandidate.name, domain: orgCandidate.primary_domain } : null;
       _debug.orgUsed = org ? org.name : 'null — name search fallback';
-      console.log('[LeadForge] org used:', org ? org.name : 'null — falling back to name search');
 
       let rawPeople: ApolloPerson[] = [];
 
       if (org) {
-        // Try org_id search first (current employees only)
-        const apolloResult = await searchPeopleByOrgId(org.id);
-        rawPeople = apolloResult.people ?? [];
-        _debug.orgIdSearchCount = rawPeople.length;
-        _debug.orgIdRaw = rawPeople.map(p => ({ name: p.name, title: p.title }));
-        console.log('[LeadForge] searchPeopleByOrgId returned', rawPeople.length, 'people');
+        // We have a verified org — fetch by org ID for current-employees-only results
+        const orgPeopleResult = await searchPeopleByOrgId(org.id);
+        rawPeople = orgPeopleResult.people ?? [];
         companyName = org.name;
         domain = org.primary_domain;
         if (org.estimated_num_employees) headcount = org.estimated_num_employees.toLocaleString();
+        _debug.orgIdSearchCount = rawPeople.length;
 
-        // If org_id search returned nothing (title filter too strict), fall back to name search
-        // but still use the resolved company name/domain from the org lookup
+        // If org_id search returned nothing, use the name search results we already have
         if (rawPeople.length === 0) {
-          console.log('[LeadForge] org_id search empty, falling back to name search for', org.name);
+          rawPeople = namePeopleResult.people ?? [];
           _debug.orgIdFallback = true;
-          const fallbackResult = await searchPeopleAtCompany(org.name);
-          rawPeople = fallbackResult.people ?? [];
           _debug.nameFallbackCount = rawPeople.length;
-          _debug.nameFallbackRaw = rawPeople.map(p => ({ name: p.name, title: p.title, org: p.organization_name }));
         }
       } else {
-        const apolloResult = await searchPeopleAtCompany(query.trim());
-        rawPeople = apolloResult.people ?? [];
+        // No org match — use the name search results already fetched in parallel
+        rawPeople = namePeopleResult.people ?? [];
         _debug.nameSearchCount = rawPeople.length;
-        _debug.nameSearchRaw = rawPeople.map(p => ({ name: p.name, title: p.title, org: p.organization_name }));
-        console.log('[LeadForge] searchPeopleAtCompany returned', rawPeople.length, 'people');
         const firstPerson = rawPeople[0];
         if (firstPerson?.organization) {
           companyName = firstPerson.organization.name ?? query.trim();
@@ -231,8 +226,7 @@ Respond ONLY with this JSON structure:
       });
     }
 
-    // Add Claude relevance to Apollo results
-    people = await getRelevanceFromClaude(people, companyName);
+    // Skip Claude relevance pass to keep response fast — relevance shown on expand
 
     return NextResponse.json({
       company_name: companyName,
