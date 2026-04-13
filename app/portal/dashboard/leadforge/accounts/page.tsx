@@ -39,6 +39,8 @@ function AddAccountModal({ onClose, onSave }: {
 }) {
   const [form, setForm] = useState<CreateAccountInput>({ company_name: '' });
   const [saving, setSaving] = useState(false);
+  const [enriching, setEnriching] = useState(false);
+  const [enriched, setEnriched] = useState(false);
   const [error, setError] = useState('');
 
   const handle = async () => {
@@ -50,6 +52,32 @@ function AddAccountModal({ onClose, onSave }: {
     } catch (e: any) {
       setError(e.message ?? 'Failed to save.');
       setSaving(false);
+    }
+  };
+
+  const handleDomainBlur = async (domain: string) => {
+    if (!domain.trim() || enriched) return;
+    setEnriching(true);
+    try {
+      const res = await fetch('/portal/api/leadforge/enrich-company', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ domain: domain.trim() }),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.found) {
+        setForm(f => ({
+          ...f,
+          industry: f.industry || data.industry || f.industry,
+          headcount: f.headcount || data.headcount || f.headcount,
+        }));
+        setEnriched(true);
+      }
+    } catch {
+      // silent — enrichment is best-effort
+    } finally {
+      setEnriching(false);
     }
   };
 
@@ -70,7 +98,7 @@ function AddAccountModal({ onClose, onSave }: {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div>
-              <label style={labelStyle}>Industry</label>
+              <label style={labelStyle}>Industry {enriched && !enriching && <span style={{ color: 'var(--portal-accent)', fontWeight: 600 }}>· auto-filled</span>}</label>
               <input style={inputStyle} value={form.industry ?? ''} onChange={e => setForm(f => ({ ...f, industry: e.target.value || undefined }))} placeholder="Technology" />
             </div>
             <div>
@@ -80,18 +108,27 @@ function AddAccountModal({ onClose, onSave }: {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div>
-              <label style={labelStyle}>Domain</label>
-              <input style={inputStyle} value={form.domain ?? ''} onChange={e => setForm(f => ({ ...f, domain: e.target.value || undefined }))} placeholder="microsoft.com" />
+              <label style={labelStyle}>
+                Domain
+                {enriching && <span style={{ color: 'var(--portal-text-tertiary)', fontWeight: 400 }}> · enriching…</span>}
+              </label>
+              <input
+                style={inputStyle}
+                value={form.domain ?? ''}
+                onChange={e => { setEnriched(false); setForm(f => ({ ...f, domain: e.target.value || undefined })); }}
+                onBlur={e => handleDomainBlur(e.target.value)}
+                placeholder="microsoft.com"
+              />
             </div>
             <div>
-              <label style={labelStyle}>Headcount</label>
+              <label style={labelStyle}>Headcount {enriched && !enriching && <span style={{ color: 'var(--portal-accent)', fontWeight: 600 }}>· auto-filled</span>}</label>
               <input style={inputStyle} type="number" value={form.headcount ?? ''} onChange={e => setForm(f => ({ ...f, headcount: e.target.value ? parseInt(e.target.value) : undefined }))} placeholder="50000" />
             </div>
           </div>
           {error && <p style={{ fontSize: 12, color: '#ef4444', margin: 0 }}>{error}</p>}
           <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 8 }}>
             <button onClick={onClose} style={{ padding: '10px 20px', border: '1px solid var(--portal-border-default)', borderRadius: 10, background: 'none', fontSize: 13, fontWeight: 600, color: 'var(--portal-text-secondary)', cursor: 'pointer' }}>Cancel</button>
-            <button onClick={handle} disabled={saving} style={{ padding: '10px 20px', border: 'none', borderRadius: 10, background: 'var(--portal-accent)', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: saving ? 0.6 : 1 }}>
+            <button onClick={handle} disabled={saving || enriching} style={{ padding: '10px 20px', border: 'none', borderRadius: 10, background: 'var(--portal-accent)', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: (saving || enriching) ? 0.6 : 1 }}>
               {saving ? 'Adding…' : 'Add Account'}
             </button>
           </div>
