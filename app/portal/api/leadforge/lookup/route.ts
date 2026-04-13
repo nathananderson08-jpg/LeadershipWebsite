@@ -220,6 +220,11 @@ Respond ONLY with this JSON structure:
       email_pattern: emailPattern,
       headcount_estimate: headcount,
       people,
+      _debug_sample: people.slice(0, 2).map(p => ({
+        full_name: p.full_name,
+        linkedin_url: p.linkedin_url,
+        source: p.source,
+      })),
     } as LookupResult);
 
   } catch (err: any) {
