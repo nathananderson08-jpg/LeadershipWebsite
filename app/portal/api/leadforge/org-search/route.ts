@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   if (!q || q.length < 2) return NextResponse.json({ orgs: [] });
 
   try {
-    const res = await apollo<{ companies?: ApolloOrgMatch[] }>(
+    const res = await apollo<{ companies?: ApolloOrgMatch[]; organizations?: ApolloOrgMatch[] }>(
       'POST',
       '/mixed_companies/api_search',
       {
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
         per_page: 8,
       }
     );
-    const orgs = (res.companies ?? []).map(o => ({
+    const orgs = (res.companies ?? res.organizations ?? []).map(o => ({
       id: o.id,
       name: o.name,
       domain: o.primary_domain,
