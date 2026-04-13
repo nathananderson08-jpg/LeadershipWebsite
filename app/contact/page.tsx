@@ -14,7 +14,43 @@ const OFFICES = [
 
 export default function ContactPage() {
   const [inquiryType, setInquiryType] = useState("General Inquiry")
+  const [fullName, setFullName] = useState("")
+  const [email, setEmail] = useState("")
+  const [company, setCompany] = useState("")
+  const [role, setRole] = useState("")
+  const [message, setMessage] = useState("")
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          inquiry_type: inquiryType,
+          full_name: fullName,
+          email,
+          company,
+          role,
+          message,
+        }),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error ?? 'Failed to send message.')
+      }
+      setSubmitted(true)
+    } catch (err: any) {
+      setError(err.message ?? 'Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <>
@@ -43,10 +79,7 @@ export default function ContactPage() {
                   <p className="text-neutral-500">We&apos;ll be in touch within 24 hours.</p>
                 </div>
               ) : (
-                <form
-                  className="space-y-5"
-                  onSubmit={(e) => { e.preventDefault(); setSubmitted(true) }}
-                >
+                <form className="space-y-5" onSubmit={handleSubmit}>
                   {/* Inquiry type */}
                   <div>
                     <label className="block text-sm font-600 text-navy-900 mb-2" style={{ fontWeight: 600 }}>Inquiry Type</label>
@@ -71,38 +104,73 @@ export default function ContactPage() {
 
                   {/* Name + Email */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {[
-                      { label: "Full Name", placeholder: "Jane Smith", type: "text" },
-                      { label: "Email Address", placeholder: "jane@company.com", type: "email" },
-                    ].map((field) => (
-                      <div key={field.label}>
-                        <label className="block text-sm font-600 text-navy-900 mb-2" style={{ fontWeight: 600 }}>{field.label}</label>
-                        <input type={field.type} placeholder={field.placeholder} required className="w-full px-4 py-3 rounded-xl border border-warm-200 text-navy-900 placeholder-neutral-300 focus:outline-none focus:border-gold-500 transition-colors text-sm" />
-                      </div>
-                    ))}
+                    <div>
+                      <label className="block text-sm font-600 text-navy-900 mb-2" style={{ fontWeight: 600 }}>Full Name</label>
+                      <input
+                        type="text"
+                        placeholder="Jane Smith"
+                        required
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-warm-200 text-navy-900 placeholder-neutral-300 focus:outline-none focus:border-gold-500 transition-colors text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-600 text-navy-900 mb-2" style={{ fontWeight: 600 }}>Email Address</label>
+                      <input
+                        type="email"
+                        placeholder="jane@company.com"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-warm-200 text-navy-900 placeholder-neutral-300 focus:outline-none focus:border-gold-500 transition-colors text-sm"
+                      />
+                    </div>
                   </div>
 
                   {/* Company + Role */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {[
-                      { label: "Company", placeholder: "Acme Corporation" },
-                      { label: "Your Role", placeholder: "Chief HR Officer" },
-                    ].map((field) => (
-                      <div key={field.label}>
-                        <label className="block text-sm font-600 text-navy-900 mb-2" style={{ fontWeight: 600 }}>{field.label}</label>
-                        <input type="text" placeholder={field.placeholder} className="w-full px-4 py-3 rounded-xl border border-warm-200 text-navy-900 placeholder-neutral-300 focus:outline-none focus:border-gold-500 transition-colors text-sm" />
-                      </div>
-                    ))}
+                    <div>
+                      <label className="block text-sm font-600 text-navy-900 mb-2" style={{ fontWeight: 600 }}>Company</label>
+                      <input
+                        type="text"
+                        placeholder="Acme Corporation"
+                        value={company}
+                        onChange={(e) => setCompany(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-warm-200 text-navy-900 placeholder-neutral-300 focus:outline-none focus:border-gold-500 transition-colors text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-600 text-navy-900 mb-2" style={{ fontWeight: 600 }}>Your Role</label>
+                      <input
+                        type="text"
+                        placeholder="Chief HR Officer"
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-warm-200 text-navy-900 placeholder-neutral-300 focus:outline-none focus:border-gold-500 transition-colors text-sm"
+                      />
+                    </div>
                   </div>
 
                   {/* Message */}
                   <div>
                     <label className="block text-sm font-600 text-navy-900 mb-2" style={{ fontWeight: 600 }}>Message</label>
-                    <textarea required rows={5} placeholder="Tell us what you're working on..." className="w-full px-4 py-3 rounded-xl border border-warm-200 text-navy-900 placeholder-neutral-300 focus:outline-none focus:border-gold-500 transition-colors text-sm resize-none" />
+                    <textarea
+                      required
+                      rows={5}
+                      placeholder="Tell us what you're working on..."
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl border border-warm-200 text-navy-900 placeholder-neutral-300 focus:outline-none focus:border-gold-500 transition-colors text-sm resize-none"
+                    />
                   </div>
 
-                  <button type="submit" className="btn btn-primary btn-lg w-full justify-center">
-                    Send Message
+                  {error && (
+                    <p className="text-sm text-red-600 bg-red-50 px-4 py-3 rounded-xl">{error}</p>
+                  )}
+
+                  <button type="submit" disabled={loading} className="btn btn-primary btn-lg w-full justify-center disabled:opacity-60">
+                    {loading ? 'Sending…' : 'Send Message'}
                   </button>
 
                   <p className="text-xs text-neutral-400 text-center">We respond within 24 hours. No automated responses — a human will reply.</p>
