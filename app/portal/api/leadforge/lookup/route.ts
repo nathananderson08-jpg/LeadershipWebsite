@@ -150,6 +150,24 @@ export async function POST(req: NextRequest) {
       // Drop people whose title contains "former" — stale Apollo title data
       rawPeople = rawPeople.filter(p => !p.title?.toLowerCase().includes('former'));
 
+      // If Apollo didn't return domain/headcount, ask Claude for company metadata
+      if (rawPeople.length > 0 && (!domain || !headcount)) {
+        try {
+          const metaMsg = await anthropic.messages.create({
+            model: 'claude-haiku-4-5-20251001',
+            max_tokens: 200,
+            messages: [{ role: 'user', content: `What is the primary website domain and approximate employee headcount for "${companyName}"? Reply ONLY with JSON: {"domain": "example.com", "headcount": "50,000"}. Use null if unknown.` }],
+          });
+          const metaText = metaMsg.content[0].type === 'text' ? metaMsg.content[0].text : '{}';
+          const metaMatch = metaText.match(/\{[\s\S]*\}/);
+          if (metaMatch) {
+            const meta = JSON.parse(metaMatch[0]);
+            if (!domain && meta.domain) domain = meta.domain;
+            if (!headcount && meta.headcount) headcount = meta.headcount;
+          }
+        } catch { /* non-critical */ }
+      }
+
       if (rawPeople.length > 0) {
         apolloWorked = true;
 
