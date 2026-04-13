@@ -60,6 +60,38 @@ export interface ApolloEnrichResult {
   person: ApolloPerson | null;
 }
 
+// ── Organization lookup ────────────────────────────────────────────────────
+
+export interface ApolloOrgMatch {
+  id: string;
+  name: string;
+  primary_domain: string | null;
+  estimated_num_employees: number | null;
+  industry: string | null;
+}
+
+/**
+ * Find an organization's Apollo ID by name.
+ * Returns null if not found. Uses the exact org ID in downstream people
+ * searches so we only get *current* employees, not past ones.
+ */
+export async function findOrganization(companyName: string): Promise<ApolloOrgMatch | null> {
+  try {
+    const res = await apollo<{ organizations: ApolloOrgMatch[] }>(
+      'POST',
+      '/mixed_organizations/search',
+      {
+        q_organization_fuzzy_name: companyName,
+        page: 1,
+        per_page: 1,
+      }
+    );
+    return res.organizations?.[0] ?? null;
+  } catch {
+    return null;
+  }
+}
+
 // ── People Search ──────────────────────────────────────────────────────────
 
 const HR_TITLES = [
@@ -89,12 +121,31 @@ const HR_TITLES = [
   'Director of Organizational',
 ];
 
+/**
+ * Precise search: uses Apollo organization_ids (current employment only).
+ * Much more accurate than the name-based search — only returns people
+ * who are *currently* at this org according to Apollo's data.
+ */
+export async function searchPeopleByOrgId(orgId: string, page = 1): Promise<ApolloSearchResult> {
+  return apollo<ApolloSearchResult>('POST', '/mixed_people/search', {
+    organization_ids: [orgId],
+    person_titles: HR_TITLES,
+    page,
+    per_page: 20,
+    prospected_by_current_team: ['no'],
+  });
+}
+
+/**
+ * Fallback: fuzzy name search. Less precise — can return past employees.
+ * Only used when findOrganization() returns no match.
+ */
 export async function searchPeopleAtCompany(companyName: string, page = 1): Promise<ApolloSearchResult> {
   return apollo<ApolloSearchResult>('POST', '/mixed_people/search', {
     q_organization_name: companyName,
     person_titles: HR_TITLES,
     page,
-    per_page: 15,
+    per_page: 20,
     prospected_by_current_team: ['no'],
   });
 }
