@@ -142,8 +142,12 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // Drop people whose title contains "former" — stale Apollo title data
-      rawPeople = rawPeople.filter(p => !p.title?.toLowerCase().includes('former'));
+      // Drop stale data and keep only VP-and-above
+      rawPeople = rawPeople.filter(p => {
+        if (p.title?.toLowerCase().includes('former')) return false;
+        const seniority = seniorityFromTitle(p.title ?? '');
+        return seniority === 'C-Suite' || seniority === 'VP';
+      });
 
       // If Apollo didn't return domain/headcount, ask Claude for company metadata
       if (rawPeople.length > 0 && (!domain || !headcount)) {

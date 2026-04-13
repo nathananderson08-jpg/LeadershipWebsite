@@ -130,15 +130,7 @@ const TARGET_TITLES = [
   'VP Talent',
   'VP Learning',
   'VP Organizational',
-  'Head of HR',
-  'Head of People',
-  'Head of Talent',
-  'Head of Learning',
-  'Director of Human Resources',
-  'Director of People',
-  'Director of Talent',
-  'Director of Learning',
-  'Director of Organizational',
+  'VP Organizational Development',
 ];
 
 /**
