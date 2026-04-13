@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
-import { findOrganization, searchPeopleByOrgId, searchCSuiteByOrgId, searchPeopleAtCompany, enrichPeopleByIds, emailConfidenceFromStatus, type ApolloPerson } from '@/lib/integrations/apollo';
+import { findOrganization, searchPeopleByOrgId, searchPeopleAtCompany, enrichPeopleByIds, emailConfidenceFromStatus, type ApolloPerson } from '@/lib/integrations/apollo';
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -124,22 +124,12 @@ export async function POST(req: NextRequest) {
       let rawPeople: ApolloPerson[] = [];
 
       if (org) {
-        // Run title-based and C-suite seniority searches in parallel
-        const [orgPeopleResult, csuiteResult] = await Promise.all([
-          searchPeopleByOrgId(org.id),
-          searchCSuiteByOrgId(org.id),
-        ]);
+        const orgPeopleResult = await searchPeopleByOrgId(org.id);
         companyName = org.name;
         domain = org.primary_domain;
         if (org.estimated_num_employees) headcount = org.estimated_num_employees.toLocaleString();
-
-        // Merge, deduplicate by id, C-suite first
-        const seen = new Set<string>();
-        const merged: ApolloPerson[] = [];
-        for (const p of [...(csuiteResult.people ?? []), ...(orgPeopleResult.people ?? [])]) {
-          if (!seen.has(p.id)) { seen.add(p.id); merged.push(p); }
-        }
-        rawPeople = merged.length > 0 ? merged : (namePeopleResult.people ?? []);
+        rawPeople = orgPeopleResult.people ?? [];
+        if (rawPeople.length === 0) rawPeople = namePeopleResult.people ?? [];
       } else {
         // No org match — use the name search results already fetched in parallel
         rawPeople = namePeopleResult.people ?? [];
@@ -173,12 +163,12 @@ export async function POST(req: NextRequest) {
         } catch { /* non-critical */ }
       }
 
-      // Enrich all people via /people/match to retrieve last_name + linkedin_url
-      // (bulk search withholds these even on paid plans without per-person enrichment)
+      // Enrich only people missing last_name — avoids unnecessary /people/match calls
       if (rawPeople.length > 0) {
         try {
+          const needsEnrich = rawPeople.filter(p => !p.last_name?.trim());
           const enriched = await enrichPeopleByIds(
-            rawPeople.map(p => ({
+            needsEnrich.map(p => ({
               id: p.id,
               first_name: p.first_name,
               last_name: p.last_name,
