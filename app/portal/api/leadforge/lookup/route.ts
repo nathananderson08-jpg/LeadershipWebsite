@@ -98,12 +98,14 @@ export async function POST(req: NextRequest) {
     let headcount: string | null = null;
     let emailPattern: string | null = null;
     let apolloWorked = false;
+    let _debug: Record<string, unknown> = {};
 
     try {
       // Step 1: Resolve org ID for precise current-employee search.
-      // Verify the returned org name actually resembles the query — Apollo's fuzzy search
-      // can return an unrelated company (e.g. "3M Solutions" when searching "3M").
       const orgCandidate = await findOrganization(query.trim());
+      console.log('[LeadForge] orgCandidate:', JSON.stringify(orgCandidate));
+      _debug.orgCandidate = orgCandidate ? { id: orgCandidate.id, name: orgCandidate.name, domain: orgCandidate.primary_domain } : null;
+
       const queryLower = query.trim().toLowerCase();
       const org = orgCandidate && (
         orgCandidate.name.toLowerCase().includes(queryLower) ||
@@ -111,21 +113,23 @@ export async function POST(req: NextRequest) {
         (orgCandidate.primary_domain ?? '').toLowerCase().includes(queryLower.replace(/\s+/g, ''))
       ) ? orgCandidate : null;
 
+      _debug.orgUsed = org ? org.name : 'null — name search fallback';
+      console.log('[LeadForge] org used:', org ? org.name : 'null — falling back to name search');
+
       let rawPeople: ApolloPerson[] = [];
 
       if (org) {
-        // Precise: organization_ids restricts Apollo to current employees only.
-        // No secondary org ID cross-check — Apollo already filtered; that check
-        // caused valid people (e.g. Brett Strand, "Interim CHRO") to be dropped.
         const apolloResult = await searchPeopleByOrgId(org.id);
         rawPeople = apolloResult.people ?? [];
+        _debug.apolloRaw = rawPeople.map(p => ({ name: p.name, title: p.title, org_id: p.organization?.id }));
+        console.log('[LeadForge] searchPeopleByOrgId returned', rawPeople.length, 'people:', rawPeople.map(p => `${p.name} (${p.title})`));
         companyName = org.name;
         domain = org.primary_domain;
         if (org.estimated_num_employees) headcount = org.estimated_num_employees.toLocaleString();
       } else {
-        // Fallback: fuzzy name search (may include past employees)
         const apolloResult = await searchPeopleAtCompany(query.trim());
         rawPeople = apolloResult.people ?? [];
+        console.log('[LeadForge] searchPeopleAtCompany returned', rawPeople.length, 'people:', rawPeople.map(p => `${p.name} (${p.title}) @ ${p.organization_name}`));
         const firstPerson = rawPeople[0];
         if (firstPerson?.organization) {
           companyName = firstPerson.organization.name ?? query.trim();
@@ -136,7 +140,9 @@ export async function POST(req: NextRequest) {
       }
 
       // Drop people whose title contains "former" — stale Apollo title data
+      const beforeFilter = rawPeople.length;
       rawPeople = rawPeople.filter(p => !p.title?.toLowerCase().includes('former'));
+      console.log('[LeadForge] after "former" filter:', rawPeople.length, '(dropped', beforeFilter - rawPeople.length, ')');
 
       if (rawPeople.length > 0) {
         apolloWorked = true;
@@ -214,7 +220,8 @@ Respond ONLY with this JSON structure:
       email_pattern: emailPattern,
       headcount_estimate: headcount,
       people,
-    } as LookupResult);
+      _debug,
+    } as LookupResult & { _debug: unknown });
 
   } catch (err: any) {
     console.error('Lookup error:', err);
