@@ -168,12 +168,18 @@ export async function POST(req: NextRequest) {
         } catch { /* non-critical */ }
       }
 
-      // Enrich top 10 people by ID to retrieve last_name + linkedin_url
-      // (bulk search withholds these even on paid plans without enrichment)
+      // Enrich top 8 people via /people/match to retrieve last_name + linkedin_url
+      // (bulk search withholds these even on paid plans without per-person enrichment)
       if (rawPeople.length > 0) {
         try {
-          const ids = rawPeople.slice(0, 10).map(p => p.id).filter(Boolean);
-          const enriched = await enrichPeopleByIds(ids);
+          const enriched = await enrichPeopleByIds(
+            rawPeople.slice(0, 8).map(p => ({
+              id: p.id,
+              first_name: p.first_name,
+              last_name: p.last_name,
+              organization_name: p.organization_name,
+            }))
+          );
           if (enriched.length > 0) {
             const enrichMap = new Map(enriched.map(e => [e.id, e]));
             rawPeople = rawPeople.map(p => {

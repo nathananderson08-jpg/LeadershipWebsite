@@ -168,20 +168,28 @@ export async function searchPeopleByTicker(ticker: string, page = 1): Promise<Ap
 // ── Person Enrichment ──────────────────────────────────────────────────────
 
 /**
- * Fetch full profiles by Apollo person IDs (up to 10 at a time).
- * Used to retrieve last_name and linkedin_url which bulk search withholds.
+ * Enrich up to N people in parallel using /people/match by ID.
+ * This is the reliable path to get last_name + linkedin_url on paid plans.
  */
-export async function enrichPeopleByIds(ids: string[]): Promise<ApolloPerson[]> {
-  if (ids.length === 0) return [];
-  try {
-    const res = await apollo<{ people?: ApolloPerson[] }>('POST', '/people/bulk_match', {
-      details: ids.map(id => ({ id })),
-      reveal_personal_emails: true,
-    });
-    return res.people ?? [];
-  } catch {
-    return [];
-  }
+export async function enrichPeopleByIds(people: Pick<ApolloPerson, 'id' | 'first_name' | 'last_name' | 'organization_name'>[], limit = 8): Promise<ApolloPerson[]> {
+  if (people.length === 0) return [];
+  const batch = people.slice(0, limit);
+  const results = await Promise.allSettled(
+    batch.map(p =>
+      apollo<{ person?: ApolloPerson }>('POST', '/people/match', {
+        id: p.id,
+        first_name: p.first_name,
+        last_name: p.last_name,
+        organization_name: p.organization_name,
+        reveal_personal_emails: true,
+        reveal_phone_number: false,
+      })
+    )
+  );
+  return results
+    .filter((r): r is PromiseFulfilledResult<{ person?: ApolloPerson }> => r.status === 'fulfilled')
+    .map(r => r.value.person)
+    .filter((p): p is ApolloPerson => !!p);
 }
 
 export async function enrichPerson(props: {
