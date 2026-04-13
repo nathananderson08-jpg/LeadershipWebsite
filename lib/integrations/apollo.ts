@@ -134,8 +134,6 @@ export async function searchPeopleByOrgId(orgId: string, page = 1): Promise<Apol
     page,
     per_page: 20,
     prospected_by_current_team: ['no'],
-    reveal_personal_emails: true,
-    reveal_phone_number: false,
   });
 }
 
@@ -150,8 +148,6 @@ export async function searchPeopleAtCompany(companyName: string, page = 1): Prom
     page,
     per_page: 20,
     prospected_by_current_team: ['no'],
-    reveal_personal_emails: true,
-    reveal_phone_number: false,
   });
 }
 
@@ -181,7 +177,7 @@ export async function enrichPeopleByIds(people: Pick<ApolloPerson, 'id' | 'first
         first_name: p.first_name,
         last_name: p.last_name,
         organization_name: p.organization_name,
-        reveal_personal_emails: true,
+        reveal_personal_emails: false,
         reveal_phone_number: false,
       })
     )
@@ -206,7 +202,7 @@ export async function enrichPerson(props: {
       ...(props.organization_name ? { organization_name: props.organization_name } : {}),
       ...(props.email ? { email: props.email } : {}),
       ...(props.linkedin_url ? { linkedin_url: props.linkedin_url } : {}),
-      reveal_personal_emails: false,
+      reveal_personal_emails: true,
     });
     return res.person ?? null;
   } catch {
