@@ -118,7 +118,7 @@ export default function AccountDetailPage() {
         }
         setEnrichDone(true);
       } else {
-        setEnrichError('No Apollo data found for this company.');
+        setEnrichError('Could not find data for this company.');
       }
     } catch (err: any) {
       setEnrichError(err.message ?? 'Enrichment failed.');
