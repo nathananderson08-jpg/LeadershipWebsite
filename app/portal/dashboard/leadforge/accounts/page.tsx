@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Building2, Users, Zap, TrendingUp, Plus, X, ChevronDown, ChevronUp, ExternalLink, AlertTriangle } from 'lucide-react';
+import { Building2, Users, Zap, TrendingUp, Plus, X, ChevronDown, ChevronUp, ExternalLink, AlertTriangle, Trash2 } from 'lucide-react';
 import {
   useAccounts, useProspects, useTriggerEvents,
   type LeadForgeAccount, type CreateAccountInput,
@@ -140,10 +140,11 @@ function AddAccountModal({ onClose, onSave }: {
 }
 
 // ── Account Card ────────────────────────────────────────────────
-function AccountCard({ account, prospectsForAccount, eventsForAccount }: {
+function AccountCard({ account, prospectsForAccount, eventsForAccount, onDelete }: {
   account: LeadForgeAccount;
   prospectsForAccount: any[];
   eventsForAccount: any[];
+  onDelete: (id: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -221,6 +222,11 @@ function AccountCard({ account, prospectsForAccount, eventsForAccount }: {
               <ExternalLink size={12} /> Website
             </a>
           )}
+          <button onClick={() => { if (confirm(`Delete ${account.company_name}?`)) onDelete(account.id); }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444', padding: 4, opacity: 0.5 }}
+            title="Delete account">
+            <Trash2 size={14} />
+          </button>
           <button onClick={() => setExpanded(e => !e)}
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--portal-text-tertiary)', padding: 4 }}>
             {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -317,7 +323,7 @@ function AccountCard({ account, prospectsForAccount, eventsForAccount }: {
 
 // ── Main page ───────────────────────────────────────────────────
 export default function AccountsPage() {
-  const { accounts, loading: accountsLoading, createAccount } = useAccounts();
+  const { accounts, loading: accountsLoading, createAccount, deleteAccount } = useAccounts();
   const { prospects, loading: prospectsLoading } = useProspects();
   const { events, loading: eventsLoading } = useTriggerEvents();
   const [search, setSearch] = useState('');
@@ -411,6 +417,7 @@ export default function AccountsPage() {
                 account={account}
                 prospectsForAccount={prospectsForAccount}
                 eventsForAccount={eventsForAccount}
+                onDelete={deleteAccount}
               />
             );
           })}

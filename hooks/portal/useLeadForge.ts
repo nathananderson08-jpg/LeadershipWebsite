@@ -254,7 +254,16 @@ export function useAccounts() {
     await load();
   };
 
-  return { accounts, loading, createAccount, updateAccount, reload: load };
+  const deleteAccount = async (id: string) => {
+    const { error } = await supabase
+      .from('leadforge_accounts')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+    await load();
+  };
+
+  return { accounts, loading, createAccount, updateAccount, deleteAccount, reload: load };
 }
 
 // ── useTriggerEvents ───────────────────────────────────────────

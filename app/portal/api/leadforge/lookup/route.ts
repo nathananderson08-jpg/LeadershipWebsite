@@ -34,10 +34,13 @@ function seniorityFromTitle(title: string): LookupPerson['seniority'] {
 }
 
 function apolloToLookupPerson(p: ApolloPerson): LookupPerson {
-  // Prefer first_name+last_name when both are available — Apollo's name field
-  // sometimes contains only the first name, so combining parts is more reliable
-  const combined = `${p.first_name ?? ''} ${p.last_name ?? ''}`.trim();
-  const fullName = combined.includes(' ') ? combined : (p.name?.trim() || combined || '—');
+  // Apollo bulk search sometimes withholds last_name but puts full name in p.name.
+  // Priority: p.name if it has a space (full name) → first+last if both exist → p.name fallback
+  const nameFromParts = `${p.first_name ?? ''} ${p.last_name ?? ''}`.trim();
+  const nameFromField = p.name?.trim() ?? '';
+  const fullName = (nameFromField.includes(' ') ? nameFromField : null)
+    ?? (nameFromParts.includes(' ') ? nameFromParts : null)
+    ?? (nameFromField || nameFromParts || '—');
   return {
     full_name: fullName,
     title: p.title ?? '—',
