@@ -274,6 +274,7 @@ Respond ONLY with this JSON structure:
       email_pattern: emailPattern,
       headcount_estimate: headcount,
       people,
+      _debug: people.slice(0, 3).map(p => ({ name: p.full_name, email: p.email_guess, confidence: p.email_confidence, linkedin: p.linkedin_url })),
     } as LookupResult);
 
   } catch (err: any) {
