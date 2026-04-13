@@ -25,9 +25,10 @@ function CompanyAutocomplete({ value, onChange, onSelect }: {
       try {
         const res = await fetch(`/portal/api/leadforge/org-search?q=${encodeURIComponent(value)}`);
         const data = await res.json();
+        console.log('[org-search]', res.status, data);
         setSuggestions(data.orgs ?? []);
         setShowDropdown((data.orgs ?? []).length > 0);
-      } catch { setSuggestions([]); } finally { setFetching(false); }
+      } catch (e) { console.error('[org-search] error:', e); setSuggestions([]); } finally { setFetching(false); }
     }, 300);
   }, [value]);
 
