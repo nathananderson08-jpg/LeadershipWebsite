@@ -100,10 +100,6 @@ export async function POST(req: NextRequest) {
     let headcount: string | null = null;
     let emailPattern: string | null = null;
     let apolloWorked = false;
-    let _debug: Record<string, unknown> = {
-      apolloKeyPresent: !!process.env.APOLLO_API_KEY,
-      apolloKeyPrefix: process.env.APOLLO_API_KEY?.slice(0, 6) ?? 'MISSING',
-    };
 
     try {
       // Run org lookup and name-based people search in parallel to save ~1-2s
@@ -119,8 +115,6 @@ export async function POST(req: NextRequest) {
         (orgCandidate.primary_domain ?? '').toLowerCase().includes(queryLower.replace(/\s+/g, ''))
       ) ? orgCandidate : null;
 
-      _debug.orgCandidate = orgCandidate ? { id: orgCandidate.id, name: orgCandidate.name, domain: orgCandidate.primary_domain } : null;
-      _debug.orgUsed = org ? org.name : 'null — name search fallback';
 
       let rawPeople: ApolloPerson[] = [];
 
@@ -131,18 +125,14 @@ export async function POST(req: NextRequest) {
         companyName = org.name;
         domain = org.primary_domain;
         if (org.estimated_num_employees) headcount = org.estimated_num_employees.toLocaleString();
-        _debug.orgIdSearchCount = rawPeople.length;
 
         // If org_id search returned nothing, use the name search results we already have
         if (rawPeople.length === 0) {
           rawPeople = namePeopleResult.people ?? [];
-          _debug.orgIdFallback = true;
-          _debug.nameFallbackCount = rawPeople.length;
         }
       } else {
         // No org match — use the name search results already fetched in parallel
         rawPeople = namePeopleResult.people ?? [];
-        _debug.nameSearchCount = rawPeople.length;
         const firstPerson = rawPeople[0];
         if (firstPerson?.organization) {
           companyName = firstPerson.organization.name ?? query.trim();
@@ -153,9 +143,7 @@ export async function POST(req: NextRequest) {
       }
 
       // Drop people whose title contains "former" — stale Apollo title data
-      const beforeFilter = rawPeople.length;
       rawPeople = rawPeople.filter(p => !p.title?.toLowerCase().includes('former'));
-      console.log('[LeadForge] after "former" filter:', rawPeople.length, '(dropped', beforeFilter - rawPeople.length, ')');
 
       if (rawPeople.length > 0) {
         apolloWorked = true;
@@ -175,7 +163,6 @@ export async function POST(req: NextRequest) {
         people = rawPeople.map(apolloToLookupPerson);
       }
     } catch (apolloErr: any) {
-      _debug.apolloError = apolloErr?.message ?? String(apolloErr);
       console.warn('Apollo lookup failed, falling back to Claude:', apolloErr);
     }
 
@@ -222,7 +209,6 @@ Respond ONLY with this JSON structure:
       return NextResponse.json({
         ...claudeResult,
         people: (claudeResult.people ?? []).map((p: any) => ({ ...p, apollo_id: null, source: 'claude' })),
-        _debug: { ..._debug, claudeFallback: true },
       });
     }
 
@@ -234,8 +220,7 @@ Respond ONLY with this JSON structure:
       email_pattern: emailPattern,
       headcount_estimate: headcount,
       people,
-      _debug,
-    } as LookupResult & { _debug: unknown });
+    } as LookupResult);
 
   } catch (err: any) {
     console.error('Lookup error:', err);

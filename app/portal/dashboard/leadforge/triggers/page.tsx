@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { AlertCircle, Plus, X, ExternalLink, Users, ChevronDown, ChevronUp, Flame } from 'lucide-react';
+import { AlertCircle, Plus, X, ExternalLink, Users, ChevronDown, ChevronUp, Flame, GitBranch, Loader2, CheckSquare, Square, Zap as ZapIcon } from 'lucide-react';
 import { useTriggerEvents, useAccounts, useProspects, type CreateTriggerInput } from '@/hooks/portal/useLeadForge';
 
 const EVENT_TYPES = ['executive_move', 'organizational', 'ma', 'culture_signal', 'growth_signal'] as const;
@@ -49,6 +49,259 @@ function TypeBadge({ type }: { type: string }) {
     <span style={{ fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 999, background: 'var(--portal-accent-subtle)', color: 'var(--portal-accent)' }}>
       {TYPE_LABELS[type] ?? type}
     </span>
+  );
+}
+
+// ── GitHub Scan Modal ───────────────────────────────────────────────────────
+function GitHubScanModal({ onClose, onSave }: {
+  onClose: () => void;
+  onSave: (input: CreateTriggerInput) => Promise<void>;
+}) {
+  const { accounts } = useAccounts();
+  const [accountId, setAccountId] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [scanning, setScanning] = useState(false);
+  const [signals, setSignals] = useState<any[]>([]);
+  const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [saved, setSaved] = useState(false);
+
+  const handleAccountChange = (id: string) => {
+    setAccountId(id);
+    const acct = accounts.find(a => a.id === id);
+    if (acct) setCompanyName(acct.company_name);
+    setSignals([]);
+    setSelected(new Set());
+    setSaved(false);
+  };
+
+  const handleScan = async () => {
+    const name = companyName.trim() || accounts.find(a => a.id === accountId)?.company_name;
+    if (!name) { setError('Enter a company name to scan.'); return; }
+    setScanning(true);
+    setError('');
+    setSignals([]);
+    setSelected(new Set());
+    setSaved(false);
+    try {
+      const res = await fetch('/portal/api/leadforge/github-scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ company_name: name }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Scan failed.');
+      setSignals(data.signals ?? []);
+      if ((data.signals ?? []).length === 0) setError('No signals found on GitHub for this company.');
+      // Pre-select all by default
+      setSelected(new Set((data.signals ?? []).map((_: any, i: number) => i)));
+    } catch (e: any) {
+      setError(e.message ?? 'Scan failed.');
+    } finally {
+      setScanning(false);
+    }
+  };
+
+  const toggleSelect = (i: number) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      next.has(i) ? next.delete(i) : next.add(i);
+      return next;
+    });
+  };
+
+  const handleSaveSelected = async () => {
+    if (selected.size === 0) return;
+    setSaving(true);
+    setError('');
+    try {
+      for (const i of selected) {
+        const sig = signals[i];
+        await onSave({
+          event_type: sig.type,
+          description: sig.description,
+          priority: sig.priority,
+          source_url: sig.source_url,
+          account_id: accountId || undefined,
+        });
+      }
+      setSaved(true);
+      setTimeout(onClose, 1200);
+    } catch (e: any) {
+      setError(e.message ?? 'Failed to save events.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const inputStyle = { width: '100%', padding: '10px 14px', border: '1px solid var(--portal-border-default)', borderRadius: 10, fontSize: 13, color: 'var(--portal-text-primary)', background: 'var(--portal-bg-hover)', outline: 'none', boxSizing: 'border-box' as const };
+  const labelStyle: React.CSSProperties = { fontSize: '12px', fontWeight: 600, color: 'var(--portal-text-secondary)', display: 'block', marginBottom: 6 };
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <div style={{ background: 'var(--portal-bg-secondary)', borderRadius: 20, padding: 32, width: '100%', maxWidth: 600, maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--portal-accent-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <GitBranch size={18} color="var(--portal-accent)" />
+            </div>
+            <div>
+              <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--portal-text-primary)', margin: 0 }}>GitHub Signal Scan</h2>
+              <p style={{ fontSize: 12, color: 'var(--portal-text-tertiary)', margin: 0 }}>Detect buying signals from public sources</p>
+            </div>
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--portal-text-tertiary)', padding: 4 }}><X size={18} /></button>
+        </div>
+
+        {/* Company selector */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 20 }}>
+          <div>
+            <label style={labelStyle}>Link to Account (optional)</label>
+            <select style={{ ...inputStyle, cursor: 'pointer' }} value={accountId} onChange={e => handleAccountChange(e.target.value)}>
+              <option value="">No account — enter company name below</option>
+              {accounts.map(a => <option key={a.id} value={a.id}>{a.company_name}</option>)}
+            </select>
+          </div>
+          <div>
+            <label style={labelStyle}>Company Name to Scan</label>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <input
+                style={{ ...inputStyle, flex: 1 }}
+                value={companyName}
+                onChange={e => setCompanyName(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && !scanning && handleScan()}
+                placeholder="e.g. Microsoft, Salesforce, 3M…"
+              />
+              <button
+                onClick={handleScan}
+                disabled={scanning || (!companyName.trim() && !accountId)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 7,
+                  padding: '10px 18px', border: 'none', borderRadius: 10,
+                  background: 'var(--portal-accent)', color: 'white',
+                  fontSize: 13, fontWeight: 600, cursor: scanning ? 'default' : 'pointer',
+                  opacity: scanning || (!companyName.trim() && !accountId) ? 0.6 : 1,
+                  flexShrink: 0,
+                }}
+              >
+                {scanning ? <Loader2 size={14} style={{ animation: 'spin 0.8s linear infinite' }} /> : <GitBranch size={14} />}
+                {scanning ? 'Scanning…' : 'Scan'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Error */}
+        {error && !scanning && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 10, marginBottom: 16 }}>
+            <AlertCircle size={14} color="#ef4444" />
+            <p style={{ fontSize: 13, color: '#ef4444', margin: 0 }}>{error}</p>
+          </div>
+        )}
+
+        {/* Results */}
+        {signals.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--portal-text-primary)', margin: 0 }}>
+                {signals.length} signal{signals.length !== 1 ? 's' : ''} found
+              </p>
+              <button
+                onClick={() => setSelected(selected.size === signals.length ? new Set() : new Set(signals.map((_, i) => i)))}
+                style={{ fontSize: 12, fontWeight: 600, color: 'var(--portal-accent)', background: 'none', border: 'none', cursor: 'pointer' }}
+              >
+                {selected.size === signals.length ? 'Deselect All' : 'Select All'}
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {signals.map((sig, i) => {
+                const isSelected = selected.has(i);
+                const conf = PRIORITY_CONFIG[sig.priority] ?? PRIORITY_CONFIG.medium;
+                return (
+                  <div
+                    key={i}
+                    onClick={() => toggleSelect(i)}
+                    style={{
+                      display: 'flex', gap: 12, padding: '12px 14px',
+                      border: `1px solid ${isSelected ? 'var(--portal-border-accent)' : 'var(--portal-border-default)'}`,
+                      borderRadius: 12, cursor: 'pointer',
+                      background: isSelected ? 'var(--portal-accent-subtle)' : 'var(--portal-bg-hover)',
+                      transition: 'all 0.15s',
+                    }}
+                  >
+                    <div style={{ paddingTop: 2, flexShrink: 0 }}>
+                      {isSelected
+                        ? <CheckSquare size={16} color="var(--portal-accent)" />
+                        : <Square size={16} color="var(--portal-text-tertiary)" />
+                      }
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginBottom: 5 }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 999, background: conf.bg, color: conf.color, border: `1px solid ${conf.border}`, textTransform: 'capitalize' }}>
+                          {sig.priority}
+                        </span>
+                        <span style={{ fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 999, background: 'var(--portal-accent-subtle)', color: 'var(--portal-accent)' }}>
+                          {TYPE_LABELS[sig.type] ?? sig.type}
+                        </span>
+                      </div>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--portal-text-primary)', margin: '0 0 3px', lineHeight: 1.3 }}>
+                        {sig.title}
+                      </p>
+                      <p style={{ fontSize: 12, color: 'var(--portal-text-tertiary)', margin: '0 0 6px', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as any, overflow: 'hidden' }}>
+                        {sig.description}
+                      </p>
+                      <a
+                        href={sig.source_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, color: 'var(--portal-accent)', textDecoration: 'none' }}
+                      >
+                        <ExternalLink size={10} /> View on GitHub
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Save bar */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 8, borderTop: '1px solid var(--portal-border-default)' }}>
+              <p style={{ fontSize: 13, color: 'var(--portal-text-secondary)', margin: 0 }}>
+                {selected.size} of {signals.length} selected
+              </p>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button onClick={onClose} style={{ padding: '9px 18px', border: '1px solid var(--portal-border-default)', borderRadius: 10, background: 'none', fontSize: 13, fontWeight: 600, color: 'var(--portal-text-secondary)', cursor: 'pointer' }}>
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveSelected}
+                  disabled={saving || selected.size === 0 || saved}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    padding: '9px 20px', border: 'none', borderRadius: 10,
+                    background: saved ? '#22c55e' : 'var(--portal-accent)',
+                    color: 'white', fontSize: 13, fontWeight: 600,
+                    cursor: saving || selected.size === 0 ? 'default' : 'pointer',
+                    opacity: selected.size === 0 ? 0.5 : 1,
+                  }}
+                >
+                  {saving
+                    ? <><Loader2 size={13} style={{ animation: 'spin 0.8s linear infinite' }} /> Saving…</>
+                    : saved
+                    ? '✓ Saved'
+                    : <><ZapIcon size={13} /> Log {selected.size} Event{selected.size !== 1 ? 's' : ''}</>
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -166,6 +419,11 @@ function EventCard({ ev, linkedProspects, onAction }: {
             </p>
             <TypeBadge type={ev.event_type ?? ''} />
             <PriorityBadge priority={ev.priority} />
+            {ev.source_url?.includes('github.com') && (
+              <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 10, fontWeight: 600, color: 'var(--portal-text-tertiary)' }}>
+                <GitBranch size={10} /> GitHub
+              </span>
+            )}
           </div>
           <p style={{ fontSize: 13, color: 'var(--portal-text-secondary)', margin: '0 0 8px', lineHeight: 1.5 }}>{ev.description}</p>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
@@ -245,6 +503,7 @@ export default function TriggersPage() {
   const { prospects } = useProspects();
   const [filter, setFilter] = useState('all');
   const [showModal, setShowModal] = useState(false);
+  const [showGitHubModal, setShowGitHubModal] = useState(false);
 
   const thisWeekStart = new Date(); thisWeekStart.setDate(thisWeekStart.getDate() - 7);
   const thisWeek = events.filter(e => new Date(e.detected_at) >= thisWeekStart).length;
@@ -253,6 +512,7 @@ export default function TriggersPage() {
     if (!(ev as any).account_id) return acc;
     return acc + prospects.filter(p => (p as any).account_id === (ev as any).account_id).length;
   }, 0);
+  const githubCount = events.filter(e => (e as any).source_url?.includes('github.com')).length;
 
   const filtered = filter === 'all' ? events : events.filter(e => e.event_type === filter);
 
@@ -269,9 +529,17 @@ export default function TriggersPage() {
           <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--portal-text-primary)', margin: 0 }}>Trigger Event Monitor</h1>
           <p style={{ fontSize: 13, color: 'var(--portal-text-tertiary)', margin: '4px 0 0' }}>Business events that create engagement opportunities</p>
         </div>
-        <button onClick={() => setShowModal(true)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', border: 'none', borderRadius: 10, background: 'var(--portal-accent)', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-          <Plus size={15} strokeWidth={2} /> Log Event
-        </button>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button
+            onClick={() => setShowGitHubModal(true)}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', border: '1px solid var(--portal-border-default)', borderRadius: 10, background: 'var(--portal-bg-secondary)', color: 'var(--portal-text-primary)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
+          >
+            <GitBranch size={15} /> Scan GitHub
+          </button>
+          <button onClick={() => setShowModal(true)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', border: 'none', borderRadius: 10, background: 'var(--portal-accent)', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            <Plus size={15} strokeWidth={2} /> Log Event
+          </button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -281,6 +549,7 @@ export default function TriggersPage() {
           { label: 'This Week',          value: thisWeek       },
           { label: 'Pending Response',   value: pending        },
           { label: 'Prospects Flagged',  value: totalFlagged   },
+          { label: 'From GitHub',        value: githubCount    },
         ].map(s => (
           <div key={s.label} style={{ flex: 1, padding: '14px 18px', background: 'var(--portal-bg-secondary)', border: '1px solid var(--portal-border-default)', borderRadius: 12 }}>
             <p style={{ fontSize: 22, fontWeight: 800, color: 'var(--portal-text-primary)', margin: 0, lineHeight: 1 }}>{loading ? '—' : s.value}</p>
@@ -309,8 +578,15 @@ export default function TriggersPage() {
             <AlertCircle size={22} strokeWidth={1.8} color="var(--portal-accent)" />
           </div>
           <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--portal-text-primary)', margin: '0 0 6px' }}>No trigger events yet</p>
-          <p style={{ fontSize: 13, color: 'var(--portal-text-tertiary)', margin: '0 0 20px' }}>Log a business event to auto-flag the relevant prospects at that account.</p>
-          <button onClick={() => setShowModal(true)} style={{ padding: '10px 20px', border: 'none', borderRadius: 10, background: 'var(--portal-accent)', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Log First Event</button>
+          <p style={{ fontSize: 13, color: 'var(--portal-text-tertiary)', margin: '0 0 20px', maxWidth: 360, marginInline: 'auto' }}>
+            Scan GitHub to auto-detect buying signals, or log an event manually.
+          </p>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+            <button onClick={() => setShowGitHubModal(true)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 20px', border: '1px solid var(--portal-border-default)', borderRadius: 10, background: 'var(--portal-bg-secondary)', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: 'var(--portal-text-primary)' }}>
+              <GitBranch size={14} /> Scan GitHub
+            </button>
+            <button onClick={() => setShowModal(true)} style={{ padding: '10px 20px', border: 'none', borderRadius: 10, background: 'var(--portal-accent)', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Log Event Manually</button>
+          </div>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -329,6 +605,7 @@ export default function TriggersPage() {
       )}
 
       {showModal && <AddEventModal onClose={() => setShowModal(false)} onSave={createEvent} />}
+      {showGitHubModal && <GitHubScanModal onClose={() => setShowGitHubModal(false)} onSave={createEvent} />}
     </div>
   );
 }
