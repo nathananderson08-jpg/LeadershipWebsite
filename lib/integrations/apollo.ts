@@ -157,6 +157,20 @@ export async function searchPeopleByOrgId(orgId: string, page = 1): Promise<Apol
 }
 
 /**
+ * C-suite seniority search — catches anyone Apollo classifies as C-Suite
+ * regardless of exact title wording (e.g. "Board Chair & Chief Executive Officer").
+ */
+export async function searchCSuiteByOrgId(orgId: string): Promise<ApolloSearchResult> {
+  return apollo<ApolloSearchResult>('POST', '/mixed_people/api_search', {
+    organization_ids: [orgId],
+    person_seniority: ['c_suite'],
+    page: 1,
+    per_page: 10,
+    prospected_by_current_team: ['no'],
+  });
+}
+
+/**
  * Fallback: fuzzy name search. Less precise — can return past employees.
  * Only used when findOrganization() returns no match.
  */
@@ -186,7 +200,7 @@ export async function searchPeopleByTicker(ticker: string, page = 1): Promise<Ap
  * Enrich up to N people in parallel using /people/match by ID.
  * This is the reliable path to get last_name + linkedin_url on paid plans.
  */
-export async function enrichPeopleByIds(people: Pick<ApolloPerson, 'id' | 'first_name' | 'last_name' | 'organization_name'>[], limit = 8): Promise<ApolloPerson[]> {
+export async function enrichPeopleByIds(people: Pick<ApolloPerson, 'id' | 'first_name' | 'last_name' | 'organization_name'>[], limit = 30): Promise<ApolloPerson[]> {
   if (people.length === 0) return [];
   const batch = people.slice(0, limit);
   const results = await Promise.allSettled(
