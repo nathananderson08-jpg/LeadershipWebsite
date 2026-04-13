@@ -176,7 +176,8 @@ export async function POST(req: NextRequest) {
 
         people = rawPeople.map(apolloToLookupPerson);
       }
-    } catch (apolloErr) {
+    } catch (apolloErr: any) {
+      _debug.apolloError = apolloErr?.message ?? String(apolloErr);
       console.warn('Apollo lookup failed, falling back to Claude:', apolloErr);
     }
 
