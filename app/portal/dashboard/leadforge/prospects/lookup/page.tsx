@@ -1,10 +1,94 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Search, Loader2, Building2, CheckCircle, Plus, AlertCircle, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 import { useProspects, useAccounts } from '@/hooks/portal/useLeadForge';
 import type { LookupResult, LookupPerson } from '@/app/portal/api/leadforge/lookup/route';
+
+interface OrgSuggestion {
+  id: string;
+  name: string;
+  domain: string | null;
+  headcount: number | null;
+  industry: string | null;
+}
+
+// ── Company autocomplete input ───────────────────────────────────
+function CompanyAutocomplete({ value, onChange, onSelect, onSearch, loading }: {
+  value: string;
+  onChange: (v: string) => void;
+  onSelect: (org: OrgSuggestion) => void;
+  onSearch: () => void;
+  loading: boolean;
+}) {
+  const [suggestions, setSuggestions] = useState<OrgSuggestion[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [fetching, setFetching] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (!value.trim() || value.length < 2) { setSuggestions([]); setShowDropdown(false); return; }
+    debounceRef.current = setTimeout(async () => {
+      setFetching(true);
+      try {
+        const res = await fetch(`/portal/api/leadforge/org-search?q=${encodeURIComponent(value)}`);
+        const data = await res.json();
+        setSuggestions(data.orgs ?? []);
+        setShowDropdown((data.orgs ?? []).length > 0);
+      } catch { setSuggestions([]); }
+      finally { setFetching(false); }
+    }, 300);
+  }, [value]);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div ref={containerRef} style={{ position: 'relative', flex: 1 }}>
+      <Search size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--portal-text-tertiary)', zIndex: 1 }} />
+      {fetching && <Loader2 size={14} style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--portal-text-tertiary)', animation: 'spin 0.8s linear infinite' }} />}
+      <input
+        style={{ width: '100%', paddingLeft: 42, paddingRight: 14, padding: '12px 16px 12px 42px', border: '1px solid var(--portal-border-default)', borderRadius: 12, fontSize: 14, color: 'var(--portal-text-primary)', background: 'var(--portal-bg-secondary)', outline: 'none', boxSizing: 'border-box' }}
+        value={value}
+        onChange={e => { onChange(e.target.value); }}
+        onKeyDown={e => { if (e.key === 'Enter' && !loading) { setShowDropdown(false); onSearch(); } if (e.key === 'Escape') setShowDropdown(false); }}
+        onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
+        placeholder="e.g. Johnson Controls, Microsoft, 3M…"
+      />
+      {showDropdown && (
+        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 4, background: 'var(--portal-bg-secondary)', border: '1px solid var(--portal-border-default)', borderRadius: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.12)', zIndex: 50, overflow: 'hidden' }}>
+          {suggestions.map((org, i) => (
+            <button
+              key={org.id}
+              onMouseDown={() => { onChange(org.name); onSelect(org); setShowDropdown(false); }}
+              style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'none', border: 'none', borderTop: i > 0 ? '1px solid var(--portal-border-default)' : 'none', cursor: 'pointer', textAlign: 'left' }}
+            >
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--portal-accent-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Building2 size={14} color="var(--portal-accent)" />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--portal-text-primary)', margin: 0 }}>{org.name}</p>
+                <p style={{ fontSize: 11, color: 'var(--portal-text-tertiary)', margin: '1px 0 0' }}>
+                  {[org.domain, org.industry, org.headcount ? org.headcount.toLocaleString() + ' employees' : null].filter(Boolean).join(' · ')}
+                </p>
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const SENIORITY_CONFIG: Record<string, { color: string; bg: string }> = {
   'C-Suite': { color: '#4ade80', bg: 'rgba(74,222,128,0.1)' },
@@ -182,16 +266,6 @@ export default function ProspectLookupPage() {
     }
   };
 
-  const inputStyle = {
-    flex: 1,
-    padding: '12px 16px',
-    border: '1px solid var(--portal-border-default)',
-    borderRadius: 12,
-    fontSize: 14,
-    color: 'var(--portal-text-primary)',
-    background: 'var(--portal-bg-secondary)',
-    outline: 'none',
-  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -207,16 +281,13 @@ export default function ProspectLookupPage() {
 
       {/* Search bar */}
       <div style={{ display: 'flex', gap: 10 }}>
-        <div style={{ position: 'relative', flex: 1 }}>
-          <Search size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--portal-text-tertiary)' }} />
-          <input
-            style={{ ...inputStyle, paddingLeft: 42 }}
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && !loading && handleSearch()}
-            placeholder="e.g. Microsoft, Salesforce, MSFT, HubSpot…"
-          />
-        </div>
+        <CompanyAutocomplete
+          value={query}
+          onChange={setQuery}
+          onSelect={(org) => { setQuery(org.name); handleSearch(org.name); }}
+          onSearch={() => handleSearch()}
+          loading={loading}
+        />
         <button
           onClick={() => handleSearch()}
           disabled={loading || !query.trim()}
