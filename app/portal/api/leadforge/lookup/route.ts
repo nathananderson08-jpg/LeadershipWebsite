@@ -98,7 +98,10 @@ export async function POST(req: NextRequest) {
     let headcount: string | null = null;
     let emailPattern: string | null = null;
     let apolloWorked = false;
-    let _debug: Record<string, unknown> = {};
+    let _debug: Record<string, unknown> = {
+      apolloKeyPresent: !!process.env.APOLLO_API_KEY,
+      apolloKeyPrefix: process.env.APOLLO_API_KEY?.slice(0, 6) ?? 'MISSING',
+    };
 
     try {
       // Step 1: Resolve org ID for precise current-employee search.
