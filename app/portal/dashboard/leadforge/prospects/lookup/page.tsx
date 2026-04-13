@@ -105,7 +105,7 @@ function SeniorityBadge({ level }: { level: string }) {
 }
 
 export default function ProspectLookupPage() {
-  const { createProspect } = useProspects();
+  const { createProspect, updateProspect } = useProspects();
   const { accounts, createAccount, updateAccount } = useAccounts();
   const searchParams = useSearchParams();
 
@@ -236,13 +236,19 @@ export default function ProspectLookupPage() {
           pipeline_stage: 'identified',
         } as any);
         if (newProspect) {
-          // Fire-and-forget email enrichment — reveals email via Apollo credits only after save
+          // Reveal email via Apollo after save (credit spent here, not during browse)
           fetch('/portal/api/leadforge/enrich', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               prospect: { ...(newProspect as any), account: { company_name: result.company_name, domain: result.domain } },
             }),
+          }).then(async r => {
+            if (!r.ok) return;
+            const d = await r.json();
+            if (d.found && Object.keys(d.updates ?? {}).length > 0) {
+              updateProspect((newProspect as any).id, d.updates).catch(() => {});
+            }
           }).catch(() => {});
           // Fire-and-forget HubSpot sync
           fetch('/portal/api/leadforge/hubspot', {
