@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     await resend.emails.send({
       from: `${FIRM_NAME} Website <onboarding@resend.dev>`,
       to: FIRM_EMAIL,
-      reply_to: email.trim(),
+      replyTo: email.trim(),
       subject: `[${inquiry_type ?? 'General Inquiry'}] New inquiry from ${full_name.trim()}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; color: #1a1a2e;">
