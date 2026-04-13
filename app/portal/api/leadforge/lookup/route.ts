@@ -119,17 +119,32 @@ export async function POST(req: NextRequest) {
       let rawPeople: ApolloPerson[] = [];
 
       if (org) {
+        // Try org_id search first (current employees only)
         const apolloResult = await searchPeopleByOrgId(org.id);
         rawPeople = apolloResult.people ?? [];
-        _debug.apolloRaw = rawPeople.map(p => ({ name: p.name, title: p.title, org_id: p.organization?.id }));
-        console.log('[LeadForge] searchPeopleByOrgId returned', rawPeople.length, 'people:', rawPeople.map(p => `${p.name} (${p.title})`));
+        _debug.orgIdSearchCount = rawPeople.length;
+        _debug.orgIdRaw = rawPeople.map(p => ({ name: p.name, title: p.title }));
+        console.log('[LeadForge] searchPeopleByOrgId returned', rawPeople.length, 'people');
         companyName = org.name;
         domain = org.primary_domain;
         if (org.estimated_num_employees) headcount = org.estimated_num_employees.toLocaleString();
+
+        // If org_id search returned nothing (title filter too strict), fall back to name search
+        // but still use the resolved company name/domain from the org lookup
+        if (rawPeople.length === 0) {
+          console.log('[LeadForge] org_id search empty, falling back to name search for', org.name);
+          _debug.orgIdFallback = true;
+          const fallbackResult = await searchPeopleAtCompany(org.name);
+          rawPeople = fallbackResult.people ?? [];
+          _debug.nameFallbackCount = rawPeople.length;
+          _debug.nameFallbackRaw = rawPeople.map(p => ({ name: p.name, title: p.title, org: p.organization_name }));
+        }
       } else {
         const apolloResult = await searchPeopleAtCompany(query.trim());
         rawPeople = apolloResult.people ?? [];
-        console.log('[LeadForge] searchPeopleAtCompany returned', rawPeople.length, 'people:', rawPeople.map(p => `${p.name} (${p.title}) @ ${p.organization_name}`));
+        _debug.nameSearchCount = rawPeople.length;
+        _debug.nameSearchRaw = rawPeople.map(p => ({ name: p.name, title: p.title, org: p.organization_name }));
+        console.log('[LeadForge] searchPeopleAtCompany returned', rawPeople.length, 'people');
         const firstPerson = rawPeople[0];
         if (firstPerson?.organization) {
           companyName = firstPerson.organization.name ?? query.trim();
@@ -208,6 +223,7 @@ Respond ONLY with this JSON structure:
       return NextResponse.json({
         ...claudeResult,
         people: (claudeResult.people ?? []).map((p: any) => ({ ...p, apollo_id: null, source: 'claude' })),
+        _debug: { ..._debug, claudeFallback: true },
       });
     }
 
