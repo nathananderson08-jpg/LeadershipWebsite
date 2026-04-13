@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { scanCompanySignals } from '@/lib/integrations/github';
+import { scanCompanySignals } from '@/lib/integrations/news';
 
 /**
  * POST /portal/api/leadforge/github-scan
  * Body: { company_name: string }
  *
- * Scans GitHub's public index for buying signals about a company.
- * Returns an array of GitHubSignal objects — caller is responsible
- * for saving them as trigger events via the useLeadForge hook.
+ * Scans Google News + synthesizes with Claude to detect buying signals.
+ * Returns NewsSignal[] — same shape as GitHubSignal so caller code is unchanged.
  */
 export async function POST(req: NextRequest) {
   try {
@@ -20,7 +19,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ signals, company_name: company_name.trim() });
   } catch (err: any) {
-    console.error('GitHub scan error:', err);
+    console.error('News scan error:', err);
     return NextResponse.json({ error: err.message ?? 'Scan failed.' }, { status: 500 });
   }
 }

@@ -98,9 +98,18 @@ export default function ProspectLookupPage() {
       if (existing) {
         account_id = existing.id;
       } else {
+        // Parse headcount from string like "50,000" or "10,000-50,000"
+        const parseHeadcount = (s: string | null): number | undefined => {
+          if (!s) return undefined;
+          const digits = s.replace(/[^0-9]/g, '');
+          const n = parseInt(digits);
+          return isNaN(n) ? undefined : n;
+        };
+
         const acct = await createAccount({
           company_name: result.company_name,
-          ...(result.domain ? { industry: undefined } : {}),
+          domain: result.domain ?? undefined,
+          headcount: parseHeadcount(result.headcount_estimate),
         }) as any;
         account_id = acct?.id;
       }

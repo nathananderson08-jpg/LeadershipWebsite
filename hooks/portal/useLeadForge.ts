@@ -488,6 +488,86 @@ export function useAllActivities(limit = 20) {
   return { activities, loading };
 }
 
+// ── useKnowledgeBase ───────────────────────────────────────────
+
+export interface KnowledgeBaseItem {
+  id: string;
+  title: string;
+  category: string;
+  content: string;
+  tags: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateKBInput {
+  title: string;
+  category: string;
+  content: string;
+  tags?: string[];
+}
+
+export function useKnowledgeBase() {
+  const [items, setItems] = useState<KnowledgeBaseItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [tableExists, setTableExists] = useState(true);
+  const supabase = createPortalClient();
+  const initialized = useRef(false);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('leadforge_knowledge_base')
+        .select('*')
+        .order('updated_at', { ascending: false });
+      if (error?.code === '42P01') { setTableExists(false); return; }
+      if (!error && data) setItems(data as KnowledgeBaseItem[]);
+    } catch {
+      // silently fail
+    } finally {
+      setLoading(false);
+    }
+  }, [supabase]);
+
+  useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+    load();
+  }, [load]);
+
+  const createItem = async (input: CreateKBInput) => {
+    const { data, error } = await supabase
+      .from('leadforge_knowledge_base')
+      .insert(input)
+      .select()
+      .single();
+    if (error) throw error;
+    await load();
+    return data;
+  };
+
+  const updateItem = async (id: string, updates: Partial<CreateKBInput>) => {
+    const { error } = await supabase
+      .from('leadforge_knowledge_base')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id);
+    if (error) throw error;
+    await load();
+  };
+
+  const deleteItem = async (id: string) => {
+    const { error } = await supabase
+      .from('leadforge_knowledge_base')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+    await load();
+  };
+
+  return { items, loading, tableExists, createItem, updateItem, deleteItem, reload: load };
+}
+
 // ── useLeadForgeStats ──────────────────────────────────────────
 
 export function useLeadForgeStats() {

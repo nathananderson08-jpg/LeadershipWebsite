@@ -52,7 +52,7 @@ function TypeBadge({ type }: { type: string }) {
   );
 }
 
-// ── GitHub Scan Modal ───────────────────────────────────────────────────────
+// ── News Scan Modal ───────────────────────────────────────────────────────
 function GitHubScanModal({ onClose, onSave }: {
   onClose: () => void;
   onSave: (input: CreateTriggerInput) => Promise<void>;
@@ -93,7 +93,7 @@ function GitHubScanModal({ onClose, onSave }: {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Scan failed.');
       setSignals(data.signals ?? []);
-      if ((data.signals ?? []).length === 0) setError('No signals found on GitHub for this company.');
+      if ((data.signals ?? []).length === 0) setError('No signals found in the news for this company.');
       // Pre-select all by default
       setSelected(new Set((data.signals ?? []).map((_: any, i: number) => i)));
     } catch (e: any) {
@@ -148,7 +148,7 @@ function GitHubScanModal({ onClose, onSave }: {
               <GitBranch size={18} color="var(--portal-accent)" />
             </div>
             <div>
-              <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--portal-text-primary)', margin: 0 }}>GitHub Signal Scan</h2>
+              <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--portal-text-primary)', margin: 0 }}>News Signal Scan</h2>
               <p style={{ fontSize: 12, color: 'var(--portal-text-tertiary)', margin: 0 }}>Detect buying signals from public sources</p>
             </div>
           </div>
@@ -260,7 +260,7 @@ function GitHubScanModal({ onClose, onSave }: {
                         onClick={e => e.stopPropagation()}
                         style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, color: 'var(--portal-accent)', textDecoration: 'none' }}
                       >
-                        <ExternalLink size={10} /> View on GitHub
+                        <ExternalLink size={10} /> View source
                       </a>
                     </div>
                   </div>
@@ -534,7 +534,7 @@ export default function TriggersPage() {
             onClick={() => setShowGitHubModal(true)}
             style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', border: '1px solid var(--portal-border-default)', borderRadius: 10, background: 'var(--portal-bg-secondary)', color: 'var(--portal-text-primary)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
           >
-            <GitBranch size={15} /> Scan GitHub
+            <GitBranch size={15} /> Scan News
           </button>
           <button onClick={() => setShowModal(true)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', border: 'none', borderRadius: 10, background: 'var(--portal-accent)', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
             <Plus size={15} strokeWidth={2} /> Log Event
@@ -549,7 +549,7 @@ export default function TriggersPage() {
           { label: 'This Week',          value: thisWeek       },
           { label: 'Pending Response',   value: pending        },
           { label: 'Prospects Flagged',  value: totalFlagged   },
-          { label: 'From GitHub',        value: githubCount    },
+          { label: 'From News Scan',     value: githubCount    },
         ].map(s => (
           <div key={s.label} style={{ flex: 1, padding: '14px 18px', background: 'var(--portal-bg-secondary)', border: '1px solid var(--portal-border-default)', borderRadius: 12 }}>
             <p style={{ fontSize: 22, fontWeight: 800, color: 'var(--portal-text-primary)', margin: 0, lineHeight: 1 }}>{loading ? '—' : s.value}</p>
@@ -579,11 +579,11 @@ export default function TriggersPage() {
           </div>
           <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--portal-text-primary)', margin: '0 0 6px' }}>No trigger events yet</p>
           <p style={{ fontSize: 13, color: 'var(--portal-text-tertiary)', margin: '0 0 20px', maxWidth: 360, marginInline: 'auto' }}>
-            Scan GitHub to auto-detect buying signals, or log an event manually.
+            Scan News to auto-detect buying signals, or log an event manually.
           </p>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
             <button onClick={() => setShowGitHubModal(true)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 20px', border: '1px solid var(--portal-border-default)', borderRadius: 10, background: 'var(--portal-bg-secondary)', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: 'var(--portal-text-primary)' }}>
-              <GitBranch size={14} /> Scan GitHub
+              <GitBranch size={14} /> Scan News
             </button>
             <button onClick={() => setShowModal(true)} style={{ padding: '10px 20px', border: 'none', borderRadius: 10, background: 'var(--portal-accent)', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Log Event Manually</button>
           </div>

@@ -13,6 +13,7 @@ const subNavTabs = [
   { href: '/portal/dashboard/leadforge/triggers',  label: 'Trigger Events',exact: false },
   { href: '/portal/dashboard/leadforge/campaigns', label: 'Pipeline',      exact: false },
   { href: '/portal/dashboard/leadforge/content',   label: 'Content',       exact: false },
+  { href: '/portal/dashboard/leadforge/knowledge', label: 'Knowledge Base', exact: false },
 ];
 
 export default function LeadForgeLayout({ children }: { children: React.ReactNode }) {

@@ -5,7 +5,7 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function POST(req: NextRequest) {
   try {
-    const { prospect, content_type } = await req.json();
+    const { prospect, content_type, kb_context } = await req.json();
 
     if (!prospect || !content_type) {
       return NextResponse.json({ error: 'prospect and content_type are required.' }, { status: 400 });
@@ -20,12 +20,16 @@ export async function POST(req: NextRequest) {
 
     const firmContext = `You are writing on behalf of a senior leadership consulting firm that specialises in executive development, CHRO advisory, leadership program design, and organisational transformation. The firm works with Fortune 500 and mid-market companies. Tone: insightful, peer-level, never salesy. No buzzwords. No generic compliments.`;
 
+    const firmContextWithKB = kb_context
+      ? `${firmContext}\n\nFIRM KNOWLEDGE BASE — use this to ground your output in the firm's actual IP, methodologies, and case studies:\n${kb_context}`
+      : firmContext;
+
     let prompt = '';
     let titleHint = '';
 
     if (content_type === 'micro_research') {
       titleHint = `90-Day Priorities Brief — ${prospect.full_name}, ${company}`;
-      prompt = `${firmContext}
+      prompt = `${firmContextWithKB}
 
 Write a "Micro-Research Brief" for ${prospect.full_name}, ${prospect.title ?? 'senior leader'} at ${company}.
 
@@ -49,7 +53,7 @@ Keep it to ~350 words. Write in first person plural (we/our) from the firm's per
 
     } else if (content_type === 'email_sequence') {
       titleHint = `First-Touch Email — ${prospect.full_name}`;
-      prompt = `${firmContext}
+      prompt = `${firmContextWithKB}
 
 Write a first-touch outreach email to ${prospect.full_name}, ${prospect.title ?? 'senior leader'} at ${company}.
 
@@ -72,7 +76,7 @@ Subject: [subject line]
 
     } else if (content_type === 'linkedin_post') {
       titleHint = `LinkedIn Message — ${prospect.full_name}`;
-      prompt = `${firmContext}
+      prompt = `${firmContextWithKB}
 
 Write a LinkedIn connection request message + follow-up message for ${prospect.full_name}, ${prospect.title ?? 'senior leader'} at ${company}.
 
@@ -88,7 +92,7 @@ Format as two separate messages:
 
     } else if (content_type === 'executive_summary') {
       titleHint = `Account Brief — ${company}`;
-      prompt = `${firmContext}
+      prompt = `${firmContextWithKB}
 
 Write an internal account brief for ${company}, focused on ${prospect.full_name} (${prospect.title ?? 'key contact'}) as the primary contact.
 
@@ -105,7 +109,7 @@ Write for internal use — honest, direct, strategic.`;
 
     } else if (content_type === 'comment_draft') {
       titleHint = `LinkedIn Comment Draft — ${prospect.full_name}`;
-      prompt = `${firmContext}
+      prompt = `${firmContextWithKB}
 
 Write 3 LinkedIn comment options for posts that ${prospect.full_name}, ${prospect.title ?? 'senior leader'} at ${company} might publish.
 
