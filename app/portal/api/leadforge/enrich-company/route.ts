@@ -1,5 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { enrichCompany, findOrganization } from '@/lib/integrations/apollo';
+import { findOrganization } from '@/lib/integrations/apollo';
+import Anthropic from '@anthropic-ai/sdk';
+
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+async function enrichWithClaude(companyName: string, domain: string | null) {
+  const identifier = domain ?? companyName;
+  const msg = await anthropic.messages.create({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 300,
+    messages: [{
+      role: 'user',
+      content: `What are the key facts about the company "${identifier}"? Reply ONLY with JSON, no markdown:
+{"domain":"example.com","industry":"Technology","headcount":50000,"description":"One sentence about what they do.","founded_year":1990}
+Use null for any unknown fields. headcount should be a number.`,
+    }],
+  });
+  const text = msg.content[0].type === 'text' ? msg.content[0].text : '{}';
+  const match = text.match(/\{[\s\S]*\}/);
+  if (!match) return null;
+  return JSON.parse(match[0]);
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -7,14 +28,11 @@ export async function POST(req: NextRequest) {
 
     let resolvedDomain = domain?.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '') || null;
 
-    // Step 1: try findOrganization by name — returns industry + headcount directly
+    // Step 1: try Apollo org search (free — no export credits)
     if (company_name?.trim()) {
       const org = await findOrganization(company_name.trim());
       if (org) {
-        // Use domain from org if we don't have one
         if (!resolvedDomain && org.primary_domain) resolvedDomain = org.primary_domain;
-
-        // Return org data directly — no need for second enrichCompany call
         return NextResponse.json({
           found: true,
           domain: resolvedDomain,
@@ -27,18 +45,19 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Step 2: if we have a domain but no org match, try enrichCompany
-    if (resolvedDomain) {
-      const orgData = await enrichCompany(resolvedDomain);
-      if (orgData) {
+    // Step 2: fall back to Claude Haiku — no Apollo credits spent
+    const clue = company_name?.trim() || resolvedDomain;
+    if (clue) {
+      const data = await enrichWithClaude(clue, resolvedDomain);
+      if (data) {
         return NextResponse.json({
           found: true,
-          domain: resolvedDomain,
-          industry: orgData.industry ?? null,
-          headcount: orgData.estimated_num_employees ?? null,
-          description: orgData.short_description ?? null,
-          linkedin_url: orgData.linkedin_url ?? null,
-          founded_year: orgData.founded_year ?? null,
+          domain: data.domain ?? resolvedDomain,
+          industry: data.industry ?? null,
+          headcount: typeof data.headcount === 'number' ? data.headcount : null,
+          description: data.description ?? null,
+          linkedin_url: null,
+          founded_year: data.founded_year ?? null,
         });
       }
     }
