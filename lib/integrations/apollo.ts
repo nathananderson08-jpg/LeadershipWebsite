@@ -134,6 +134,8 @@ export async function searchPeopleByOrgId(orgId: string, page = 1): Promise<Apol
     page,
     per_page: 20,
     prospected_by_current_team: ['no'],
+    reveal_personal_emails: true,
+    reveal_phone_number: false,
   });
 }
 
@@ -148,6 +150,8 @@ export async function searchPeopleAtCompany(companyName: string, page = 1): Prom
     page,
     per_page: 20,
     prospected_by_current_team: ['no'],
+    reveal_personal_emails: true,
+    reveal_phone_number: false,
   });
 }
 
@@ -162,6 +166,23 @@ export async function searchPeopleByTicker(ticker: string, page = 1): Promise<Ap
 }
 
 // ── Person Enrichment ──────────────────────────────────────────────────────
+
+/**
+ * Fetch full profiles by Apollo person IDs (up to 10 at a time).
+ * Used to retrieve last_name and linkedin_url which bulk search withholds.
+ */
+export async function enrichPeopleByIds(ids: string[]): Promise<ApolloPerson[]> {
+  if (ids.length === 0) return [];
+  try {
+    const res = await apollo<{ people?: ApolloPerson[] }>('POST', '/people/bulk_match', {
+      details: ids.map(id => ({ id })),
+      reveal_personal_emails: true,
+    });
+    return res.people ?? [];
+  } catch {
+    return [];
+  }
+}
 
 export async function enrichPerson(props: {
   first_name: string;

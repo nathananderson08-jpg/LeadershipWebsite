@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
-import { findOrganization, searchPeopleByOrgId, searchPeopleAtCompany, emailConfidenceFromStatus, type ApolloPerson } from '@/lib/integrations/apollo';
+import { findOrganization, searchPeopleByOrgId, searchPeopleAtCompany, enrichPeopleByIds, emailConfidenceFromStatus, type ApolloPerson } from '@/lib/integrations/apollo';
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -166,6 +166,31 @@ export async function POST(req: NextRequest) {
             if (!headcount && meta.headcount) headcount = meta.headcount;
           }
         } catch { /* non-critical */ }
+      }
+
+      // Enrich top 10 people by ID to retrieve last_name + linkedin_url
+      // (bulk search withholds these even on paid plans without enrichment)
+      if (rawPeople.length > 0) {
+        try {
+          const ids = rawPeople.slice(0, 10).map(p => p.id).filter(Boolean);
+          const enriched = await enrichPeopleByIds(ids);
+          if (enriched.length > 0) {
+            const enrichMap = new Map(enriched.map(e => [e.id, e]));
+            rawPeople = rawPeople.map(p => {
+              const e = enrichMap.get(p.id);
+              if (!e) return p;
+              return {
+                ...p,
+                name: e.name || p.name,
+                first_name: e.first_name || p.first_name,
+                last_name: e.last_name || p.last_name,
+                linkedin_url: e.linkedin_url || p.linkedin_url,
+                email: e.email || p.email,
+                email_status: e.email_status || p.email_status,
+              };
+            });
+          }
+        } catch { /* non-critical — proceed with partial data */ }
       }
 
       if (rawPeople.length > 0) {
