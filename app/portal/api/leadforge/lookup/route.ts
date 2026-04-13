@@ -63,9 +63,9 @@ async function getRelevanceFromClaude(
 
   const list = people.map((p, i) => `${i + 1}. ${p.full_name} — ${p.title}`).join('\n');
 
-  const prompt = `You are a B2B sales advisor for a senior leadership consulting firm (executive coaching, CHRO advisory, leadership development programs).
+  const prompt = `You are a B2B sales advisor for a senior leadership consulting firm (executive coaching, C-suite advisory, CHRO advisory, leadership development programs).
 
-For each person below at ${companyName}, write a 1–2 sentence "why target" — specific, intelligent, no fluff. Reference role urgency, common mandates for this title, or signals that create buying intent.
+For each person below at ${companyName}, write a 1–2 sentence "why target" — specific, intelligent, no fluff. For C-suite (CEO/COO/CFO/CTO etc.) reference executive team alignment, succession, or org performance mandates. For HR/People leaders reference talent strategy, leadership pipeline, or culture programs.
 
 ${list}
 
@@ -226,7 +226,7 @@ export async function POST(req: NextRequest) {
 
 Given company name or ticker: "${query.trim()}"
 
-Find 8–10 senior HR/People leaders (CHRO, CPO, VP HR, VP People, CLO, Head of People, etc.) and for each provide:
+Find 8–10 senior leaders across two groups: (1) all C-suite executives (CEO, COO, CFO, CTO, CMO, CRO, CSO, President, etc.) and (2) senior HR/People leaders (CHRO, CPO, VP HR, VP People, CLO, Head of People, etc.). For each provide:
 - Full name, title, seniority (C-Suite/VP/Director/Senior Manager)
 - Why they're worth targeting (1-2 sentences, specific to their role)
 - Likely LinkedIn URL

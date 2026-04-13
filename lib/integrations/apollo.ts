@@ -94,7 +94,27 @@ export async function findOrganization(companyName: string): Promise<ApolloOrgMa
 
 // ── People Search ──────────────────────────────────────────────────────────
 
-const HR_TITLES = [
+const TARGET_TITLES = [
+  // ── C-Suite (all functions) ───────────────────────────────────────
+  'Chief Executive Officer',
+  'CEO',
+  'Chief Operating Officer',
+  'COO',
+  'Chief Financial Officer',
+  'CFO',
+  'Chief Technology Officer',
+  'CTO',
+  'Chief Marketing Officer',
+  'CMO',
+  'Chief Revenue Officer',
+  'CRO',
+  'Chief Strategy Officer',
+  'CSO',
+  'Chief Commercial Officer',
+  'CCO',
+  'Chief Transformation Officer',
+  'President',
+  // ── HR / People / Talent / Learning ──────────────────────────────
   'Chief People Officer',
   'Chief Human Resources Officer',
   'CHRO',
@@ -129,7 +149,7 @@ const HR_TITLES = [
 export async function searchPeopleByOrgId(orgId: string, page = 1): Promise<ApolloSearchResult> {
   return apollo<ApolloSearchResult>('POST', '/mixed_people/api_search', {
     organization_ids: [orgId],
-    person_titles: HR_TITLES,
+    person_titles: TARGET_TITLES,
     page,
     per_page: 20,
     prospected_by_current_team: ['no'],
@@ -143,7 +163,7 @@ export async function searchPeopleByOrgId(orgId: string, page = 1): Promise<Apol
 export async function searchPeopleAtCompany(companyName: string, page = 1): Promise<ApolloSearchResult> {
   return apollo<ApolloSearchResult>('POST', '/mixed_people/api_search', {
     q_organization_name: companyName,
-    person_titles: HR_TITLES,
+    person_titles: TARGET_TITLES,
     page,
     per_page: 20,
     prospected_by_current_team: ['no'],
@@ -153,7 +173,7 @@ export async function searchPeopleAtCompany(companyName: string, page = 1): Prom
 export async function searchPeopleByTicker(ticker: string, page = 1): Promise<ApolloSearchResult> {
   return apollo<ApolloSearchResult>('POST', '/mixed_people/api_search', {
     q_organization_fuzzy_name: ticker,
-    person_titles: HR_TITLES,
+    person_titles: TARGET_TITLES,
     page,
     per_page: 15,
     prospected_by_current_team: ['no'],
