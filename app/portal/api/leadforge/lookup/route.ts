@@ -100,25 +100,28 @@ export async function POST(req: NextRequest) {
     let apolloWorked = false;
 
     try {
-      // Step 1: Resolve org ID for precise current-employee search
-      const org = await findOrganization(query.trim());
+      // Step 1: Resolve org ID for precise current-employee search.
+      // Verify the returned org name actually resembles the query — Apollo's fuzzy search
+      // can return an unrelated company (e.g. "3M Solutions" when searching "3M").
+      const orgCandidate = await findOrganization(query.trim());
+      const queryLower = query.trim().toLowerCase();
+      const org = orgCandidate && (
+        orgCandidate.name.toLowerCase().includes(queryLower) ||
+        queryLower.includes(orgCandidate.name.toLowerCase()) ||
+        (orgCandidate.primary_domain ?? '').toLowerCase().includes(queryLower.replace(/\s+/g, ''))
+      ) ? orgCandidate : null;
 
       let rawPeople: ApolloPerson[] = [];
 
       if (org) {
-        // Precise: only returns people currently at this org
+        // Precise: organization_ids restricts Apollo to current employees only.
+        // No secondary org ID cross-check — Apollo already filtered; that check
+        // caused valid people (e.g. Brett Strand, "Interim CHRO") to be dropped.
         const apolloResult = await searchPeopleByOrgId(org.id);
         rawPeople = apolloResult.people ?? [];
         companyName = org.name;
         domain = org.primary_domain;
         if (org.estimated_num_employees) headcount = org.estimated_num_employees.toLocaleString();
-
-        // Secondary verification: Apollo's own data says this person is currently at this org.
-        // Filters out stale associations where Apollo returned someone via org_id but their
-        // current organization.id points elsewhere (ex-employees, data errors).
-        rawPeople = rawPeople.filter(p =>
-          !p.organization || p.organization.id === org.id
-        );
       } else {
         // Fallback: fuzzy name search (may include past employees)
         const apolloResult = await searchPeopleAtCompany(query.trim());
@@ -132,7 +135,7 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // Drop people whose title contains "former" — indicates Apollo has stale title data
+      // Drop people whose title contains "former" — stale Apollo title data
       rawPeople = rawPeople.filter(p => !p.title?.toLowerCase().includes('former'));
 
       if (rawPeople.length > 0) {
