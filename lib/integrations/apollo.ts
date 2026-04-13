@@ -79,7 +79,7 @@ export async function findOrganization(companyName: string): Promise<ApolloOrgMa
   try {
     const res = await apollo<{ organizations: ApolloOrgMatch[] }>(
       'POST',
-      '/mixed_organizations/search',
+      '/mixed_companies/api_search',
       {
         q_organization_fuzzy_name: companyName,
         page: 1,
@@ -127,7 +127,7 @@ const HR_TITLES = [
  * who are *currently* at this org according to Apollo's data.
  */
 export async function searchPeopleByOrgId(orgId: string, page = 1): Promise<ApolloSearchResult> {
-  return apollo<ApolloSearchResult>('POST', '/mixed_people/search', {
+  return apollo<ApolloSearchResult>('POST', '/mixed_people/api_search', {
     organization_ids: [orgId],
     person_titles: HR_TITLES,
     page,
@@ -141,7 +141,7 @@ export async function searchPeopleByOrgId(orgId: string, page = 1): Promise<Apol
  * Only used when findOrganization() returns no match.
  */
 export async function searchPeopleAtCompany(companyName: string, page = 1): Promise<ApolloSearchResult> {
-  return apollo<ApolloSearchResult>('POST', '/mixed_people/search', {
+  return apollo<ApolloSearchResult>('POST', '/mixed_people/api_search', {
     q_organization_name: companyName,
     person_titles: HR_TITLES,
     page,
@@ -151,7 +151,7 @@ export async function searchPeopleAtCompany(companyName: string, page = 1): Prom
 }
 
 export async function searchPeopleByTicker(ticker: string, page = 1): Promise<ApolloSearchResult> {
-  return apollo<ApolloSearchResult>('POST', '/mixed_people/search', {
+  return apollo<ApolloSearchResult>('POST', '/mixed_people/api_search', {
     q_organization_fuzzy_name: ticker,
     person_titles: HR_TITLES,
     page,
