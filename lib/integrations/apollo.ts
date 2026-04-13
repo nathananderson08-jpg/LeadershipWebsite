@@ -77,17 +77,16 @@ export interface ApolloOrgMatch {
  */
 export async function findOrganization(companyName: string): Promise<ApolloOrgMatch | null> {
   try {
-    const res = await apollo<{ organizations?: ApolloOrgMatch[]; companies?: ApolloOrgMatch[] }>(
+    const res = await apollo<{ organizations?: ApolloOrgMatch[] }>(
       'POST',
-      '/mixed_companies/api_search',
+      '/organizations/search',
       {
-        q_organization_fuzzy_name: companyName,
+        q_organization_name: companyName,
         page: 1,
         per_page: 1,
       }
     );
-    // api_search returns 'companies', legacy returned 'organizations'
-    return (res.companies ?? res.organizations)?.[0] ?? null;
+    return res.organizations?.[0] ?? null;
   } catch {
     return null;
   }
