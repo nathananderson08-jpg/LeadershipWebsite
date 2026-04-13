@@ -1,8 +1,76 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Building2, Users, Zap, TrendingUp, Plus, X, ChevronDown, ChevronUp, ExternalLink, AlertTriangle, Trash2 } from 'lucide-react';
+
+interface OrgSuggestion { id: string; name: string; domain: string | null; headcount: number | null; industry: string | null; }
+
+function CompanyAutocomplete({ value, onChange, onSelect }: {
+  value: string;
+  onChange: (v: string) => void;
+  onSelect: (org: OrgSuggestion) => void;
+}) {
+  const [suggestions, setSuggestions] = useState<OrgSuggestion[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [fetching, setFetching] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (!value.trim() || value.length < 2) { setSuggestions([]); setShowDropdown(false); return; }
+    debounceRef.current = setTimeout(async () => {
+      setFetching(true);
+      try {
+        const res = await fetch(`/portal/api/leadforge/org-search?q=${encodeURIComponent(value)}`);
+        const data = await res.json();
+        setSuggestions(data.orgs ?? []);
+        setShowDropdown((data.orgs ?? []).length > 0);
+      } catch { setSuggestions([]); } finally { setFetching(false); }
+    }, 300);
+  }, [value]);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) setShowDropdown(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const inputStyle = { width: '100%', padding: '10px 14px', border: '1px solid var(--portal-border-default)', borderRadius: 10, fontSize: 13, color: 'var(--portal-text-primary)', background: 'var(--portal-bg-hover)', outline: 'none', boxSizing: 'border-box' as const };
+
+  return (
+    <div ref={containerRef} style={{ position: 'relative' }}>
+      <input
+        style={inputStyle}
+        value={value}
+        onChange={e => { onChange(e.target.value); }}
+        onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
+        placeholder="e.g. Johnson Controls, 3M…"
+        autoFocus
+      />
+      {fetching && <span style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 10, color: 'var(--portal-text-tertiary)' }}>searching…</span>}
+      {showDropdown && (
+        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 4, background: 'var(--portal-bg-secondary)', border: '1px solid var(--portal-border-default)', borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,0.12)', zIndex: 100, overflow: 'hidden' }}>
+          {suggestions.map((org, i) => (
+            <button key={org.id} onMouseDown={() => { onChange(org.name); onSelect(org); setShowDropdown(false); }}
+              style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: 'none', border: 'none', borderTop: i > 0 ? '1px solid var(--portal-border-default)' : 'none', cursor: 'pointer', textAlign: 'left' }}>
+              <Building2 size={13} color="var(--portal-accent)" style={{ flexShrink: 0 }} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--portal-text-primary)', margin: 0 }}>{org.name}</p>
+                <p style={{ fontSize: 11, color: 'var(--portal-text-tertiary)', margin: '1px 0 0' }}>
+                  {[org.domain, org.industry, org.headcount ? org.headcount.toLocaleString() + ' employees' : null].filter(Boolean).join(' · ')}
+                </p>
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 import {
   useAccounts, useProspects, useTriggerEvents,
   type LeadForgeAccount, type CreateAccountInput,
@@ -95,7 +163,20 @@ function AddAccountModal({ onClose, onSave }: {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div>
             <label style={labelStyle}>Company Name *</label>
-            <input style={inputStyle} value={form.company_name} onChange={e => setForm(f => ({ ...f, company_name: e.target.value }))} placeholder="e.g. Microsoft" autoFocus />
+            <CompanyAutocomplete
+              value={form.company_name}
+              onChange={v => setForm(f => ({ ...f, company_name: v }))}
+              onSelect={org => {
+                setForm(f => ({
+                  ...f,
+                  company_name: org.name,
+                  domain: f.domain || org.domain || undefined,
+                  industry: f.industry || org.industry || undefined,
+                  headcount: f.headcount || (org.headcount ?? undefined),
+                }));
+                setEnriched(true);
+              }}
+            />
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div>
