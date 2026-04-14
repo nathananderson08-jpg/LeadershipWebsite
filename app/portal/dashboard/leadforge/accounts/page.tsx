@@ -404,7 +404,7 @@ function AccountCard({ account, prospectsForAccount, eventsForAccount, onDelete 
 
 // ── Main page ───────────────────────────────────────────────────
 export default function AccountsPage() {
-  const { accounts, loading: accountsLoading, createAccount, deleteAccount } = useAccounts();
+  const { accounts, loading: accountsLoading, createAccount, updateAccount, deleteAccount } = useAccounts();
   const { prospects, loading: prospectsLoading } = useProspects();
   const { events, loading: eventsLoading } = useTriggerEvents();
   const [search, setSearch] = useState('');
@@ -416,6 +416,25 @@ export default function AccountsPage() {
   const [showModal, setShowModal] = useState(false);
 
   const loading = accountsLoading || prospectsLoading || eventsLoading;
+
+  const handleCreateAccount = async (input: CreateAccountInput) => {
+    const account = await createAccount(input);
+    // Auto-enrich in background using Claude — fire and forget
+    fetch('/portal/api/leadforge/enrich-company', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ domain: input.domain, company_name: input.company_name }),
+    }).then(r => r.json()).then(data => {
+      if (!data.found) return;
+      const updates: Partial<CreateAccountInput> = {};
+      if (!input.industry && data.industry) updates.industry = data.industry;
+      if (!input.headcount && data.headcount) updates.headcount = data.headcount;
+      if (!input.hq_location && data.hq_location) updates.hq_location = data.hq_location;
+      if (!input.domain && data.domain) updates.domain = data.domain;
+      if (data.key_challenges) updates.key_challenges = data.key_challenges;
+      if (Object.keys(updates).length > 0) updateAccount(account.id, updates);
+    }).catch(() => {});
+  };
 
   const industries = Array.from(new Set(accounts.map(a => a.industry).filter(Boolean))) as string[];
 
@@ -547,7 +566,7 @@ export default function AccountsPage() {
         </div>
       )}
 
-      {showModal && <AddAccountModal onClose={() => setShowModal(false)} onSave={createAccount} />}
+      {showModal && <AddAccountModal onClose={() => setShowModal(false)} onSave={handleCreateAccount} />}
     </div>
   );
 }

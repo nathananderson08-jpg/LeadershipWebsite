@@ -210,7 +210,7 @@ async function sendReportEmail(params: {
   <div style="text-align:center;padding:24px;background:rgba(93,171,121,0.08);border:1px solid rgba(93,171,121,0.2);border-radius:12px;margin-bottom:28px;">
     <p style="color:rgba(255,255,255,0.85);font-size:14px;font-weight:600;margin:0 0 6px;">Ready to act on these insights?</p>
     <p style="color:rgba(255,255,255,0.5);font-size:13px;margin:0 0 16px;line-height:1.5;">${report.engagement_suggestion ?? 'Speak with one of our senior advisors to explore how we can support your priorities.'}</p>
-    <a href="https://www.leadershipfirm.com/contact" style="display:inline-block;padding:12px 28px;background:#5dab79;color:white;text-decoration:none;border-radius:8px;font-size:13px;font-weight:700;">Book a Conversation →</a>
+    <a href="${process.env.NEXT_PUBLIC_APP_URL ?? ''}/contact" style="display:inline-block;padding:12px 28px;background:#5dab79;color:white;text-decoration:none;border-radius:8px;font-size:13px;font-weight:700;">Book a Conversation →</a>
   </div>
 
   <p style="color:rgba(255,255,255,0.25);font-size:11px;text-align:center;line-height:1.6;margin:0;">

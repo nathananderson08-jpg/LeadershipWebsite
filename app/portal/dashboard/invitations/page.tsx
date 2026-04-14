@@ -53,6 +53,13 @@ export default function InvitationsPage() {
       .update({ status: newStatus, responded_at: new Date().toISOString() })
       .eq('id', assignmentId);
     await reloadPrograms();
+    if (newStatus === 'confirmed' && selectedProgram) {
+      fetch('/portal/api/google-calendar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'sync_attendees', program_id: selectedProgram.id }),
+      }).catch(() => {});
+    }
   };
 
   if (!isAdmin) {

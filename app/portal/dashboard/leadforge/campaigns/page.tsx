@@ -1,8 +1,95 @@
 'use client';
 
 import { useState } from 'react';
-import { Clock, Mail, ExternalLink, ChevronRight } from 'lucide-react';
+import { Clock, Mail, ExternalLink, ChevronRight, Send, X } from 'lucide-react';
 import { useProspects, type LeadForgeProspect } from '@/hooks/portal/useLeadForge';
+import { useAuth } from '@/hooks/portal/useAuth';
+
+interface EmailDraft {
+  prospect: LeadForgeProspect;
+  to_email: string;
+  subject: string;
+  body: string;
+}
+
+function ComposeModal({ draft, onClose, onSent }: { draft: EmailDraft; onClose: () => void; onSent: () => void }) {
+  const [subject, setSubject] = useState(draft.subject);
+  const [body, setBody] = useState(draft.body);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
+  const { profile } = useAuth();
+
+  const handleSend = async () => {
+    if (!subject.trim() || !body.trim()) return;
+    setSending(true);
+    setError('');
+    try {
+      const res = await fetch('/portal/api/leadforge/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to_email: draft.to_email,
+          to_name: draft.prospect.full_name,
+          subject,
+          body,
+          prospect_id: draft.prospect.id,
+          account_id: (draft.prospect as any).account_id ?? null,
+          sender_name: profile?.full_name,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Send failed');
+      onSent();
+      onClose();
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <div style={{ background: 'var(--portal-bg-secondary)', borderRadius: 20, padding: 28, width: '100%', maxWidth: 560, boxShadow: '0 20px 60px rgba(0,0,0,0.3)', display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--portal-text-primary)', margin: 0 }}>Compose Email</h2>
+            <p style={{ fontSize: 12, color: 'var(--portal-text-tertiary)', margin: '3px 0 0' }}>To: {draft.prospect.full_name} · {draft.to_email}</p>
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--portal-text-tertiary)', padding: 4 }}>
+            <X size={18} />
+          </button>
+        </div>
+        <div>
+          <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--portal-text-secondary)', display: 'block', marginBottom: 6 }}>Subject</label>
+          <input
+            value={subject}
+            onChange={e => setSubject(e.target.value)}
+            style={{ width: '100%', padding: '10px 14px', border: '1px solid var(--portal-border-default)', borderRadius: 10, fontSize: 13, color: 'var(--portal-text-primary)', background: 'var(--portal-bg-hover)', outline: 'none', boxSizing: 'border-box' }}
+          />
+        </div>
+        <div>
+          <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--portal-text-secondary)', display: 'block', marginBottom: 6 }}>Message</label>
+          <textarea
+            value={body}
+            onChange={e => setBody(e.target.value)}
+            rows={10}
+            style={{ width: '100%', padding: '10px 14px', border: '1px solid var(--portal-border-default)', borderRadius: 10, fontSize: 13, color: 'var(--portal-text-primary)', background: 'var(--portal-bg-hover)', outline: 'none', resize: 'vertical', fontFamily: 'inherit', lineHeight: '1.6', boxSizing: 'border-box' }}
+          />
+        </div>
+        {error && <p style={{ fontSize: 12, color: 'var(--portal-danger)', margin: 0 }}>{error}</p>}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
+          <button onClick={onClose} style={{ padding: '10px 20px', border: '1px solid var(--portal-border-default)', borderRadius: 10, background: 'none', fontSize: 13, fontWeight: 600, color: 'var(--portal-text-secondary)', cursor: 'pointer' }}>Cancel</button>
+          <button onClick={handleSend} disabled={sending || !subject.trim() || !body.trim()}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 20px', border: 'none', borderRadius: 10, background: 'var(--portal-accent)', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: (sending || !subject.trim() || !body.trim()) ? 0.6 : 1 }}>
+            <Send size={14} />
+            {sending ? 'Sending…' : 'Send'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const COLUMNS = [
   { id: 'identified',  label: 'Identified',  color: '#94a3b8', bg: 'rgba(148,163,184,0.08)' },
@@ -29,7 +116,7 @@ function WarmthIndicator({ warmth }: { warmth?: string | null }) {
   return <span style={{ fontSize: 10, color, fontWeight: 700 }}>{label}</span>;
 }
 
-function ProspectCard({ prospect, onStageChange }: { prospect: LeadForgeProspect; onStageChange: (id: string, stage: string) => Promise<void> }) {
+function ProspectCard({ prospect, onStageChange, onEmail }: { prospect: LeadForgeProspect; onStageChange: (id: string, stage: string) => Promise<void>; onEmail: (p: LeadForgeProspect) => void }) {
   const p = prospect as any;
   const daysSince = Math.floor((Date.now() - new Date(p.last_activity_at ?? prospect.created_at).getTime()) / (1000 * 60 * 60 * 24));
   const isStale = daysSince > 14;
@@ -82,9 +169,11 @@ function ProspectCard({ prospect, onStageChange }: { prospect: LeadForgeProspect
             <Clock size={10} />{daysSince === 0 ? 'today' : `${daysSince}d`}
           </span>
           {prospect.email && (
-            <a href={`mailto:${prospect.email}`} onClick={e => e.stopPropagation()} style={{ color: 'var(--portal-text-tertiary)', display: 'flex' }}>
+            <button onClick={e => { e.stopPropagation(); onEmail(prospect); }}
+              title="Send email"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--portal-text-tertiary)', display: 'flex', padding: 0 }}>
               <Mail size={11} />
-            </a>
+            </button>
           )}
           {prospect.linkedin_url && (
             <a href={prospect.linkedin_url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ color: 'var(--portal-text-tertiary)', display: 'flex' }}>
@@ -123,6 +212,20 @@ function ProspectCard({ prospect, onStageChange }: { prospect: LeadForgeProspect
 export default function CampaignsPage() {
   const { prospects, loading, updateProspect } = useProspects();
   const [highlight, setHighlight] = useState<string | null>(null);
+  const [composeDraft, setComposeDraft] = useState<EmailDraft | null>(null);
+  const [sentMsg, setSentMsg] = useState('');
+
+  const handleEmail = (prospect: LeadForgeProspect) => {
+    if (!prospect.email) return;
+    const firstName = prospect.full_name.split(' ')[0];
+    const company = (prospect as any).account?.company_name ?? '';
+    setComposeDraft({
+      prospect,
+      to_email: prospect.email,
+      subject: `Leadership Development — ${company || prospect.full_name}`,
+      body: `Hi ${firstName},\n\nI wanted to reach out regarding leadership development opportunities at ${company || 'your organization'}.\n\nWe specialize in executive coaching and leadership programs that help organizations like yours develop high-impact leaders and build stronger cultures.\n\nWould you be open to a brief conversation to explore how we might support your team?\n\nBest regards,`,
+    });
+  };
 
   const byStage = (stage: string) =>
     prospects
@@ -142,12 +245,26 @@ export default function CampaignsPage() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20, height: '100%' }}>
+      {composeDraft && (
+        <ComposeModal
+          draft={composeDraft}
+          onClose={() => setComposeDraft(null)}
+          onSent={() => { setSentMsg('Email sent!'); setTimeout(() => setSentMsg(''), 4000); }}
+        />
+      )}
       {/* Header */}
-      <div>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--portal-text-primary)', margin: 0 }}>Pipeline</h1>
-        <p style={{ fontSize: 13, color: 'var(--portal-text-tertiary)', margin: '4px 0 0' }}>
-          {prospects.length} prospect{prospects.length !== 1 ? 's' : ''} · {totalActive} active · click "→ Stage" to advance
-        </p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+          <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--portal-text-primary)', margin: 0 }}>Pipeline</h1>
+          <p style={{ fontSize: 13, color: 'var(--portal-text-tertiary)', margin: '4px 0 0' }}>
+            {prospects.length} prospect{prospects.length !== 1 ? 's' : ''} · {totalActive} active · click "→ Stage" to advance
+          </p>
+        </div>
+        {sentMsg && (
+          <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--portal-success)', background: 'var(--portal-success-subtle)', padding: '6px 12px', borderRadius: 8 }}>
+            {sentMsg}
+          </span>
+        )}
       </div>
 
       {/* Stage summary bar */}
@@ -201,7 +318,7 @@ export default function CampaignsPage() {
                     ) : (
                       colProspects.map(p => (
                         <div key={p.id} style={{ opacity: highlight === p.id ? 0.5 : 1, transition: 'opacity 0.3s' }}>
-                          <ProspectCard prospect={p} onStageChange={handleStageChange} />
+                          <ProspectCard prospect={p} onStageChange={handleStageChange} onEmail={handleEmail} />
                         </div>
                       ))
                     )}
