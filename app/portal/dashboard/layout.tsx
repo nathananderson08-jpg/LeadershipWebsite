@@ -14,10 +14,11 @@ export default function PortalDashboardLayout({
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !profile) {
+    if (loading) return;
+    if (!profile) {
       router.replace('/portal/login');
     }
-  }, [loading, profile, router]);
+  }, [loading, profile, isAdmin, router]);
 
   if (loading) {
     return (

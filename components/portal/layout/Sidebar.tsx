@@ -27,7 +27,7 @@ const adminNavItems = [
 ];
 
 const practitionerNavItems = [
-  { href: '/portal/dashboard/programs', label: 'My Programs', icon: Layers, description: 'Invites & assignments' },
+  { href: '/portal/dashboard/practitioners/dashboard', label: 'My Dashboard', icon: Layers, description: 'Overview & invitations' },
   { href: '/portal/dashboard/calendar', label: 'My Calendar', icon: Calendar, description: 'Your schedule' },
 ];
 
@@ -41,6 +41,9 @@ export function Sidebar() {
     if (href === '/portal/dashboard/programs') {
       return pathname === '/portal/dashboard/programs' ||
         (pathname.startsWith('/portal/dashboard/programs/') && pathname !== '/portal/dashboard/programs/new');
+    }
+    if (href === '/portal/dashboard/practitioners/dashboard') {
+      return pathname === '/portal/dashboard/practitioners/dashboard';
     }
     return pathname.startsWith(href);
   };
