@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { Logo } from '@/components/portal/Logo';
 import { useAuth } from '@/hooks/portal/useAuth';
 import { cn } from '@/lib/portal/utils';
 import {
@@ -52,32 +52,34 @@ export function Sidebar() {
     <aside
       className="flex flex-col w-72 h-full rounded-2xl relative overflow-hidden"
       style={{
-        background: '#ffffff',
+        background: 'linear-gradient(180deg, #f5f9f7 0%, #e8f0eb 50%, #f0f5f2 100%)',
         border: '1px solid rgba(93,171,121,0.18)',
-        boxShadow: '0 4px 24px rgba(10,15,28,0.06)',
+        boxShadow: '0 4px 24px rgba(10,15,28,0.06), inset 0 1px 0 rgba(255,255,255,0.8)',
         padding: '12px',
       }}
     >
-      {/* Subtle green radial glow at top */}
-      <div className="absolute top-0 left-0 right-0 h-64 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse at 50% 0%, rgba(93,171,121,0.06) 0%, transparent 70%)',
+      {/* Gold accent line at top */}
+      <div className="absolute top-0 left-4 right-4 h-[2px]" style={{
+        background: 'linear-gradient(90deg, transparent, rgba(193,154,91,0.4), transparent)',
+      }} />
+
+      {/* Subtle gold radial glow at top */}
+      <div className="absolute top-0 left-0 right-0 h-48 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse at 50% 0%, rgba(193,154,91,0.06) 0%, transparent 70%)',
       }} />
 
       {/* Logo */}
       <div className="flex flex-col items-center px-4 py-6 relative z-10"
         style={{ borderBottom: '1px solid rgba(93,171,121,0.12)' }}>
         <div className="w-full mb-3">
-          <Image
-            src="/logo.png"
-            alt="Apex & Origin"
-            width={240}
-            height={80}
-            className="w-full h-auto object-contain"
-          />
+          <Logo className="w-full h-auto" />
         </div>
-        <p className="portal-eyebrow" style={{ marginTop: '2px' }}>
-          {isAdmin ? 'Admin Portal' : 'Practitioner Hub'}
-        </p>
+        <div className="flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--portal-gold-500)' }} />
+          <p className="portal-eyebrow" style={{ color: 'var(--portal-gold-600)' }}>
+            {isAdmin ? 'Admin Portal' : 'Practitioner Hub'}
+          </p>
+        </div>
       </div>
 
       {/* Navigation */}

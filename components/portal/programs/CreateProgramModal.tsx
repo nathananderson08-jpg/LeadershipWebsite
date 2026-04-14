@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Sparkles } from 'lucide-react';
 import type { CreateProgramInput } from '@/lib/portal/types';
 
 interface CreateProgramModalProps {
@@ -56,12 +56,27 @@ export function CreateProgramModal({ open, onClose, onCreate }: CreateProgramMod
       style={{ background: 'rgba(12,18,34,0.8)', backdropFilter: 'blur(8px)' }}
       onClick={onClose}>
       <div
-        className="w-full max-w-lg rounded-2xl p-6 portal-animate-fade-in portal-glass-card"
+        className="w-full max-w-lg rounded-2xl p-8 portal-animate-scale-in portal-card"
+        style={{ border: '1px solid rgba(193,154,91,0.2)' }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold" style={{ color: 'var(--portal-text-primary)', fontFamily: "'DM Serif Display', serif" }}>Quick Create Program</h2>
-          <button onClick={onClose} className="p-2 rounded-lg transition-all" style={{ color: 'var(--portal-text-tertiary)' }}>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, var(--portal-gold-600), var(--portal-gold-500))' }}>
+              <Sparkles size={18} color="white" />
+            </div>
+            <div>
+              <h2 className="text-xl" style={{ color: 'var(--portal-text-primary)', fontFamily: "'DM Serif Display', serif" }}>
+                Create Program
+              </h2>
+              <p className="text-[12px]" style={{ color: 'var(--portal-text-tertiary)' }}>
+                Set up a new leadership program
+              </p>
+            </div>
+          </div>
+          <button onClick={onClose} className="p-2 rounded-lg transition-all hover:bg-[var(--portal-bg-hover)]"
+            style={{ color: 'var(--portal-text-tertiary)' }}>
             <X size={18} />
           </button>
         </div>

@@ -12,9 +12,9 @@ import {
 } from '@/lib/portal/constants';
 import { formatDateRange } from '@/lib/portal/utils';
 import type { CreateProgramInput, ProgramWithAssignments } from '@/lib/portal/types';
-import { PlusCircle, Calendar, MapPin, ArrowRight, Users } from 'lucide-react';
+import { PlusCircle, Calendar, MapPin, ArrowRight, Users, Sparkles } from 'lucide-react';
 
-// ─── Inline pipeline card ────────────────────────────────────────────────────
+// ─── Pipeline card ────────────────────────────────────────────────────────────
 
 function PipelineCard({
   program,
@@ -27,25 +27,34 @@ function PipelineCard({
 }) {
   const confirmedCount = program.assignments.filter((a) => a.status === 'confirmed').length;
   const totalRequired = program.senior_required + program.junior_required;
+  const isFullyStaffed = confirmedCount >= totalRequired && totalRequired > 0;
 
   return (
     <button
       onClick={onClick}
-      className="w-full text-left rounded-2xl portal-glass-card portal-card-hover group"
-      style={{ padding: '20px', position: 'relative', overflow: 'hidden' }}
+      className="w-full text-left rounded-2xl portal-card portal-card-hover group"
+      style={{ padding: '24px', position: 'relative', overflow: 'hidden' }}
     >
       {/* Stage accent bar */}
       <div
         className="absolute top-0 left-0 right-0 h-[3px]"
         style={{
           background: `linear-gradient(90deg, ${stageColor}, transparent)`,
-          opacity: 0.65,
+          opacity: 0.7,
         }}
       />
 
+      {/* Fully staffed badge */}
+      {isFullyStaffed && (
+        <div className="absolute top-4 right-4 portal-badge portal-badge-gold flex items-center gap-1">
+          <Sparkles size={10} />
+          Staffed
+        </div>
+      )}
+
       {/* Program name */}
       <h4
-        className="text-[17px] group-hover:text-[var(--portal-accent)] transition-colors truncate"
+        className="text-[18px] group-hover:text-[var(--portal-gold-600)] transition-colors truncate pr-20"
         style={{ fontFamily: "'DM Serif Display', serif", color: 'var(--portal-text-primary)' }}
       >
         {program.name}
@@ -54,7 +63,7 @@ function PipelineCard({
       {/* Dates */}
       <div
         className="flex items-center gap-1.5 text-[13px]"
-        style={{ marginTop: '6px', color: 'var(--portal-text-tertiary)' }}
+        style={{ marginTop: '8px', color: 'var(--portal-text-tertiary)' }}
       >
         <Calendar size={13} strokeWidth={1.5} />
         {formatDateRange(program.start_date, program.end_date)}
@@ -73,32 +82,31 @@ function PipelineCard({
 
       {/* Staffing progress */}
       <div
-        className="flex items-center gap-2"
+        className="flex items-center gap-3"
         style={{
-          marginTop: '14px',
-          paddingTop: '14px',
+          marginTop: '16px',
+          paddingTop: '16px',
           borderTop: '1px solid var(--portal-border-default)',
         }}
       >
-        <Users size={13} strokeWidth={1.5} style={{ color: 'var(--portal-text-tertiary)' }} />
-        <span className="text-[13px]" style={{ color: 'var(--portal-text-secondary)' }}>
+        <Users size={14} strokeWidth={1.5} style={{ color: 'var(--portal-text-tertiary)' }} />
+        <span className="text-[13px] font-medium" style={{ color: 'var(--portal-text-secondary)' }}>
           {confirmedCount}
-          <span style={{ color: 'var(--portal-text-tertiary)' }}>/{totalRequired} confirmed</span>
+          <span style={{ color: 'var(--portal-text-tertiary)', fontWeight: 400 }}>/{totalRequired} confirmed</span>
         </span>
 
         {/* Progress bar */}
         <div
           className="flex-1 rounded-full overflow-hidden"
-          style={{ height: '4px', background: 'var(--portal-bg-secondary)' }}
+          style={{ height: '5px', background: 'var(--portal-bg-hover)' }}
         >
           <div
             className="h-full rounded-full transition-all"
             style={{
               width: totalRequired > 0 ? `${Math.min(100, (confirmedCount / totalRequired) * 100)}%` : '0%',
-              background:
-                confirmedCount >= totalRequired && totalRequired > 0
-                  ? 'var(--portal-success)'
-                  : stageColor,
+              background: isFullyStaffed
+                ? 'linear-gradient(90deg, var(--portal-gold-500), var(--portal-gold-400))'
+                : stageColor,
             }}
           />
         </div>
