@@ -158,5 +158,14 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET() {
-  return NextResponse.json({ configured: isConfigured() });
+  if (!isConfigured()) {
+    return NextResponse.json({ configured: false, error: 'Missing environment variables.' });
+  }
+  try {
+    const { testConnection } = await import('@/lib/integrations/google-calendar');
+    const calendarName = await testConnection();
+    return NextResponse.json({ configured: true, connected: true, calendar: calendarName });
+  } catch (err: any) {
+    return NextResponse.json({ configured: true, connected: false, error: err.message });
+  }
 }

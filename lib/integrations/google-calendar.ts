@@ -131,6 +131,12 @@ export async function getEventAttendees(eventId: string): Promise<CalendarAttend
     .map(a => ({ email: a.email ?? '', name: a.displayName ?? '' }));
 }
 
+export async function testConnection(): Promise<string> {
+  const calendar = getCalendar();
+  const { data } = await calendar.calendars.get({ calendarId: calendarId() });
+  return data.summary ?? calendarId();
+}
+
 export async function syncEventAttendees(
   eventId: string,
   attendees: CalendarAttendee[]
