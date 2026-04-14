@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient, createServerSupabaseClient } from '@/lib/portal/supabase-server';
 import { Resend } from 'resend';
+import { FIRM_NAME } from '@/lib/constants';
 
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY);
@@ -105,19 +106,19 @@ async function handleCreateUser(body: any) {
 
   try {
     await getResend().emails.send({
-      from: 'LeadershipCo <onboarding@resend.dev>',
+      from: `${FIRM_NAME} <onboarding@resend.dev>`,
       to: body.email,
-      subject: 'Welcome to LeadershipCo - Practitioner Portal',
+      subject: `Welcome to ${FIRM_NAME} - Practitioner Portal`,
       html: `
         <div style="font-family: -apple-system, sans-serif; max-width: 520px; margin: 0 auto; padding: 40px 24px; background: #0c1222; color: #f0f2f8;">
           <div style="text-align: center; margin-bottom: 32px;">
             <div style="display: inline-block; background: linear-gradient(135deg, #d4af37, #f5d76e); width: 48px; height: 48px; border-radius: 12px; line-height: 48px; font-size: 20px; font-weight: bold; color: #0c1222;">L</div>
-            <h1 style="font-size: 22px; margin: 16px 0 4px; color: #f0f2f8;">Welcome to LeadershipCo</h1>
+            <h1 style="font-size: 22px; margin: 16px 0 4px; color: #f0f2f8;">Welcome to ${FIRM_NAME}</h1>
             <p style="color: #94a3c4; font-size: 14px; margin: 0;">Practitioner Portal</p>
           </div>
           <p style="color: #94a3c4; font-size: 14px; line-height: 1.7;">Hi ${body.full_name},</p>
           <p style="color: #94a3c4; font-size: 14px; line-height: 1.7;">
-            You've been added to the LeadershipCo Practitioner Portal as a <strong style="color: #d4af37;">${body.role}</strong>.
+            You've been added to the ${FIRM_NAME} Practitioner Portal as a <strong style="color: #d4af37;">${body.role}</strong>.
             Click below to set up your account and get started.
           </p>
           <div style="text-align: center; margin: 32px 0;">
@@ -156,19 +157,19 @@ async function handleResendInvite(body: any) {
 
   try {
     await getResend().emails.send({
-      from: 'LeadershipCo <onboarding@resend.dev>',
+      from: `${FIRM_NAME} <onboarding@resend.dev>`,
       to: body.email,
-      subject: 'Your LeadershipCo Invite - Set Up Your Account',
+      subject: `Your ${FIRM_NAME} Invite - Set Up Your Account`,
       html: `
         <div style="font-family: -apple-system, sans-serif; max-width: 520px; margin: 0 auto; padding: 40px 24px; background: #0c1222; color: #f0f2f8;">
           <div style="text-align: center; margin-bottom: 32px;">
             <div style="display: inline-block; background: linear-gradient(135deg, #d4af37, #f5d76e); width: 48px; height: 48px; border-radius: 12px; line-height: 48px; font-size: 20px; font-weight: bold; color: #0c1222;">L</div>
-            <h1 style="font-size: 22px; margin: 16px 0 4px; color: #f0f2f8;">Welcome to LeadershipCo</h1>
+            <h1 style="font-size: 22px; margin: 16px 0 4px; color: #f0f2f8;">Welcome to ${FIRM_NAME}</h1>
             <p style="color: #94a3c4; font-size: 14px; margin: 0;">Practitioner Portal</p>
           </div>
           <p style="color: #94a3c4; font-size: 14px; line-height: 1.7;">Hi ${body.full_name || 'there'},</p>
           <p style="color: #94a3c4; font-size: 14px; line-height: 1.7;">
-            You've been invited to join the LeadershipCo Practitioner Portal. Click below to set up your account and get started.
+            You've been invited to join the ${FIRM_NAME} Practitioner Portal. Click below to set up your account and get started.
           </p>
           <div style="text-align: center; margin: 32px 0;">
             <a href="${loginUrl}" style="display: inline-block; background: linear-gradient(135deg, #d4af37, #f5d76e); color: #0c1222; padding: 14px 32px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 14px;">
@@ -239,15 +240,15 @@ async function handleSendInvitations(body: any) {
 
     try {
       await getResend().emails.send({
-        from: 'LeadershipCo <onboarding@resend.dev>',
+        from: `${FIRM_NAME} <onboarding@resend.dev>`,
         to: practitioner.email,
-        subject: `Program Invitation: ${program.name} - LeadershipCo`,
+        subject: `Program Invitation: ${program.name} - ${FIRM_NAME}`,
         html: `
           <div style="font-family: -apple-system, sans-serif; max-width: 520px; margin: 0 auto; padding: 40px 24px; background: #0c1222; color: #f0f2f8;">
             <div style="text-align: center; margin-bottom: 32px;">
               <div style="display: inline-block; background: linear-gradient(135deg, #d4af37, #f5d76e); width: 48px; height: 48px; border-radius: 12px; line-height: 48px; font-size: 20px; font-weight: bold; color: #0c1222;">L</div>
               <h1 style="font-size: 22px; margin: 16px 0 4px; color: #f0f2f8;">You're Invited</h1>
-              <p style="color: #94a3c4; font-size: 14px; margin: 0;">LeadershipCo Program Invitation</p>
+              <p style="color: #94a3c4; font-size: 14px; margin: 0;">${FIRM_NAME} Program Invitation</p>
             </div>
             ${messageHtml}
             <div style="background: #162038; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px; margin: 24px 0;">

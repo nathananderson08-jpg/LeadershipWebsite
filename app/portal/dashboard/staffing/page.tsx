@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/hooks/portal/useAuth';
 import { createPortalClient } from '@/lib/portal/supabase';
+import { FIRM_NAME } from '@/lib/constants';
 import type { Profile, ProgramWithAssignments, SeniorityLevel } from '@/lib/portal/types';
 import { Send, MapPin, Calendar, ArrowLeft, ArrowRight, Edit3, Check, Clock, UserCheck, ShieldCheck, XCircle, CalendarCheck, RefreshCw } from 'lucide-react';
 import { formatDateRange } from '@/lib/portal/utils';
@@ -18,11 +19,12 @@ Program Details:
 Please review the details and let us know if you're available to join this engagement. We look forward to having you on the team.
 
 Best regards,
-LeadershipCo Team`;
+${FIRM_NAME} Team`;
 
 export default function StaffingPage() {
   const { profile, isAdmin, loading: authLoading } = useAuth();
-  const supabase = createPortalClient();
+  const supabaseRef = useRef(createPortalClient());
+  const supabase = supabaseRef.current;
 
   const [programs, setPrograms] = useState<ProgramWithAssignments[]>([]);
   const [practitioners, setPractitioners] = useState<Profile[]>([]);

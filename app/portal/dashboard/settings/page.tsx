@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/hooks/portal/useAuth';
 import { createPortalClient } from '@/lib/portal/supabase';
 import { ROLE_LABELS } from '@/lib/portal/constants';
@@ -8,7 +8,8 @@ import { Save, Lock, User } from 'lucide-react';
 
 export default function SettingsPage() {
   const { profile, user } = useAuth();
-  const supabase = createPortalClient();
+  const supabaseRef = useRef(createPortalClient());
+  const supabase = supabaseRef.current;
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [bio, setBio] = useState('');

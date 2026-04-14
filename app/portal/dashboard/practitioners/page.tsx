@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/portal/useAuth';
 import { usePractitioners } from '@/hooks/portal/usePractitioners';
 import { AddUserModal } from '@/components/portal/users/AddUserModal';
 import { ROLE_LABELS, SENIORITY_LABELS } from '@/lib/portal/constants';
+import { FIRM_NAME } from '@/lib/constants';
 import { Plus, Trash2, Shield, ShieldOff, Users, ShieldCheck, UserCheck } from 'lucide-react';
 
 export default function PractitionersPage() {
@@ -45,7 +46,7 @@ export default function PractitionersPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--portal-text-primary)' }}>Practitioners</h1>
-            <p className="text-sm mt-1" style={{ color: 'var(--portal-text-tertiary)' }}>LeadershipCo practitioner roster</p>
+            <p className="text-sm mt-1" style={{ color: 'var(--portal-text-tertiary)' }}>{FIRM_NAME} practitioner roster</p>
           </div>
           <button onClick={() => setShowAdd(true)}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all portal-glow-accent text-white"

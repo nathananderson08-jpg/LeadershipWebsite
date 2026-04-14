@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useAuth } from '@/hooks/portal/useAuth';
 import { createPortalClient } from '@/lib/portal/supabase';
+import { FIRM_NAME } from '@/lib/constants';
 import { ASSIGNMENT_STATUS_COLORS } from '@/lib/portal/constants';
 import type { Program, ProgramAssignment, AvailabilityBlock } from '@/lib/portal/types';
 import nextDynamic from 'next/dynamic';
@@ -13,15 +14,17 @@ const FullCalendar = nextDynamic(() => import('@fullcalendar/react'), { ssr: fal
 
 export default function CalendarPage() {
   const { profile, isAdmin, loading: authLoading } = useAuth();
-  const supabase = createPortalClient();
+  const supabaseRef = useRef(createPortalClient());
+  const supabase = supabaseRef.current;
   const [programs, setPrograms] = useState<Program[]>([]);
   const [assignments, setAssignments] = useState<(ProgramAssignment & { program: Program })[]>([]);
   const [availability, setAvailability] = useState<AvailabilityBlock[]>([]);
   const [loading, setLoading] = useState(true);
-  const [dataLoaded, setDataLoaded] = useState(false);
+  const initialized = useRef(false);
 
   useEffect(() => {
-    if (!profile || authLoading || dataLoaded) return;
+    if (!profile || authLoading || initialized.current) return;
+    initialized.current = true;
 
     async function loadData() {
       setLoading(true);
@@ -48,11 +51,10 @@ export default function CalendarPage() {
       }
 
       setLoading(false);
-      setDataLoaded(true);
     }
 
     loadData();
-  }, [profile, isAdmin, authLoading, dataLoaded, supabase]);
+  }, [profile, isAdmin, authLoading]);
 
   const reloadAvailability = async () => {
     if (!profile) return;
@@ -162,7 +164,7 @@ export default function CalendarPage() {
     <div className="flex flex-col h-full">
       <div className="px-24 pt-12 pb-14">
         <h1 className="text-4xl" style={{ color: 'var(--portal-text-primary)' }}>
-          {isAdmin ? 'LeadershipCo Calendar' : 'My Calendar'}
+          {isAdmin ? `${FIRM_NAME} Calendar` : 'My Calendar'}
         </h1>
         <p className="text-[16px]" style={{ marginTop: '8px', color: 'var(--portal-text-tertiary)' }}>
           {isAdmin

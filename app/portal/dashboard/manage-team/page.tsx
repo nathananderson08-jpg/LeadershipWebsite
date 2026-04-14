@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/hooks/portal/useAuth';
 import { createPortalClient } from '@/lib/portal/supabase';
 import { ROLE_LABELS, SENIORITY_LABELS, PROGRAM_TYPE_LABELS, PROGRAM_TYPE_COLORS, ALL_PROGRAM_TYPES } from '@/lib/portal/constants';
+import { FIRM_NAME } from '@/lib/constants';
 import type { Profile, UserRole, SeniorityLevel, ProgramType } from '@/lib/portal/types';
 import {
   Users, Shield, ShieldOff, Trash2, ChevronDown, ChevronUp,
@@ -12,7 +13,8 @@ import {
 
 export default function ManageTeamPage() {
   const { isAdmin, isPrimaryAdmin, profile } = useAuth();
-  const supabase = createPortalClient();
+  const supabaseRef = useRef(createPortalClient());
+  const supabase = supabaseRef.current;
 
   const [practitioners, setPractitioners] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -147,7 +149,7 @@ export default function ManageTeamPage() {
           <div>
             <h1 className="text-4xl" style={{ color: 'var(--portal-text-primary)' }}>Manage Team</h1>
             <p className="text-[16px] mt-2" style={{ color: 'var(--portal-text-tertiary)' }}>
-              LeadershipCo practitioner roster — roles, seniority, and program capabilities
+              {FIRM_NAME} practitioner roster — roles, seniority, and program capabilities
             </p>
           </div>
           <button onClick={() => setShowInviteForm(!showInviteForm)}

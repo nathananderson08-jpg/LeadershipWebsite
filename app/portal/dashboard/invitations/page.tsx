@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/hooks/portal/useAuth';
 import { createPortalClient } from '@/lib/portal/supabase';
 import { formatDateRange } from '@/lib/portal/utils';
@@ -9,15 +9,17 @@ import { Send, XCircle, Clock, MapPin, ArrowLeft, UserCheck, ShieldCheck, Calend
 
 export default function InvitationsPage() {
   const { profile, isAdmin, loading: authLoading } = useAuth();
-  const supabase = createPortalClient();
+  const supabaseRef = useRef(createPortalClient());
+  const supabase = supabaseRef.current;
 
   const [programs, setPrograms] = useState<ProgramWithAssignments[]>([]);
   const [selectedProgram, setSelectedProgram] = useState<ProgramWithAssignments | null>(null);
   const [loading, setLoading] = useState(true);
-  const [dataLoaded, setDataLoaded] = useState(false);
+  const initialized = useRef(false);
 
   useEffect(() => {
-    if (!profile || authLoading || dataLoaded) return;
+    if (!profile || authLoading || initialized.current) return;
+    initialized.current = true;
 
     async function loadPrograms() {
       setLoading(true);
@@ -29,11 +31,10 @@ export default function InvitationsPage() {
         setPrograms((data as ProgramWithAssignments[]) || []);
       }
       setLoading(false);
-      setDataLoaded(true);
     }
 
     loadPrograms();
-  }, [profile, isAdmin, authLoading, dataLoaded, supabase]);
+  }, [profile, isAdmin, authLoading]);
 
   const reloadPrograms = async () => {
     const { data } = await supabase
