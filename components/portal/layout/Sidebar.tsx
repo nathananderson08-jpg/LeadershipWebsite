@@ -53,7 +53,8 @@ export function Sidebar() {
       className="flex flex-col w-72 h-full rounded-2xl relative overflow-hidden"
       style={{
         background: '#ffffff',
-        border: '1px solid rgba(93,171,121,0.15)',
+        border: '1px solid rgba(93,171,121,0.18)',
+        boxShadow: '0 4px 24px rgba(10,15,28,0.06)',
         padding: '12px',
       }}
     >
@@ -74,7 +75,7 @@ export function Sidebar() {
             className="w-full h-auto object-contain"
           />
         </div>
-        <p className="text-[11px] font-medium tracking-wide" style={{ color: '#5dab79' }}>
+        <p className="portal-eyebrow" style={{ marginTop: '2px' }}>
           {isAdmin ? 'Admin Portal' : 'Practitioner Hub'}
         </p>
       </div>

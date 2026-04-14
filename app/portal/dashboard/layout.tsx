@@ -38,7 +38,8 @@ export default function PortalDashboardLayout({
         className="flex-1 flex flex-col overflow-hidden rounded-2xl"
         style={{
           background: 'var(--portal-bg-secondary)',
-          border: '1px solid rgba(93,171,121,0.12)',
+          border: '1px solid rgba(93,171,121,0.18)',
+          boxShadow: '0 4px 24px rgba(10,15,28,0.06)',
         }}
       >
         {/* Admin top banner */}

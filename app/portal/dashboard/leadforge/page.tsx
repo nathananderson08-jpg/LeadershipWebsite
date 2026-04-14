@@ -143,13 +143,13 @@ export default function LeadForgePage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div style={{ width: 40, height: 40, borderRadius: 12, background: 'var(--portal-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        <div style={{ width: 44, height: 44, borderRadius: 14, background: 'var(--portal-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
           <Target size={20} color="white" strokeWidth={1.8} />
         </div>
         <div>
-          <h1 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--portal-text-primary)', margin: 0 }}>LeadForge</h1>
-          <p style={{ fontSize: '13px', color: 'var(--portal-text-tertiary)', margin: 0 }}>Prospect Intelligence & Activation</p>
+          <h1 className="portal-page-title" style={{ margin: 0 }}>LeadForge</h1>
+          <p className="portal-page-subtitle" style={{ margin: 0 }}>Prospect intelligence &amp; activation</p>
         </div>
       </div>
 

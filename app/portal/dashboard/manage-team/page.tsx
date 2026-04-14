@@ -153,9 +153,8 @@ export default function ManageTeamPage() {
             </p>
           </div>
           <button onClick={() => setShowInviteForm(!showInviteForm)}
-            className="flex items-center gap-2.5 px-6 py-3 rounded-2xl text-[15px] font-semibold transition-all portal-glow-accent text-white"
-            style={{ background: 'var(--portal-gradient-accent)' }}>
-            <UserPlus size={18} />
+            className="portal-btn portal-btn-primary portal-glow-accent flex items-center gap-2">
+            <UserPlus size={17} />
             Invite New Member
           </button>
         </div>

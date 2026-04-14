@@ -270,10 +270,9 @@ export default function ProgramsPage() {
             {/* New program button */}
             <button
               onClick={() => setShowCreate(true)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[15px] font-semibold text-white transition-all portal-glow-accent"
-              style={{ background: 'var(--portal-gradient-accent)' }}
+              className="portal-btn portal-btn-primary portal-glow-accent flex items-center gap-2"
             >
-              <PlusCircle size={18} />
+              <PlusCircle size={17} />
               New Program
             </button>
           </div>
@@ -289,8 +288,7 @@ export default function ProgramsPage() {
                 </p>
                 <button
                   onClick={() => setShowCreate(true)}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-semibold text-white portal-glow-accent"
-                  style={{ background: 'var(--portal-gradient-accent)' }}
+                  className="portal-btn portal-btn-primary portal-glow-accent flex items-center gap-2"
                 >
                   <PlusCircle size={16} />
                   Create First Program
