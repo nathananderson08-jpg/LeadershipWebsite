@@ -474,19 +474,6 @@ function KBChatWindow({ onSaveToKB }: { onSaveToKB: (messages: ChatMessage[]) =>
                 <p style={{ fontSize: 12, margin: 0, maxWidth: 380, marginInline: 'auto', lineHeight: 1.6 }}>
                   Claude has full context of all your KB entries. Ask it to identify gaps, challenge assumptions, develop frameworks, or surface inconsistencies.
                 </p>
-                {[
-                  'What are the key gaps in our leadership methodology?',
-                  'Where do our case studies conflict with our stated methodology?',
-                  'What topics should we add to be more comprehensive?',
-                ].map(suggestion => (
-                  <button
-                    key={suggestion}
-                    onClick={() => { setInput(suggestion); inputRef.current?.focus(); }}
-                    style={{ display: 'block', margin: '6px auto 0', padding: '6px 14px', border: '1px solid var(--portal-border-default)', borderRadius: 7, background: 'none', fontSize: 11, color: 'var(--portal-text-secondary)', cursor: 'pointer', maxWidth: 380, textAlign: 'left' as const }}
-                  >
-                    &ldquo;{suggestion}&rdquo;
-                  </button>
-                ))}
               </div>
             )}
             {messages.map((msg, i) => (
