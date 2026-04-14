@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/hooks/portal/useAuth';
 import { createPortalClient } from '@/lib/portal/supabase';
 import type { Profile, ProgramWithAssignments, SeniorityLevel } from '@/lib/portal/types';
-import { Send, MapPin, Calendar, ArrowLeft, ArrowRight, Edit3, Check, Clock, UserCheck, ShieldCheck, XCircle } from 'lucide-react';
+import { Send, MapPin, Calendar, ArrowLeft, ArrowRight, Edit3, Check, Clock, UserCheck, ShieldCheck, XCircle, CalendarCheck, RefreshCw } from 'lucide-react';
 import { formatDateRange } from '@/lib/portal/utils';
 
 const DEFAULT_INVITE_TEXT = `Hi {name},
@@ -33,6 +33,8 @@ export default function StaffingPage() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
+  const [calSyncing, setCalSyncing] = useState(false);
+  const [calMsg, setCalMsg] = useState('');
   const [inviteText, setInviteText] = useState(DEFAULT_INVITE_TEXT);
   const [showEditInvite, setShowEditInvite] = useState(false);
   const initialized = useRef(false);
@@ -76,6 +78,28 @@ export default function StaffingPage() {
       .update({ status: newStatus, responded_at: new Date().toISOString() })
       .eq('id', assignmentId);
     await reloadPrograms();
+  };
+
+  const handleCalendarSync = async () => {
+    if (!selectedProgram) return;
+    setCalSyncing(true);
+    setCalMsg('');
+    try {
+      const res = await fetch('/portal/api/google-calendar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'sync_attendees', program_id: selectedProgram.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Sync failed');
+      await reloadPrograms();
+      setCalMsg(data.action === 'created' ? 'Calendar event created!' : 'Attendees synced to calendar!');
+    } catch (err: any) {
+      setCalMsg(`Error: ${err.message ?? 'Sync failed'}`);
+    } finally {
+      setCalSyncing(false);
+      setTimeout(() => setCalMsg(''), 5000);
+    }
   };
 
   const getEligiblePractitioners = () => {
@@ -188,17 +212,41 @@ export default function StaffingPage() {
             ))}
           </div>
 
-          <div className="flex gap-1 p-1 rounded-xl w-fit" style={{ background: 'var(--portal-bg-elevated)', border: '1px solid var(--portal-border-default)', marginTop: '32px' }}>
-            {(['status', 'invite'] as const).map(tab => (
-              <button key={tab} onClick={() => setActiveTab(tab)}
-                className="px-5 py-2.5 rounded-lg text-[14px] font-medium transition-all"
+          <div className="flex items-center justify-between" style={{ marginTop: '32px' }}>
+            <div className="flex gap-1 p-1 rounded-xl w-fit" style={{ background: 'var(--portal-bg-elevated)', border: '1px solid var(--portal-border-default)' }}>
+              {(['status', 'invite'] as const).map(tab => (
+                <button key={tab} onClick={() => setActiveTab(tab)}
+                  className="px-5 py-2.5 rounded-lg text-[14px] font-medium transition-all"
+                  style={{
+                    background: activeTab === tab ? 'var(--portal-gradient-accent)' : 'transparent',
+                    color: activeTab === tab ? 'white' : 'var(--portal-text-tertiary)',
+                  }}>
+                  {tab === 'status' ? 'Invitation Status' : 'Invite Practitioners'}
+                </button>
+              ))}
+            </div>
+            <div className="flex flex-col items-end gap-1">
+              <button
+                onClick={handleCalendarSync}
+                disabled={calSyncing}
+                className="flex items-center gap-2 rounded-xl text-[14px] font-medium transition-all disabled:opacity-60"
                 style={{
-                  background: activeTab === tab ? 'var(--portal-gradient-accent)' : 'transparent',
-                  color: activeTab === tab ? 'white' : 'var(--portal-text-tertiary)',
-                }}>
-                {tab === 'status' ? 'Invitation Status' : 'Invite Practitioners'}
+                  padding: '10px 16px',
+                  background: (selectedProgram as any)?.google_event_id ? 'var(--portal-success-subtle)' : 'var(--portal-bg-elevated)',
+                  color: (selectedProgram as any)?.google_event_id ? 'var(--portal-success)' : 'var(--portal-text-secondary)',
+                  border: (selectedProgram as any)?.google_event_id ? '1px solid rgba(16,185,129,0.25)' : '1px solid var(--portal-border-default)',
+                }}
+                title="Sync confirmed practitioners to Google Calendar"
+              >
+                {calSyncing ? <RefreshCw size={15} className="portal-animate-spin" /> : <CalendarCheck size={15} />}
+                {calSyncing ? 'Syncing...' : (selectedProgram as any)?.google_event_id ? 'Sync Calendar' : 'Add to Calendar'}
               </button>
-            ))}
+              {calMsg && (
+                <span className="text-[12px]" style={{ color: calMsg.startsWith('Error') ? 'var(--portal-danger)' : 'var(--portal-success)' }}>
+                  {calMsg}
+                </span>
+              )}
+            </div>
           </div>
         </div>
 

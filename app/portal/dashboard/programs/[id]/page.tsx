@@ -8,7 +8,7 @@ import { IdentifyPractitioners } from '@/components/portal/programs/IdentifyPrac
 import { formatDateRange } from '@/lib/portal/utils';
 import { PIPELINE_STAGES, ASSIGNMENT_STATUS_COLORS, ASSIGNMENT_STATUS_LABELS } from '@/lib/portal/constants';
 import type { ProgramWithAssignments, SeniorityLevel } from '@/lib/portal/types';
-import { ArrowLeft, MapPin, Calendar, Users, Trash2, UserCheck, Pencil, Save, X } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Users, Trash2, UserCheck, Pencil, Save, X, CalendarCheck, RefreshCw } from 'lucide-react';
 
 export default function ProgramDetailPage() {
   const { id } = useParams();
@@ -29,6 +29,9 @@ export default function ProgramDetailPage() {
   const [editJuniorRequired, setEditJuniorRequired] = useState(0);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [calSyncing, setCalSyncing] = useState(false);
+  const [calStatus, setCalStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [calMsg, setCalMsg] = useState('');
 
   const loadProgram = useCallback(async () => {
     const { data, error } = await supabase
@@ -104,6 +107,31 @@ export default function ProgramDetailPage() {
     setTimeout(() => setSaveSuccess(false), 3000);
   };
 
+  const handleCalendarSync = async () => {
+    setCalSyncing(true);
+    setCalStatus('idle');
+    setCalMsg('');
+    try {
+      const action = program?.google_event_id ? 'update_event' : 'create_event';
+      const res = await fetch('/portal/api/google-calendar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, program_id: id }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Sync failed');
+      await loadProgram();
+      setCalStatus('success');
+      setCalMsg(data.action === 'created' ? 'Event created!' : 'Calendar updated!');
+    } catch (err: any) {
+      setCalStatus('error');
+      setCalMsg(err.message ?? 'Calendar sync failed');
+    } finally {
+      setCalSyncing(false);
+      setTimeout(() => { setCalStatus('idle'); setCalMsg(''); }, 4000);
+    }
+  };
+
   const handleDelete = async () => {
     if (!confirm('Are you sure you want to delete this program?')) return;
     await supabase.from('programs').delete().eq('id', id);
@@ -175,6 +203,28 @@ export default function ProgramDetailPage() {
           </div>
           {isAdmin && (
             <div className="flex items-center gap-2">
+              <div className="flex flex-col items-end gap-1">
+                <button
+                  onClick={handleCalendarSync}
+                  disabled={calSyncing}
+                  className="flex items-center gap-2 rounded-xl text-[14px] font-medium transition-all disabled:opacity-60"
+                  style={{
+                    padding: '10px 16px',
+                    background: program?.google_event_id ? 'var(--portal-success-subtle)' : 'var(--portal-bg-secondary)',
+                    color: program?.google_event_id ? 'var(--portal-success)' : 'var(--portal-text-secondary)',
+                    border: program?.google_event_id ? '1px solid rgba(16,185,129,0.25)' : '1px solid var(--portal-border-default)',
+                  }}
+                  title={program?.google_event_id ? 'Re-sync to Google Calendar' : 'Add to Google Calendar'}
+                >
+                  {calSyncing ? <RefreshCw size={15} className="portal-animate-spin" /> : <CalendarCheck size={15} />}
+                  {calSyncing ? 'Syncing...' : program?.google_event_id ? 'Synced' : 'Add to Calendar'}
+                </button>
+                {calMsg && (
+                  <span className="text-[12px]" style={{ color: calStatus === 'error' ? 'var(--portal-danger)' : 'var(--portal-success)' }}>
+                    {calMsg}
+                  </span>
+                )}
+              </div>
               <button
                 onClick={() => setActiveTab(activeTab === 'edit' ? 'overview' : 'edit')}
                 className="flex items-center gap-2 rounded-xl text-[14px] font-medium transition-all"

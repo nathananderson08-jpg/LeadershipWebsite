@@ -32,6 +32,7 @@ export interface Program {
   senior_required: number;
   junior_required: number;
   pipeline_stage: PipelineStage;
+  google_event_id: string | null;
   created_by: string | null;
   created_at: string;
   updated_at: string;
