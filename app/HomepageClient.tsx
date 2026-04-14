@@ -414,6 +414,100 @@ function InsightsPreview() {
   )
 }
 
+// ── Assessment CTA ───────────────────────────────────────────
+function AssessmentCTA() {
+  return (
+    <section style={{ background: "linear-gradient(160deg, #0a1c12 0%, #0c1222 60%, #091810 100%)", padding: "80px 0" }}>
+      <div className="container-content">
+        <div
+          style={{
+            maxWidth: 900,
+            margin: "0 auto",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 48,
+            alignItems: "center",
+          }}
+          className="grid-cols-1 md:grid-cols-2"
+        >
+          {/* Left: Copy */}
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(134,212,163,0.9)", margin: "0 0 14px", display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ display: "inline-block", width: 20, height: 1, background: "rgba(134,212,163,0.6)" }} />
+              Free Assessment
+            </p>
+            <h2 style={{ fontSize: 32, fontWeight: 800, color: "white", margin: "0 0 14px", lineHeight: 1.2 }}>
+              How ready is your organization for the leadership challenges ahead?
+            </h2>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", margin: "0 0 28px", lineHeight: 1.7 }}>
+              In under 2 minutes, receive a personalized Leadership Readiness Report — benchmarked against your industry, focused on your specific challenges.
+            </p>
+            <Link
+              href="/assessment"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "14px 28px",
+                background: "#5dab79",
+                color: "white",
+                textDecoration: "none",
+                borderRadius: 12,
+                fontSize: 15,
+                fontWeight: 700,
+              }}
+            >
+              Get Your Free Report →
+            </Link>
+          </motion.div>
+
+          {/* Right: Value props */}
+          <motion.div
+            initial={{ opacity: 0, x: 24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.15 }}
+            style={{ display: "flex", flexDirection: "column", gap: 16 }}
+          >
+            {[
+              { icon: "◈", title: "Industry-benchmarked", desc: "Your report is calibrated against leadership maturity patterns in your sector and company size." },
+              { icon: "◇", title: "AI-powered, expert-validated", desc: "Claude generates your analysis using 15+ years of Apex & Origin consulting methodology." },
+              { icon: "◉", title: "Immediately actionable", desc: "Three specific opportunity areas and next steps — not generic advice, but a real starting point." },
+            ].map((item, i) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
+                style={{
+                  display: "flex",
+                  gap: 16,
+                  padding: "16px 20px",
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: 14,
+                }}
+              >
+                <span style={{ fontSize: 22, color: "#5dab79", flexShrink: 0, lineHeight: 1, marginTop: 2 }}>{item.icon}</span>
+                <div>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: "rgba(255,255,255,0.9)", margin: "0 0 4px" }}>{item.title}</p>
+                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", margin: 0, lineHeight: 1.6 }}>{item.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ── Main Export ──────────────────────────────────────────────
 export function HomepageClient() {
   return (
@@ -509,8 +603,8 @@ export function HomepageClient() {
                 <Button href="/lifecycle" variant="primary" size="lg">
                   Explore the Lifecycle
                 </Button>
-                <Button href="/contact" variant="secondary" size="lg">
-                  Contact Us
+                <Button href="/assessment" variant="secondary" size="lg">
+                  Free Leadership Assessment
                 </Button>
               </motion.div>
             </div>
@@ -654,6 +748,9 @@ export function HomepageClient() {
 
       {/* ── INSIGHTS ─────────────────────────────���────────── */}
       <InsightsPreview />
+
+      {/* ── FREE ASSESSMENT ───────────────────────────────── */}
+      <AssessmentCTA />
 
       {/* ── CTA BANNER ────────────────────────────────────── */}
       <CTABanner />

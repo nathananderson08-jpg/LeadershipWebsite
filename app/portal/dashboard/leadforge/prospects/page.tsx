@@ -428,6 +428,91 @@ function TimelineTab({ prospect }: { prospect: LeadForgeProspect }) {
   );
 }
 
+function AssessmentReportTab({ prospect }: { prospect: LeadForgeProspect }) {
+  const { content } = useLeadForgeContent();
+  const report = content.find(c => c.prospect_id === prospect.id && c.content_type === 'assessment_report');
+
+  if (!report) {
+    return (
+      <div style={{ textAlign: 'center', padding: '40px 0' }}>
+        <p style={{ fontSize: 13, color: 'var(--portal-text-tertiary)', margin: 0 }}>No assessment report on file.</p>
+      </div>
+    );
+  }
+
+  let parsed: Record<string, any> | null = null;
+  try { parsed = JSON.parse(report.body ?? '{}'); } catch { /* raw text fallback */ }
+
+  if (!parsed) {
+    return (
+      <div>
+        <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--portal-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 10px' }}>Assessment Report</p>
+        <p style={{ fontSize: 13, color: 'var(--portal-text-secondary)', whiteSpace: 'pre-wrap', lineHeight: 1.7 }}>{report.body}</p>
+      </div>
+    );
+  }
+
+  const maturityColors: Record<string, string> = {
+    Foundational: '#f59e0b', Developing: '#6366f1', Established: '#22c55e', Leading: '#5dab79',
+  };
+  const maturityColor = maturityColors[parsed.leadership_profile?.maturity_stage ?? ''] ?? '#94a3b8';
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div style={{ background: 'var(--portal-accent-subtle)', border: '1px solid var(--portal-border-default)', borderRadius: 10, padding: '12px 14px' }}>
+        <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--portal-accent)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 5px' }}>Key Finding</p>
+        <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--portal-text-primary)', margin: 0, lineHeight: 1.5 }}>{parsed.headline}</p>
+      </div>
+
+      <div>
+        <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--portal-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 6px' }}>Executive Summary</p>
+        <p style={{ fontSize: 12, color: 'var(--portal-text-secondary)', margin: 0, lineHeight: 1.7 }}>{parsed.executive_summary}</p>
+      </div>
+
+      {parsed.leadership_profile && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--portal-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Maturity:</span>
+          <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 10px', borderRadius: 999, background: `${maturityColor}18`, border: `1px solid ${maturityColor}44`, color: maturityColor }}>
+            {parsed.leadership_profile.maturity_stage}
+          </span>
+        </div>
+      )}
+
+      {parsed.opportunity_areas?.length > 0 && (
+        <div>
+          <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--portal-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 8px' }}>Opportunity Areas</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {parsed.opportunity_areas.map((o: any, i: number) => (
+              <div key={i} style={{ padding: '10px 12px', background: 'var(--portal-bg-hover)', borderRadius: 8, borderLeft: `3px solid ${o.urgency === 'high' ? '#ef4444' : '#f59e0b'}` }}>
+                <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--portal-text-primary)', margin: '0 0 3px' }}>{o.title}</p>
+                <p style={{ fontSize: 11, color: 'var(--portal-text-secondary)', margin: 0, lineHeight: 1.5 }}>{o.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {parsed.recommended_focus && (
+        <div style={{ padding: '10px 12px', background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: 8 }}>
+          <p style={{ fontSize: 10, fontWeight: 700, color: '#d4af37', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 5px' }}>Recommended Focus</p>
+          <p style={{ fontSize: 12, color: 'var(--portal-text-secondary)', margin: 0, lineHeight: 1.6 }}>{parsed.recommended_focus}</p>
+        </div>
+      )}
+
+      {parsed.engagement_suggestion && (
+        <div style={{ padding: '10px 12px', background: 'var(--portal-accent-subtle)', border: '1px solid var(--portal-border-default)', borderRadius: 8 }}>
+          <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--portal-accent)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 5px' }}>Suggested Engagement</p>
+          <p style={{ fontSize: 12, color: 'var(--portal-text-secondary)', margin: 0, lineHeight: 1.6 }}>{parsed.engagement_suggestion}</p>
+        </div>
+      )}
+
+      <p style={{ fontSize: 10, color: 'var(--portal-text-tertiary)', margin: 0 }}>
+        Submitted {new Date(report.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+      </p>
+    </div>
+  );
+}
+
 function GenerateTab({ prospect }: { prospect: LeadForgeProspect }) {
   const { createContent } = useLeadForgeContent();
   const { logActivity } = useActivities(prospect.id);
@@ -520,7 +605,7 @@ function GenerateTab({ prospect }: { prospect: LeadForgeProspect }) {
 
 const sectionLabel: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: 'var(--portal-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 8px' };
 
-type DrawerTab = 'profile' | 'timeline' | 'generate';
+type DrawerTab = 'profile' | 'timeline' | 'generate' | 'assessment';
 
 function ProspectDrawer({ prospect, onClose, onUpdate, onDelete }: {
   prospect: LeadForgeProspect;
@@ -590,6 +675,11 @@ function ProspectDrawer({ prospect, onClose, onUpdate, onDelete }: {
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <IcpBadge score={prospect.icp_score} />
             <WarmthDot warmth={p.warmth_score} />
+            {p.enrichment_source === 'website_assessment' && (
+              <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#22c55e', fontWeight: 700, background: 'rgba(34,197,94,0.1)', padding: '2px 8px', borderRadius: 999 }}>
+                ↓ Inbound
+              </span>
+            )}
             {p.enrichment_source === 'ai_lookup' && (
               <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#6366f1', fontWeight: 600 }}>
                 <Zap size={10} /> AI Enriched
@@ -604,13 +694,19 @@ function ProspectDrawer({ prospect, onClose, onUpdate, onDelete }: {
           <button style={tabStyle(tab === 'profile')}  onClick={() => setTab('profile')}>Profile</button>
           <button style={tabStyle(tab === 'timeline')} onClick={() => setTab('timeline')}>Timeline</button>
           <button style={tabStyle(tab === 'generate')} onClick={() => setTab('generate')}>Generate</button>
+          {(prospect as any).enrichment_source === 'website_assessment' && (
+            <button style={{ ...tabStyle(tab === 'assessment'), color: tab === 'assessment' ? '#22c55e' : undefined }} onClick={() => setTab('assessment')}>
+              Assessment
+            </button>
+          )}
         </div>
 
         {/* Content */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
-          {tab === 'profile'  && <ProfileTab  prospect={prospect} onUpdate={onUpdate} />}
-          {tab === 'timeline' && <TimelineTab prospect={prospect} />}
-          {tab === 'generate' && <GenerateTab prospect={prospect} />}
+          {tab === 'profile'    && <ProfileTab  prospect={prospect} onUpdate={onUpdate} />}
+          {tab === 'timeline'   && <TimelineTab prospect={prospect} />}
+          {tab === 'generate'   && <GenerateTab prospect={prospect} />}
+          {tab === 'assessment' && <AssessmentReportTab prospect={prospect} />}
         </div>
       </div>
     </div>
@@ -967,6 +1063,7 @@ export default function ProspectsPage() {
   const [filterEmail, setFilterEmail] = useState('all');
   const [filterNextAction, setFilterNextAction] = useState('all');
   const [filterCompany, setFilterCompany] = useState('all');
+  const [filterSource, setFilterSource] = useState('all');
   const [sortField, setSortField] = useState<SortField>('icp_score');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
   const [showModal, setShowModal] = useState(false);
@@ -1039,7 +1136,8 @@ export default function ProspectsPage() {
       const matchEmail      = filterEmail === 'all' || (filterEmail === 'yes' ? !!p.email : !p.email);
       const matchNextAction = filterNextAction === 'all' || (filterNextAction === 'yes' ? !!pa.next_action : !pa.next_action);
       const matchCompany    = filterCompany === 'all' || (p.account?.company_name ?? '') === filterCompany;
-      return matchSearch && matchScore && matchStage && matchWarmth && matchSeniority && matchEmail && matchNextAction && matchCompany;
+      const matchSource     = filterSource === 'all' || (filterSource === 'inbound' ? pa.enrichment_source === 'website_assessment' : pa.enrichment_source !== 'website_assessment');
+      return matchSearch && matchScore && matchStage && matchWarmth && matchSeniority && matchEmail && matchNextAction && matchCompany && matchSource;
     })
     .sort((a, b) => {
       let av: any, bv: any;
@@ -1147,6 +1245,11 @@ export default function ProspectsPage() {
             {companies.sort().map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         )}
+        <select value={filterSource} onChange={e => setFilterSource(e.target.value)} style={selectStyle}>
+          <option value="all">All Sources</option>
+          <option value="inbound">Inbound (Assessment)</option>
+          <option value="outbound">Outbound (Research)</option>
+        </select>
       </div>
 
       {/* Board view */}
@@ -1218,6 +1321,11 @@ export default function ProspectsPage() {
                   <p style={{ fontSize: 11, color: 'var(--portal-text-tertiary)', margin: '2px 0 0' }}>
                     {p.title ?? '—'}{p.account ? ` · ${p.account.company_name}` : ''}
                   </p>
+                  {pa.enrichment_source === 'website_assessment' && (
+                    <span style={{ fontSize: 10, color: '#22c55e', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 3, marginTop: 3, background: 'rgba(34,197,94,0.1)', padding: '1px 7px', borderRadius: 999 }}>
+                      ↓ Inbound
+                    </span>
+                  )}
                   {pa.enrichment_source === 'ai_lookup' && (
                     <span style={{ fontSize: 10, color: '#6366f1', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 3, marginTop: 3 }}>
                       <Zap size={9} /> AI Enriched
