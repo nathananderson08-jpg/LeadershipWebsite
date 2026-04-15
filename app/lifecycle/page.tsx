@@ -3,22 +3,19 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
-import type { Metadata } from "next"
 import { Button } from "@/components/ui/Button"
 import { SectionHeading } from "@/components/ui/SectionHeading"
 import { AIBadge } from "@/components/ui/AIBadge"
 import { CTABanner } from "@/components/sections/CTABanner"
-import { LIFECYCLE_PHASES, FIRM_NAME, LIFECYCLE_FRAMEWORK_NAME, MESSAGING } from "@/lib/constants"
+import { FIRM_NAME, LIFECYCLE_FRAMEWORK_NAME, MESSAGING } from "@/lib/constants"
 
-// Note: metadata must be in a separate server component for App Router
-// We export it here for documentation purposes
 export const pageMetadata = {
-  title: `The Leadership Development Lifecycle — End-to-End Solutions | ${FIRM_NAME}`,
+  title: `The Leadership Development Framework | ${FIRM_NAME}`,
   description:
-    "Explore the only end-to-end leadership development lifecycle: from assessment and coaching to leadership development, transformation, and succession.",
+    "We operate within the leadership development segment of the talent lifecycle — delivering the deepest, most integrated capability in the market.",
 }
 
-
+// ── Audience cards ────────────────────────────────────────────
 const AUDIENCE_MATRIX = [
   {
     level: "Emerging Leaders",
@@ -61,133 +58,378 @@ const AUDIENCE_MATRIX = [
   },
 ]
 
-const AI_PHASE_INTEGRATION = [
-  { phase: "Assess", detail: "AI readiness diagnostics & leadership potential modeling" },
-  { phase: "Coach", detail: "AI strategy coaching & AI-augmented leadership development insights" },
-  { phase: "Develop", detail: "AI fluency curriculum & human-AI collaboration programs" },
-  { phase: "Transform", detail: "AI adoption change management & culture transformation" },
-  { phase: "Sustain", detail: "Identifying AI-ready successors & future-proof pipelines" },
-]
+// ── Framework matrix data (from scenario library) ─────────────
+type Scenario = { title: string; quote: string; happening: string; matters: string }
+type CellData = { headline: string; intro: string; scenarios: Scenario[] }
 
-function InteractiveLifecycle() {
-  const [activePhase, setActivePhase] = useState<number | null>(null)
+const FRAMEWORK_CELLS: Record<string, CellData> = {
+  "Individual-Foundational": {
+    headline: "When Leaders Need Core Skills and Self-Awareness",
+    intro: "The bread-and-butter leadership challenges — building the baseline capabilities every leader needs to be effective.",
+    scenarios: [
+      {
+        title: "The New Manager Cliff",
+        quote: "We promote our best individual contributors, hand them a team, and hope for the best. Half are drowning.",
+        happening: "First-time managers lacking foundational skills in delegation, feedback, difficult conversations, and performance management.",
+        matters: "60% of new managers underperform in their first two years. The cost is the disengagement of their direct reports.",
+      },
+      {
+        title: "The Feedback Desert",
+        quote: "Our senior leaders haven't received honest feedback in years. They have no idea how they're perceived.",
+        happening: "Leaders operating without a clear picture of their impact. No structured feedback, no coaching, no upward candor.",
+        matters: "Leaders without feedback develop blind spots that compound. By the time issues surface, trust is already eroded.",
+      },
+      {
+        title: "Inconsistent Leadership Quality",
+        quote: "Whether you have a great experience here depends entirely on which manager you get.",
+        happening: "Wide variance in leadership quality. No shared language, no common expectations, no systematic development.",
+        matters: "Inconsistent leadership is the #1 driver of employee experience variation. It shows directly in retention.",
+      },
+      {
+        title: "Leading in the Age of AI",
+        quote: "Our leaders don't understand what AI means for their teams — who to hire, what to automate. They're frozen.",
+        happening: "A workforce transformation is underway and leaders lack fluency to make good decisions about technology and talent.",
+        matters: "Organizations that wait to build AI-literate leadership will be two years behind competitors who moved early.",
+      },
+    ],
+  },
+  "Individual-Transformational": {
+    headline: "When Leaders Need to Transform Themselves",
+    intro: "These are the moments when skill-building isn't enough — the leader's mindset, identity, or way of operating needs to fundamentally shift.",
+    scenarios: [
+      {
+        title: "The Brilliant Bottleneck",
+        quote: "Our CEO is incredibly smart, but people are afraid to bring her bad news. We're losing good people.",
+        happening: "A high-performing leader whose strengths have become liabilities. Control, speed, perfectionism — now limiting the organization.",
+        matters: "Without deep personal work, these patterns repeat. The leader becomes the ceiling on the organization's growth.",
+      },
+      {
+        title: "The New Role Inflection Point",
+        quote: "He was our best division president, but six months into the CEO role he's struggling.",
+        happening: "A leader promoted into a fundamentally different role who hasn't made the internal shift from their previous identity.",
+        matters: "Failed transitions cost 10–20x the leader's salary. The gap isn't competence — it's the ability to reimagine who they need to become.",
+      },
+      {
+        title: "The Wake-Up Call",
+        quote: "The board feedback was devastating. For the first time, she's asking what she needs to change.",
+        happening: "A critical moment — crisis, 360 result, board confrontation — has shaken a leader's self-narrative. They're suddenly open to change.",
+        matters: "These windows of openness are rare and time-limited. The right intervention here can catalyze a transformation.",
+      },
+      {
+        title: "Leading Through Personal Crisis",
+        quote: "He's going through a divorce, his father died, and he's supposed to lead a 5,000-person integration.",
+        happening: "A leader facing personal upheaval and professional demands simultaneously. Inner resources are depleted.",
+        matters: "Leaders without support here burn out, make poor decisions, or emotionally withdraw — all cascading through the org.",
+      },
+    ],
+  },
+  "Team-Foundational": {
+    headline: "When Teams Need to Work Together More Effectively",
+    intro: "Everyday team performance challenges — missed deadlines, poor communication, and frustrated employees.",
+    scenarios: [
+      {
+        title: "The Dysfunctional Meeting Cycle",
+        quote: "We spend 60% of our time in meetings, and nothing gets decided.",
+        happening: "A team lacking basic operating rhythms — clear roles, decision rights, communication cadence, and accountability.",
+        matters: "Ineffective teams multiply dysfunction: every unclear decision creates downstream confusion for dozens.",
+      },
+      {
+        title: "The Cross-Functional Stalemate",
+        quote: "Sales blames product, product blames engineering, engineering blames sales. Nobody owns the customer.",
+        happening: "Functional teams that can't collaborate across boundaries. Competing priorities and a culture of blame.",
+        matters: "Value is created at the seams between functions. Teams that can't collaborate can't innovate.",
+      },
+      {
+        title: "The Remote/Hybrid Struggle",
+        quote: "Half the team is remote, half in-office. We've lost the connective tissue that used to make us work.",
+        happening: "A team that hasn't adapted its practices for distributed work. Proximity bias and information asymmetry are growing.",
+        matters: "Hybrid is permanent. Teams that don't build new norms will see declining trust and eventual talent flight.",
+      },
+      {
+        title: "Post-Reorg Recovery",
+        quote: "We reorganized six months ago and people are still figuring out who does what. Morale has cratered.",
+        happening: "A newly reconfigured team that needs to rebuild trust, clarity, and shared purpose from a standing start.",
+        matters: "Every week a new team spends in ambiguity costs real output. Fast team formation makes or breaks a reorg.",
+      },
+    ],
+  },
+  "Team-Transformational": {
+    headline: "When Leadership Teams Are Stuck at the Deepest Level",
+    intro: "These are situations where the top team's dysfunction is systemic — it can't be fixed with a team offsite or a new meeting cadence.",
+    scenarios: [
+      {
+        title: "The Silent War Room",
+        quote: "Everyone's polite in the room, but the real conversations happen in the hallway.",
+        happening: "Entrenched political dynamics, unspoken rivalries, or trust deficits that prevent honest dialogue on strategy and trade-offs.",
+        matters: "When the top team can't have difficult conversations, the entire organization becomes paralyzed.",
+      },
+      {
+        title: "Post-Merger Integration",
+        quote: "We merged twelve months ago but we still have two companies.",
+        happening: "Two leadership teams with different cultures and power dynamics told to become one — without doing the deep work of integration.",
+        matters: "70% of mergers fail to capture expected value. Executive team dysfunction is the #1 reason.",
+      },
+      {
+        title: "The New CEO's Inherited Team",
+        quote: "Three people loyal to my predecessor, two who wanted my job, one I brought in. This isn't a team.",
+        happening: "A new CEO must forge a cohesive top team from conflicting loyalties, competing agendas, and no shared foundation.",
+        matters: "The first 100 days set the trajectory. A CEO who can't build a team fast will manage around dysfunction for years.",
+      },
+      {
+        title: "Strategic Reinvention Required",
+        quote: "We all agree we need to transform, but every time we try to make hard calls, we retreat to protecting our divisions.",
+        happening: "The team's identity and incentives are designed for the old strategy. Enterprise-level trade-offs require a new way of working.",
+        matters: "Without team-level transformation, strategic pivots remain PowerPoint exercises.",
+      },
+    ],
+  },
+  "Organization-Foundational": {
+    headline: "When the Enterprise Needs Scalable Leadership Infrastructure",
+    intro: "Systemic challenges — building the platforms, processes, and capabilities that allow an organization to develop leaders at scale.",
+    scenarios: [
+      {
+        title: "The Succession Vacuum",
+        quote: "Our CEO retires in 18 months and we have no credible internal candidates. We never built the pipeline.",
+        happening: "No systematic process to identify, develop, and test the next generation of senior leaders.",
+        matters: "External CEO hires fail at 2x the rate of internal promotions. No pipeline = enterprise value risk.",
+      },
+      {
+        title: "Change Fatigue at Scale",
+        quote: "We've had four restructurings in three years. Employees hear 'transformation' and shut down.",
+        happening: "An organization needing continuous change but having depleted its people's capacity to absorb more.",
+        matters: "Without standing change capability, every subsequent transformation fails — and each failure makes the next harder.",
+      },
+      {
+        title: "The Middle Management Gap",
+        quote: "We invest in our top 50 and our first-time managers. We do nothing for the 500 in between.",
+        happening: "Directors, VPs, senior managers — the layer that translates strategy into execution — systematically underdeveloped.",
+        matters: "Middle managers determine whether strategy lands or dies. This is the highest-ROI gap to close.",
+      },
+      {
+        title: "Scaling with Culture Intact",
+        quote: "We're opening in three new markets. How do we ensure our leadership culture travels with us?",
+        happening: "An organization expanding that needs to propagate leadership standards and values without diluting them.",
+        matters: "Culture doesn't scale by accident. Without intentional infrastructure, every new market becomes a cultural island.",
+      },
+    ],
+  },
+  "Organization-Transformational": {
+    headline: "When the Organization Itself Needs to Evolve",
+    intro: "Enterprise-level challenges where the culture, operating model, or leadership system must fundamentally change.",
+    scenarios: [
+      {
+        title: "Culture Is Eating Strategy",
+        quote: "We have a great strategy, but our culture — risk-averse, siloed, hierarchical — makes it impossible to execute.",
+        happening: "Deeply embedded norms and behaviors misaligned with business needs. Leaders at every level default to old patterns.",
+        matters: "Culture change takes years. Organizations that don't invest systematically will underperform their strategic ambitions.",
+      },
+      {
+        title: "Digital / AI Transformation",
+        quote: "We're investing $500M in digital. The technology is the easy part — getting leaders to operate differently is killing us.",
+        happening: "A major transformation where the technical solution outpaces the organization's ability to lead differently.",
+        matters: "The #1 predictor of digital transformation failure is leadership capability, not technology.",
+      },
+      {
+        title: "Growth Beyond the Founder",
+        quote: "We've grown from 200 to 3,000 people in four years. Everything that used to work is breaking.",
+        happening: "A rapidly scaling organization whose leadership infrastructure was designed for a smaller, simpler company.",
+        matters: "Without enterprise-grade leadership systems, the organization will plateau and see its culture diluted.",
+      },
+      {
+        title: "Rebuilding After Crisis",
+        quote: "After the scandal, we lost the trust of our employees, board, and market. We need to rebuild from the inside out.",
+        happening: "Ethical failures, safety incidents, or mass attrition requiring not recovery but a re-founding of how the org leads.",
+        matters: "Reputational recovery requires visible, authentic cultural change. Surface-level programs are seen as performative.",
+      },
+    ],
+  },
+}
+
+const MATRIX_ROWS = ["Individual", "Team", "Organization"]
+const MATRIX_ROW_DESCS: Record<string, string> = {
+  Individual: "Each leader",
+  Team: "Collective leadership",
+  Organization: "Systemic capability",
+}
+
+// ── Expandable matrix cell ────────────────────────────────────
+function MatrixCell({
+  cellKey,
+  isActive,
+  onToggle,
+  type,
+}: {
+  cellKey: string
+  isActive: boolean
+  onToggle: () => void
+  type: "Foundational" | "Transformational"
+}) {
+  const data = FRAMEWORK_CELLS[cellKey]
+  const isFoundational = type === "Foundational"
 
   return (
-    <div className="relative">
-      {/* Connection line */}
-      <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 -translate-y-8 z-0"
-        style={{ background: "linear-gradient(90deg, transparent 2%, rgba(93,171,121,0.4) 15%, rgba(93,171,121,0.4) 85%, transparent 98%)" }}
-      />
-
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 relative z-10 items-stretch">
-        {LIFECYCLE_PHASES.map((phase, i) => (
-          <motion.div
-            key={phase.id}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="flex"
+    <div
+      className="rounded-2xl overflow-hidden"
+      style={{
+        border: isActive
+          ? isFoundational
+            ? "1.5px solid var(--color-forest-400)"
+            : "1.5px solid var(--color-gold-500)"
+          : "1px solid var(--color-warm-200)",
+        background: isActive
+          ? isFoundational
+            ? "var(--color-forest-50)"
+            : "linear-gradient(135deg, var(--color-navy-950) 0%, var(--color-navy-900) 100%)"
+          : isFoundational
+          ? "var(--color-warm-50)"
+          : "var(--color-warm-50)",
+      }}
+    >
+      {/* Cell header — always visible */}
+      <button
+        onClick={onToggle}
+        className="w-full text-left p-5 flex items-start justify-between gap-3 group"
+      >
+        <div className="flex-1">
+          <p
+            className="text-xs font-700 tracking-widest uppercase mb-2"
+            style={{
+              fontWeight: 700,
+              color: isActive && !isFoundational
+                ? "var(--color-gold-400)"
+                : isFoundational
+                ? "var(--color-forest-600)"
+                : "var(--color-navy-700)",
+            }}
           >
-            <button
-              onClick={() => setActivePhase(activePhase === i ? null : i)}
-              className={`w-full h-full flex flex-col relative text-left p-6 rounded-2xl border transition-all duration-400 group ${
-                activePhase === i
-                  ? "border-forest-500 shadow-2xl scale-[1.02]"
-                  : "border-forest-200 hover:border-forest-400"
-              }`}
-              style={{
-                background:
-                  activePhase === i
-                    ? "linear-gradient(135deg, rgba(93,171,121,0.15) 0%, rgba(93,171,121,0.08) 100%)"
-                    : "white",
-              }}
-            >
-              {/* Phase number */}
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-800 mb-5"
+            {type}
+          </p>
+          <p
+            className="text-sm font-600 leading-snug"
+            style={{
+              fontWeight: 600,
+              color: isActive && !isFoundational ? "white" : "var(--color-forest-950)",
+            }}
+          >
+            {data.headline}
+          </p>
+          <div className="flex flex-wrap gap-1.5 mt-3">
+            {data.scenarios.map((s) => (
+              <span
+                key={s.title}
+                className="text-xs px-2 py-0.5 rounded-full"
                 style={{
-                  background: activePhase === i ? "var(--color-forest-600)" : "var(--color-forest-100)",
-                  color: activePhase === i ? "white" : "var(--color-forest-700)",
-                  fontWeight: 800,
+                  background: isActive && !isFoundational
+                    ? "rgba(193,154,91,0.15)"
+                    : isFoundational
+                    ? "rgba(93,171,121,0.12)"
+                    : "rgba(93,171,121,0.08)",
+                  color: isActive && !isFoundational
+                    ? "var(--color-gold-400)"
+                    : "var(--color-forest-700)",
                 }}
               >
-                {phase.number}
-              </div>
+                {s.title}
+              </span>
+            ))}
+          </div>
+        </div>
+        <span
+          className="text-lg shrink-0 mt-1 transition-transform duration-200"
+          style={{
+            color: isActive && !isFoundational ? "var(--color-gold-400)" : "var(--color-forest-500)",
+            transform: isActive ? "rotate(180deg)" : "rotate(0deg)",
+          }}
+        >
+          ▾
+        </span>
+      </button>
 
-              <h3 className="font-700 text-forest-900 text-xl mb-1" style={{ fontWeight: 700 }}>
-                {phase.title}
-              </h3>
-              <p className="text-sm text-forest-600/70 mb-4">{phase.subtitle}</p>
-              <p className="text-sm text-forest-800/60 leading-relaxed flex-1">
-                {phase.description.substring(0, 90)}...
-              </p>
-
-              {/* Expand indicator */}
-              <div
-                className={`mt-4 text-xs font-600 transition-colors ${
-                  activePhase === i ? "text-forest-600" : "text-forest-400 group-hover:text-forest-600"
-                }`}
-                style={{ fontWeight: 600 }}
-              >
-                {activePhase === i ? "▴ Less detail" : "▾ More detail"}
-              </div>
-            </button>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* Expanded detail panel */}
-      <AnimatePresence mode="wait">
-        {activePhase !== null && (
+      {/* Expandable detail */}
+      <AnimatePresence>
+        {isActive && (
           <motion.div
-            key={activePhase}
-            initial={{ opacity: 0, height: 0, marginTop: 0 }}
-            animate={{ opacity: 1, height: "auto", marginTop: "1.5rem" }}
-            exit={{ opacity: 0, height: 0, marginTop: 0 }}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
           >
-            {(() => {
-              const phase = LIFECYCLE_PHASES[activePhase]
-              return (
-                <div
-                  className="p-8 rounded-2xl border border-forest-300 flex flex-col md:flex-row gap-8"
-                  style={{ background: "white" }}
-                >
-                  <div className="flex-1">
+            <div className="px-5 pb-5">
+              <p
+                className="text-xs leading-relaxed mb-4 pb-4"
+                style={{
+                  borderBottom: isFoundational
+                    ? "1px solid var(--color-forest-200)"
+                    : "1px solid rgba(255,255,255,0.08)",
+                  color: isFoundational ? "var(--color-forest-700)" : "rgba(255,255,255,0.5)",
+                }}
+              >
+                {data.intro}
+              </p>
+              <div className="space-y-4">
+                {data.scenarios.map((scenario) => (
+                  <div
+                    key={scenario.title}
+                    className="p-4 rounded-xl"
+                    style={{
+                      background: isFoundational
+                        ? "white"
+                        : "rgba(255,255,255,0.04)",
+                      border: isFoundational
+                        ? "1px solid var(--color-warm-100)"
+                        : "1px solid rgba(255,255,255,0.07)",
+                    }}
+                  >
                     <p
-                      className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-3"
-                      style={{ fontWeight: 700 }}
+                      className="text-sm font-700 mb-1.5"
+                      style={{
+                        fontWeight: 700,
+                        color: isFoundational ? "var(--color-navy-900)" : "white",
+                      }}
                     >
-                      Phase {phase.number} — {phase.title}: {phase.subtitle}
+                      {scenario.title}
                     </p>
-                    <p className="text-forest-800/80 leading-relaxed mb-6 text-base">{phase.description}</p>
-                    <Link href={phase.link}>
-                      <Button variant="primary" size="sm">
-                        Explore {phase.title} Solutions →
-                      </Button>
-                    </Link>
-                  </div>
-                  <div className="md:w-72">
                     <p
-                      className="text-xs font-700 tracking-widest uppercase text-forest-500 mb-4"
-                      style={{ fontWeight: 700 }}
+                      className="text-xs italic mb-3 leading-relaxed"
+                      style={{ color: isFoundational ? "var(--color-forest-600)" : "var(--color-gold-400)" }}
                     >
-                      What We Deliver
+                      "{scenario.quote}"
                     </p>
-                    <ul className="space-y-2.5">
-                      {phase.details.map((detail) => (
-                        <li key={detail} className="flex items-start gap-3 text-sm text-forest-700">
-                          <span className="text-forest-500 shrink-0 mt-0.5">✓</span>
-                          {detail}
-                        </li>
-                      ))}
-                    </ul>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      <div>
+                        <p
+                          className="text-[10px] font-700 uppercase tracking-wider mb-1"
+                          style={{ fontWeight: 700, color: isFoundational ? "var(--color-forest-500)" : "rgba(255,255,255,0.3)" }}
+                        >
+                          What's Happening
+                        </p>
+                        <p
+                          className="text-xs leading-relaxed"
+                          style={{ color: isFoundational ? "var(--color-neutral-600)" : "rgba(255,255,255,0.55)" }}
+                        >
+                          {scenario.happening}
+                        </p>
+                      </div>
+                      <div>
+                        <p
+                          className="text-[10px] font-700 uppercase tracking-wider mb-1"
+                          style={{ fontWeight: 700, color: isFoundational ? "var(--color-forest-500)" : "rgba(255,255,255,0.3)" }}
+                        >
+                          Why It Matters
+                        </p>
+                        <p
+                          className="text-xs leading-relaxed"
+                          style={{ color: isFoundational ? "var(--color-neutral-600)" : "rgba(255,255,255,0.55)" }}
+                        >
+                          {scenario.matters}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              )
-            })()}
+                ))}
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -195,7 +437,21 @@ function InteractiveLifecycle() {
   )
 }
 
+// ── Main page ─────────────────────────────────────────────────
 export default function LifecyclePage() {
+  const [activeCell, setActiveCell] = useState<string | null>(null)
+
+  const toggle = (key: string) => setActiveCell(activeCell === key ? null : key)
+
+  const TALENT_CYCLE = [
+    { label: "Recruitment", desc: "Sourcing & hiring", focus: false },
+    { label: "Assessment", desc: "Diagnosing capability", focus: true },
+    { label: "Training", desc: "Building skills", focus: true },
+    { label: "Development", desc: "Deep growth & transformation", focus: true, primary: true },
+    { label: "Retention", desc: "Engagement & culture", focus: true },
+    { label: "Succession", desc: "Pipeline continuity", focus: true },
+  ]
+
   return (
     <>
       {/* ── HERO ──────────────────────────────────────────── */}
@@ -203,10 +459,9 @@ export default function LifecyclePage() {
         className="relative pt-40 pb-24"
         style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}
       >
-        <div className="absolute inset-0"
-          style={{
-            backgroundImage: "radial-gradient(at 70% 30%, rgba(93,171,121,0.12) 0px, transparent 60%)",
-          }}
+        <div
+          className="absolute inset-0"
+          style={{ backgroundImage: "radial-gradient(at 70% 30%, rgba(93,171,121,0.12) 0px, transparent 60%)" }}
         />
         <div className="container-content relative z-10 text-center max-w-4xl mx-auto">
           <motion.div
@@ -218,229 +473,182 @@ export default function LifecyclePage() {
               {LIFECYCLE_FRAMEWORK_NAME}
             </p>
             <h1 className="display-lg text-forest-950 mb-6">
-              One Partner. Every Phase.{" "}
-              <span style={{ color: "var(--color-forest-600)" }}>Complete</span> Leadership Development.
+              Best in class.{" "}
+              <span style={{ color: "var(--color-forest-600)" }}>Within the segment that matters most.</span>
             </h1>
             <p className="text-xl text-forest-800/70 leading-relaxed max-w-2xl mx-auto">
-              We are the only firm that delivers integrated solutions across the entire leadership development lifecycle — with no handoffs, no gaps, and no compromises.
-            </p>
-            <p className="text-sm text-forest-700/50 mt-5 max-w-2xl mx-auto leading-relaxed">
-              {MESSAGING.connectionChain}
+              Every organization manages talent across a full lifecycle — from recruiting to succession. We operate within the leadership development segment and deliver the deepest, most integrated capability in the market.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* ── LEADERSHIP TALENT VALUE CHAIN ─────────────────── */}
+      {/* ── TALENT LIFECYCLE ──────────────────────────────── */}
       <section className="py-16" style={{ background: "var(--color-forest-50)" }}>
         <div className="container-content">
           <div className="text-center mb-10">
-            <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-3" style={{ fontWeight: 700 }}>The Bigger Picture</p>
-            <h2 className="display-md text-forest-950">Where development fits in the talent lifecycle</h2>
+            <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-3" style={{ fontWeight: 700 }}>The Broader Picture</p>
+            <h2 className="display-md text-forest-950">Where we operate in the talent lifecycle</h2>
             <p className="text-forest-800/70 mt-4 max-w-2xl mx-auto leading-relaxed">
-              Organizations manage talent across six phases. Most vendors serve one. We deliver comprehensive solutions across the phases that generate the most long-term leadership leverage.
+              Organizations cycle through six phases of talent management — continuously. We focus exclusively on the development phase and its adjacent capabilities, delivering unmatched depth where leadership leverage is highest.
             </p>
           </div>
-          <div className="flex flex-col md:flex-row items-stretch rounded-2xl overflow-hidden border border-forest-200 mb-8">
-            {[
-              { label: "Recruitment", desc: "Sourcing & hiring", focus: false },
-              { label: "Assessment", desc: "Diagnosing capability & potential", focus: true },
-              { label: "Training", desc: "Building foundational skills", focus: true },
-              { label: "Development", desc: "Deep growth & transformation", focus: true, primary: true },
-              { label: "Retention", desc: "Engagement & culture", focus: true },
-              { label: "Succession", desc: "Pipeline & long-term continuity", focus: true },
-            ].map((phase, i) => (
-              <div
-                key={phase.label}
-                className="flex-1 p-5 relative"
-                style={{
-                  background: phase.primary ? "var(--color-forest-900)" : phase.focus ? "var(--color-forest-50)" : "white",
-                  borderRight: i < 5 ? "1px solid var(--color-forest-200)" : "none",
-                }}
-              >
-                {phase.primary && (
-                  <span className="absolute top-2 right-2 text-[9px] font-700 px-2 py-0.5 rounded-full uppercase tracking-wider"
-                    style={{ background: "rgba(93,171,121,0.2)", color: "var(--color-forest-300)", fontWeight: 700 }}>
-                    Core Focus
-                  </span>
-                )}
-                <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold mb-3"
+
+          {/* Chevron cycle */}
+          <div className="overflow-x-auto pb-2">
+            <div className="flex items-stretch min-w-[680px]">
+              {TALENT_CYCLE.map((phase, i) => (
+                <div
+                  key={phase.label}
+                  className="flex-1 relative flex flex-col justify-center py-5 px-5"
                   style={{
-                    background: phase.primary ? "rgba(93,171,121,0.25)" : phase.focus ? "var(--color-forest-900)" : "#e5e5e5",
-                    color: phase.primary ? "var(--color-forest-300)" : phase.focus ? "white" : "#a3a3a3",
-                    fontWeight: 700,
-                  }}>
-                  {i + 1}
+                    clipPath: i === 0
+                      ? "polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%)"
+                      : "polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%, 18px 50%)",
+                    marginLeft: i > 0 ? "-16px" : "0",
+                    zIndex: TALENT_CYCLE.length - i,
+                    background: phase.primary
+                      ? "var(--color-forest-800)"
+                      : phase.focus
+                      ? "var(--color-forest-200)"
+                      : "#e5e7eb",
+                    paddingLeft: i > 0 ? "28px" : "16px",
+                    paddingRight: "28px",
+                    minHeight: "90px",
+                  }}
+                >
+                  {phase.primary && (
+                    <span
+                      className="absolute top-2 right-6 text-[9px] font-700 px-2 py-0.5 rounded-full uppercase tracking-wider"
+                      style={{ background: "rgba(93,171,121,0.25)", color: "var(--color-forest-300)", fontWeight: 700 }}
+                    >
+                      Our Focus
+                    </span>
+                  )}
+                  <p
+                    className="text-sm font-700 leading-tight"
+                    style={{
+                      fontWeight: 700,
+                      color: phase.primary ? "white" : phase.focus ? "var(--color-forest-900)" : "#9ca3af",
+                    }}
+                  >
+                    {phase.label}
+                  </p>
+                  <p
+                    className="text-xs mt-1 leading-snug"
+                    style={{
+                      color: phase.primary ? "rgba(255,255,255,0.55)" : phase.focus ? "var(--color-forest-600)" : "#d1d5db",
+                    }}
+                  >
+                    {phase.desc}
+                  </p>
                 </div>
-                <p className="text-sm font-700 mb-1" style={{
-                  fontWeight: 700,
-                  color: phase.primary ? "white" : phase.focus ? "var(--color-forest-950)" : "#a3a3a3"
-                }}>
-                  {phase.label}
-                </p>
-                <p className="text-xs leading-relaxed" style={{
-                  color: phase.primary ? "rgba(255,255,255,0.55)" : phase.focus ? "var(--color-forest-700)" : "#a3a3a3"
-                }}>
-                  {phase.desc}
-                </p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-neutral-500">
+
+          {/* Loop indicator */}
+          <div className="mt-4 flex items-center justify-center gap-2 text-xs text-forest-600/60">
+            <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
+              <path d="M2 7 C2 3.5 5.5 1 10 1 C14.5 1 18 3.5 18 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+              <path d="M18 7 C18 10.5 14.5 13 10 13 C5.5 13 2 10.5 2 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="2 2" fill="none" />
+              <path d="M16 4.5 L18 7 L15.5 8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            </svg>
+            <span>Continuous cycle — each phase informs the next, and succession feeds back into assessment</span>
+          </div>
+
+          {/* Legend */}
+          <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-neutral-500 mt-5">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded" style={{ background: "var(--color-forest-900)" }} />
+              <div className="w-4 h-4 rounded" style={{ background: "var(--color-forest-800)" }} />
               <span>Core focus — deepest expertise</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded border border-forest-300" style={{ background: "var(--color-forest-50)" }} />
+              <div className="w-4 h-4 rounded" style={{ background: "var(--color-forest-200)" }} />
               <span>Adjacent capabilities we deliver</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded border border-gray-200 bg-white" />
+              <div className="w-4 h-4 rounded bg-gray-200" />
               <span>Outside our scope</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── INTERACTIVE LIFECYCLE ─────────────────────────── */}
-      <section
-        className="section-padding"
-        style={{ background: "var(--color-forest-100)" }}
-      >
-        <div className="container-content">
-          <SectionHeading
-            eyebrow="Five Phases. One System."
-            title="The complete leadership development lifecycle"
-            subtitle="Click any phase to explore what we deliver — and how each phase connects seamlessly to the next."
-            className="mb-14"
-          />
-          <InteractiveLifecycle />
-        </div>
-      </section>
-
-      {/* ── DEVELOPMENT FRAMEWORK MATRIX ─────────────────── */}
+      {/* ── CORE FRAMEWORK MATRIX ─────────────────────────── */}
       <section className="section-padding" style={{ background: "white" }}>
         <div className="container-content">
           <SectionHeading
             eyebrow="Our Framework"
             title="Every level. Every type of change."
-            subtitle="Our solutions span three levels of leadership and two modes of leadership development — ensuring complete coverage no matter where your challenge sits."
-            className="mb-14"
+            subtitle="Our work spans three levels of leadership and two modes of development. Click any quadrant to explore the challenges we address and how we approach them."
+            className="mb-12"
           />
+
           <div className="overflow-x-auto">
-            <div className="min-w-[640px]">
-              <div className="grid grid-cols-3 gap-3 mb-3">
+            <div className="min-w-[560px]">
+              {/* Header row */}
+              <div className="grid gap-3 mb-3" style={{ gridTemplateColumns: "160px 1fr 1fr" }}>
                 <div />
-                <div className="text-center p-4 rounded-xl" style={{ background: "var(--color-forest-50)", border: "1px solid var(--color-forest-200)" }}>
-                  <p className="text-sm font-700 text-forest-900" style={{ fontWeight: 700 }}>Transformational</p>
-                  <p className="text-xs text-forest-700/70 mt-1">Identity, mindset & deep behavioral change</p>
-                </div>
-                <div className="text-center p-4 rounded-xl" style={{ background: "var(--color-warm-50)", border: "1px solid var(--color-warm-200)" }}>
+                <div
+                  className="text-center p-4 rounded-xl"
+                  style={{ background: "var(--color-forest-50)", border: "1px solid var(--color-forest-200)" }}
+                >
                   <p className="text-sm font-700 text-forest-900" style={{ fontWeight: 700 }}>Foundational</p>
                   <p className="text-xs text-forest-700/70 mt-1">Skills, capabilities & knowledge building</p>
                 </div>
-              </div>
-              {[
-                {
-                  level: "Individual",
-                  desc: "Each leader",
-                  transformational: ["Deep Executive Coaching", "Executive Breakthrough Programs", "Inner Development & Character Work"],
-                  foundational: ["Leadership Diagnostics & 360 Reviews", "Skills Training & Team Effectiveness", "AI & Leadership Readiness"],
-                },
-                {
-                  level: "Team",
-                  desc: "Collective leadership",
-                  transformational: ["Top Team Alignment & Integration", "Culture Transformation"],
-                  foundational: ["Team Effectiveness Programs", "Facilitated Workshops", "Team Diagnostics"],
-                },
-                {
-                  level: "Organization",
-                  desc: "Systemic capability",
-                  transformational: ["Enterprise Leadership Architecture", "Organizational Change & Adaptive Leadership"],
-                  foundational: ["Leadership Pipeline Development", "Change Management at Scale", "Succession Planning"],
-                },
-              ].map((row) => (
-                <div key={row.level} className="grid grid-cols-3 gap-3 mb-3">
-                  <div className="p-4 rounded-xl flex flex-col justify-center" style={{ background: "var(--color-forest-900)" }}>
-                    <p className="text-sm font-700 text-white" style={{ fontWeight: 700 }}>{row.level}</p>
-                    <p className="text-xs mt-1 text-forest-300/60">{row.desc}</p>
-                  </div>
-                  <div className="p-4 rounded-xl" style={{ background: "var(--color-forest-50)", border: "1px solid var(--color-forest-200)" }}>
-                    <ul className="space-y-2">
-                      {row.transformational.map(item => (
-                        <li key={item} className="flex items-start gap-2 text-xs text-forest-800">
-                          <span className="text-forest-600 shrink-0 mt-0.5">→</span>
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="p-4 rounded-xl" style={{ background: "var(--color-warm-50)", border: "1px solid var(--color-warm-200)" }}>
-                    <ul className="space-y-2">
-                      {row.foundational.map(item => (
-                        <li key={item} className="flex items-start gap-2 text-xs text-neutral-700">
-                          <span className="text-forest-500 shrink-0 mt-0.5">→</span>
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                <div
+                  className="text-center p-4 rounded-xl"
+                  style={{ background: "var(--color-navy-950)", border: "1px solid rgba(193,154,91,0.2)" }}
+                >
+                  <p className="text-sm font-700 text-white" style={{ fontWeight: 700 }}>Transformational</p>
+                  <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.45)" }}>Identity, mindset & deep behavioral change</p>
                 </div>
+              </div>
+
+              {/* Data rows */}
+              {MATRIX_ROWS.map((level, rowIdx) => (
+                <motion.div
+                  key={level}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: rowIdx * 0.1 }}
+                  className="grid gap-3 mb-3"
+                  style={{ gridTemplateColumns: "160px 1fr 1fr" }}
+                >
+                  {/* Row label */}
+                  <div
+                    className="p-4 rounded-xl flex flex-col justify-center"
+                    style={{ background: "var(--color-forest-900)" }}
+                  >
+                    <p className="text-sm font-700 text-white" style={{ fontWeight: 700 }}>{level}</p>
+                    <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.4)" }}>{MATRIX_ROW_DESCS[level]}</p>
+                  </div>
+
+                  {/* Foundational cell */}
+                  <MatrixCell
+                    cellKey={`${level}-Foundational`}
+                    isActive={activeCell === `${level}-Foundational`}
+                    onToggle={() => toggle(`${level}-Foundational`)}
+                    type="Foundational"
+                  />
+
+                  {/* Transformational cell */}
+                  <MatrixCell
+                    cellKey={`${level}-Transformational`}
+                    isActive={activeCell === `${level}-Transformational`}
+                    onToggle={() => toggle(`${level}-Transformational`)}
+                    type="Transformational"
+                  />
+                </motion.div>
               ))}
             </div>
           </div>
+
           <p className="text-center text-sm text-forest-700/50 mt-8 max-w-2xl mx-auto">
             Every offering integrates with adjacent solutions — creating a coherent development system, not a collection of standalone programs.
           </p>
-        </div>
-      </section>
-
-      {/* ── WHY INTEGRATED ───────────────────────────────── */}
-      <section className="section-padding" style={{ background: "var(--color-warm-white)" }}>
-        <div className="container-content">
-          <SectionHeading
-            eyebrow="The Integrated Difference"
-            title="Most firms do one thing. We do everything — and connect it all."
-            subtitle="The leadership development industry is built on specialization. Assessment firms don't coach. Coaching firms don't build programs. Training providers don't plan succession. The result is a patchwork of disconnected interventions that produces inconsistent, hard-to-measure outcomes."
-            className="mb-14"
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-            {[
-              {
-                title: "The fragmented model fails leaders.",
-                body: "When a leader works with three different vendors across three years, there's no common language, no shared data, and no one holding the thread. Every engagement starts from scratch. The insights from an assessment never inform the coaching. The coaching never reinforces the leadership development program. Leaders feel it — they describe it as 'a lot of activity with not enough impact.'",
-              },
-              {
-                title: "Integration is what makes leadership development stick.",
-                body: "Our lifecycle methodology creates a continuous through-line from first assessment to last succession plan. The data from Phase 1 informs Phase 2. Coaching insights shape Phase 3 curriculum. Phase 4 transformation outcomes define Phase 5 pipeline priorities. Because one team holds the whole picture, nothing gets lost between handoffs — because there are none.",
-              },
-              {
-                title: "One partner means one standard of excellence.",
-                body: "Every firm we've seen struggle with leadership development has the same root problem: too many vendors, too little coordination. When you work with us, you have one relationship, one methodology, and one accountable partner — at every phase, for every leader level, at any organizational scale.",
-              },
-              {
-                title: "The outcome is a leadership system, not a program.",
-                body: "Our clients don't just run better leadership programs — they build a self-reinforcing leadership system. Assessment feeds coaching, which informs leadership development, which enables transformation, which sustains through succession. That system outlasts any individual program, coach, or initiative. It becomes part of how the organization develops people, permanently.",
-              },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="p-8 rounded-2xl bg-white"
-                style={{ border: "1px solid var(--color-warm-100)" }}
-              >
-                <h3 className="font-700 text-navy-900 text-lg mb-3" style={{ fontWeight: 700 }}>
-                  {item.title}
-                </h3>
-                <p className="text-neutral-600 leading-relaxed text-sm">{item.body}</p>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -462,13 +670,13 @@ export default function LifecyclePage() {
         </div>
       </section>
 
-      {/* ── AUDIENCE × LIFECYCLE MATRIX ───────────────────── */}
+      {/* ── AUDIENCE CARDS ────────────────────────────────── */}
       <section className="section-padding" style={{ background: "var(--color-warm-white)" }}>
         <div className="container-content">
           <SectionHeading
             eyebrow="Lifecycle × Audience"
-            title="The same lifecycle. Every level."
-            subtitle="Our lifecycle isn't a one-size-fits-all framework — it's calibrated to the specific challenges, context, and needs of leaders at every stage of their career."
+            title="The same framework. Every level."
+            subtitle="Our framework isn't one-size-fits-all — it's calibrated to the specific challenges, context, and needs of leaders at every stage of their career."
             className="mb-14"
           />
 
@@ -489,23 +697,14 @@ export default function LifecyclePage() {
                 <div className="space-y-2.5">
                   {audience.capabilities.map((cap) => (
                     <div key={cap} className="flex items-center gap-3">
-                      <div
-                        className="w-2 h-2 rounded-full shrink-0"
-                        style={{ background: audience.textColor }}
-                      />
+                      <div className="w-2 h-2 rounded-full shrink-0" style={{ background: audience.textColor }} />
                       <span className="text-sm text-forest-800">{cap}</span>
                     </div>
                   ))}
                 </div>
                 <div className="mt-6 pt-5 border-t border-forest-200">
                   <Link
-                    href={
-                      i === 0
-                        ? "/solutions/emerging-leaders"
-                        : i === 1
-                        ? "/solutions/senior-leaders"
-                        : "/solutions/c-suite"
-                    }
+                    href={i === 0 ? "/solutions/emerging-leaders" : i === 1 ? "/solutions/senior-leaders" : "/solutions/c-suite"}
                     className="text-sm font-600 text-forest-600 hover:text-forest-800 transition-colors"
                     style={{ fontWeight: 600 }}
                   >
@@ -524,28 +723,28 @@ export default function LifecyclePage() {
           <div className="max-w-4xl mx-auto">
             <div
               className="p-10 rounded-2xl border border-ai-500/20"
-              style={{
-                background: "linear-gradient(135deg, rgba(0,212,255,0.06) 0%, rgba(0,212,255,0.02) 100%)",
-              }}
+              style={{ background: "linear-gradient(135deg, rgba(0,212,255,0.06) 0%, rgba(0,212,255,0.02) 100%)" }}
             >
               <div className="flex flex-col md:flex-row gap-8 items-start">
                 <div className="flex-1">
                   <AIBadge className="mb-4" />
-                  <h2 className="display-md text-white mb-4">
-                    AI transformation cuts across every phase
-                  </h2>
+                  <h2 className="display-md text-white mb-4">AI transformation cuts across every dimension</h2>
                   <p className="text-white/60 leading-relaxed mb-6">
-                    AI isn&apos;t a standalone initiative — it&apos;s a cross-cutting capability that reshapes what great leadership looks like at every phase of the lifecycle.
+                    AI isn't a standalone initiative — it's a cross-cutting capability that reshapes what great leadership looks like at every level, in every mode of development.
                   </p>
                   <Button href="/solutions/ai-transformation" variant="ai" size="lg">
                     Explore AI Leadership Transformation
                   </Button>
                 </div>
-                <div className="md:w-80">
+                <div className="md:w-72">
                   <div className="space-y-3">
-                    {AI_PHASE_INTEGRATION.map((item, i) => (
+                    {[
+                      { level: "Individual", detail: "AI fluency, AI strategy coaching, AI readiness diagnostics" },
+                      { level: "Team", detail: "Human-AI collaboration, AI-augmented team effectiveness" },
+                      { level: "Organization", detail: "AI adoption change management, AI governance, AI culture" },
+                    ].map((item, i) => (
                       <motion.div
-                        key={item.phase}
+                        key={item.level}
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
@@ -553,8 +752,11 @@ export default function LifecyclePage() {
                         className="flex items-start gap-3 p-3 rounded-xl"
                         style={{ background: "rgba(0,212,255,0.04)", border: "1px solid rgba(0,212,255,0.1)" }}
                       >
-                        <span className="text-xs font-700 px-2 py-1 rounded" style={{ background: "rgba(0,212,255,0.12)", color: "#00d4ff", fontWeight: 700 }}>
-                          {item.phase}
+                        <span
+                          className="text-xs font-700 px-2 py-1 rounded shrink-0"
+                          style={{ background: "rgba(0,212,255,0.12)", color: "#00d4ff", fontWeight: 700 }}
+                        >
+                          {item.level}
                         </span>
                         <span className="text-xs text-white/50 leading-relaxed">{item.detail}</span>
                       </motion.div>
@@ -569,7 +771,7 @@ export default function LifecyclePage() {
 
       {/* ── CTA BANNER ────────────────────────────────────── */}
       <CTABanner
-        headline="Let's map your leadership lifecycle."
+        headline="Let's map your leadership development needs."
         subtext="Every organization is at a different stage. We'll help you understand where you are, where you need to go, and how to get there."
         primaryLabel="Start the Conversation"
         primaryHref="/contact"
