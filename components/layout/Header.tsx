@@ -39,7 +39,7 @@ export function Header() {
         style={{ fontFamily: "var(--font-plus-jakarta)" }}
       >
         <div className="container-content">
-          <div className="flex items-center justify-between h-28 lg:h-32" style={{ minHeight: "7rem" }}>
+          <div className="flex items-center h-28 lg:h-32" style={{ minHeight: "7rem" }}>
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 shrink-0 group" aria-label={`${FIRM_NAME} - Home`}>
               <Image
@@ -53,7 +53,7 @@ export function Header() {
             </Link>
 
             {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-1">
+            <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
               {NAV_ITEMS.map((item) =>
                 item.hasMega ? (
                   <button
