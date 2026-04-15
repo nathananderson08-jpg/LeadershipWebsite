@@ -33,21 +33,21 @@ export function Header() {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-white/95 backdrop-blur-md shadow-lg shadow-black/5"
-            : "bg-white/80 backdrop-blur-sm"
+            ? "bg-white shadow-lg shadow-black/5"
+            : "bg-white"
         }`}
         style={{ fontFamily: "var(--font-plus-jakarta)" }}
       >
         <div className="container-content">
-          <div className="flex items-center justify-between h-24 lg:h-28" style={{ minHeight: "6rem" }}>
-            {/* Logo - Made prominent */}
+          <div className="flex items-center justify-between h-28 lg:h-32" style={{ minHeight: "7rem" }}>
+            {/* Logo */}
             <Link href="/" className="flex items-center gap-3 shrink-0 group" aria-label={`${FIRM_NAME} - Home`}>
               <Image
                 src="/logo.png"
                 alt={`${FIRM_NAME} - Leadership Development`}
-                width={280}
-                height={90}
-                className="h-16 md:h-20 lg:h-24 w-auto object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+                width={320}
+                height={110}
+                className="h-20 md:h-24 lg:h-28 w-auto object-contain transition-transform duration-200 group-hover:scale-[1.02]"
                 priority
               />
             </Link>
@@ -79,14 +79,18 @@ export function Header() {
             </nav>
 
             {/* CTA + Mobile toggle */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Link
+                href="/portal/internal"
+                className="hidden md:inline-flex items-center px-4 py-2 rounded-lg text-xs font-600 transition-colors text-forest-700 border border-forest-200 hover:border-forest-400 hover:text-forest-900 hover:bg-forest-50"
+                style={{ fontWeight: 600, letterSpacing: "0.04em" }}
+              >
+                Internal
+              </Link>
               <Link
                 href="/portal"
                 className="hidden md:inline-flex items-center px-4 py-2 rounded-lg text-xs font-600 transition-colors text-forest-700 border border-forest-200 hover:border-forest-400 hover:text-forest-900 hover:bg-forest-50"
-                style={{
-                  fontWeight: 600,
-                  letterSpacing: "0.04em",
-                }}
+                style={{ fontWeight: 600, letterSpacing: "0.04em" }}
               >
                 Practitioner Hub
               </Link>

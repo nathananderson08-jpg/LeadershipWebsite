@@ -109,6 +109,20 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
           <Button href="/contact" variant="primary" className="w-full justify-center" onClick={onClose}>
             Contact Us
           </Button>
+          <Link
+            href="/portal"
+            onClick={onClose}
+            className="flex items-center justify-center w-full px-4 py-2.5 rounded-lg text-sm font-semibold border transition-colors text-forest-700 border-forest-200 hover:border-forest-400 hover:bg-forest-50"
+          >
+            Practitioner Hub
+          </Link>
+          <Link
+            href="/portal/internal"
+            onClick={onClose}
+            className="flex items-center justify-center w-full px-4 py-2.5 rounded-lg text-sm font-semibold border transition-colors text-forest-700 border-forest-200 hover:border-forest-400 hover:bg-forest-50"
+          >
+            Internal
+          </Link>
         </div>
       </div>
     </div>

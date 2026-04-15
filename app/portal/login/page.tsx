@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createPortalClient } from '@/lib/portal/supabase';
-import { Sparkles, CheckCircle, ArrowRight } from 'lucide-react';
-import { Logo } from '@/components/portal/Logo';
+import { CheckCircle } from 'lucide-react';
+import Image from 'next/image';
 
 export default function PortalLoginPage() {
   const [mode, setMode] = useState<'login' | 'signup'>('login');
@@ -24,7 +24,7 @@ export default function PortalLoginPage() {
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) { setError(error.message); setLoading(false); return; }
-    router.replace('/portal/dashboard');
+    router.replace('/portal/dashboard/practitioners/dashboard');
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -65,7 +65,7 @@ export default function PortalLoginPage() {
       if (signInError) {
         setError(signInError.message);
       } else {
-        router.replace('/portal/dashboard');
+        router.replace('/portal/dashboard/practitioners/dashboard');
       }
       setLoading(false);
       return;
@@ -84,7 +84,7 @@ export default function PortalLoginPage() {
     }
 
     if (signUpData.session) {
-      router.replace('/portal/dashboard');
+      router.replace('/portal/dashboard/practitioners/dashboard');
       return;
     }
 
@@ -111,11 +111,12 @@ export default function PortalLoginPage() {
   const inputFocusStyle = {
     outline: 'none',
     borderColor: 'rgba(184,145,59,0.5)',
+    boxShadow: '0 0 0 3px rgba(184,145,59,0.08)',
   };
 
   if (success) {
     return (
-      <div className="flex min-h-screen items-center justify-center p-6" style={{ background: '#f8faf9' }}>
+      <div className="flex min-h-screen items-center justify-center p-6" style={{ background: '#f5f9f7' }}>
         <div className="text-center max-w-md portal-animate-scale-in">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6"
             style={{ background: 'linear-gradient(135deg, rgba(193,154,91,0.15), rgba(93,171,121,0.1))', border: '1px solid rgba(193,154,91,0.2)' }}>
@@ -137,63 +138,72 @@ export default function PortalLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#f8faf9' }}>
-      {/* Left panel — brand */}
-      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden flex-col items-center justify-center p-12"
-        style={{ background: 'linear-gradient(180deg, #f5f9f7 0%, #e8f0eb 100%)', borderRight: '1px solid rgba(93,171,121,0.12)' }}>
-        {/* Gold accent line at top */}
-        <div className="absolute top-0 left-0 right-0 h-[2px]" style={{
-          background: 'linear-gradient(90deg, transparent, rgba(193,154,91,0.5), transparent)',
-        }} />
-        {/* Radial glow */}
+    <div className="flex min-h-screen">
+      {/* Left panel — logo + brand (white) */}
+      <div className="hidden lg:flex lg:w-[48%] relative overflow-hidden flex-col items-center justify-center p-16"
+        style={{ background: '#ffffff', borderRight: '1px solid rgba(93,171,121,0.12)' }}>
+        {/* Subtle gold radial glow */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: 'radial-gradient(ellipse at 50% 30%, rgba(193,154,91,0.08) 0%, transparent 60%)',
+          background: 'radial-gradient(ellipse at 50% 40%, rgba(193,154,91,0.06) 0%, transparent 65%)',
         }} />
 
-        <div className="relative z-10 text-center">
-          {/* Logo */}
-          <div className="w-72 mx-auto mb-6">
-            <Logo className="w-full h-auto" />
-          </div>
-          <div className="flex items-center justify-center gap-2 mb-16">
-            <Sparkles size={13} style={{ color: 'var(--portal-gold-500)' }} />
-            <p className="text-sm font-semibold" style={{ color: 'var(--portal-gold-600)' }}>Practitioner Hub</p>
+        <div className="relative z-10 flex flex-col items-center text-center">
+          {/* Logo — large */}
+          <div className="w-full max-w-sm mb-10">
+            <Image
+              src="/logo.png"
+              alt="Apex & Origin"
+              width={400}
+              height={140}
+              className="w-full h-auto object-contain"
+              priority
+            />
           </div>
 
-          {/* Lifecycle phases */}
-          <div className="flex flex-col gap-3 text-left max-w-xs mx-auto">
+          {/* Eyebrow label */}
+          <div className="flex items-center gap-2 mb-12">
+            <div className="h-px w-8" style={{ background: 'var(--portal-gold-400)' }} />
+            <p className="text-[13px] font-semibold tracking-[0.12em] uppercase"
+              style={{ color: 'var(--portal-gold-600)' }}>
+              Practitioner Hub
+            </p>
+            <div className="h-px w-8" style={{ background: 'var(--portal-gold-400)' }} />
+          </div>
+
+          {/* Lifecycle steps */}
+          <div className="flex flex-col gap-3 w-full max-w-xs">
             {['Assess', 'Coach', 'Develop', 'Transform', 'Sustain'].map((phase, i) => (
               <div key={phase} className="flex items-center gap-3 px-4 py-3 rounded-xl portal-animate-fade-in"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(193,154,91,0.06), rgba(93,171,121,0.04))',
-                  border: '1px solid rgba(193,154,91,0.12)',
+                  background: 'rgba(93,171,121,0.05)',
+                  border: '1px solid rgba(93,171,121,0.12)',
                   animationDelay: `${i * 80}ms`,
                 }}>
                 <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0"
-                  style={{ background: 'linear-gradient(135deg, var(--portal-gold-600), var(--portal-gold-500))', color: '#ffffff' }}>
+                  style={{ background: 'linear-gradient(135deg, var(--portal-gold-600), var(--portal-gold-400))', color: '#ffffff' }}>
                   {String(i + 1).padStart(2, '0')}
                 </div>
-                <span className="text-sm font-medium" style={{ color: '#1a3a2a' }}>{phase}</span>
-                <ArrowRight size={12} className="ml-auto" style={{ color: 'var(--portal-gold-400)' }} />
+                <span className="text-sm font-medium text-left" style={{ color: '#1a3a2a' }}>{phase}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Right panel — form */}
-      <div className="flex-1 flex items-center justify-center p-8 lg:p-16">
+      {/* Right panel — form (soft grey) */}
+      <div className="flex-1 flex items-center justify-center p-8 lg:p-16"
+        style={{ background: '#f5f9f7' }}>
         <div className="w-full max-w-md portal-animate-fade-in">
           {/* Mode tabs */}
           <div className="flex rounded-xl mb-10 p-1"
-            style={{ background: 'linear-gradient(135deg, rgba(193,154,91,0.06), rgba(93,171,121,0.04))', border: '1px solid rgba(193,154,91,0.15)' }}>
+            style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(93,171,121,0.15)', backdropFilter: 'blur(4px)' }}>
             {(['login', 'signup'] as const).map((m) => (
               <button key={m} onClick={() => switchMode(m)}
                 className="flex-1 rounded-lg text-sm font-semibold py-3 transition-all"
                 style={{
                   background: mode === m ? 'linear-gradient(135deg, var(--portal-gold-600), var(--portal-gold-500))' : 'transparent',
                   color: mode === m ? '#ffffff' : '#6b9a7d',
-                  boxShadow: mode === m ? '0 2px 8px rgba(184,145,59,0.3)' : 'none',
+                  boxShadow: mode === m ? '0 2px 8px rgba(184,145,59,0.25)' : 'none',
                 }}>
                 {m === 'login' ? 'Sign In' : 'Create Account'}
               </button>
@@ -207,7 +217,7 @@ export default function PortalLoginPage() {
             <p className="text-sm" style={{ color: '#6b9a7d' }}>
               {mode === 'login'
                 ? 'Sign in to your Apex & Origin practitioner account'
-                : 'Create your account to manage programs'}
+                : 'Create your practitioner account'}
             </p>
           </div>
 
@@ -219,7 +229,7 @@ export default function PortalLoginPage() {
                 <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)}
                   style={inputStyle} placeholder="Your full name" required
                   onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
-                  onBlur={e => { e.target.style.borderColor = 'rgba(184,145,59,0.2)'; e.target.style.outline = 'none'; }}
+                  onBlur={e => { e.target.style.borderColor = 'rgba(184,145,59,0.2)'; e.target.style.boxShadow = 'none'; e.target.style.outline = 'none'; }}
                 />
               </div>
             )}
@@ -229,7 +239,7 @@ export default function PortalLoginPage() {
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
                 style={inputStyle} placeholder="you@company.com" required
                 onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
-                onBlur={e => { e.target.style.borderColor = 'rgba(184,145,59,0.2)'; e.target.style.outline = 'none'; }}
+                onBlur={e => { e.target.style.borderColor = 'rgba(184,145,59,0.2)'; e.target.style.boxShadow = 'none'; e.target.style.outline = 'none'; }}
               />
             </div>
             <div>
@@ -238,7 +248,7 @@ export default function PortalLoginPage() {
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
                 style={inputStyle} placeholder={mode === 'signup' ? 'Min. 6 characters' : '••••••••'} required
                 onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
-                onBlur={e => { e.target.style.borderColor = 'rgba(184,145,59,0.2)'; e.target.style.outline = 'none'; }}
+                onBlur={e => { e.target.style.borderColor = 'rgba(184,145,59,0.2)'; e.target.style.boxShadow = 'none'; e.target.style.outline = 'none'; }}
               />
             </div>
             {mode === 'signup' && (
@@ -248,19 +258,19 @@ export default function PortalLoginPage() {
                 <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
                   style={inputStyle} placeholder="Confirm your password" required
                   onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
-                  onBlur={e => { e.target.style.borderColor = 'rgba(184,145,59,0.2)'; e.target.style.outline = 'none'; }}
+                  onBlur={e => { e.target.style.borderColor = 'rgba(184,145,59,0.2)'; e.target.style.boxShadow = 'none'; e.target.style.outline = 'none'; }}
                 />
               </div>
             )}
             {error && (
               <div className="rounded-xl text-sm px-4 py-3"
-                style={{ background: 'var(--portal-danger-subtle)', border: '1px solid rgba(239,68,68,0.2)', color: 'var(--portal-danger)' }}>
+                style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#ef4444' }}>
                 {error}
               </div>
             )}
             <button type="submit" disabled={loading}
               className="w-full portal-btn portal-btn-gold disabled:opacity-50"
-              style={{ marginTop: '8px', width: '100%', justifyContent: 'center', padding: '1rem' }}>
+              style={{ marginTop: '8px', width: '100%', justifyContent: 'center', padding: '1rem', fontSize: '0.9375rem' }}>
               {loading
                 ? (mode === 'login' ? 'Signing in...' : 'Creating account...')
                 : (mode === 'login' ? 'Sign In' : 'Create Account')}
