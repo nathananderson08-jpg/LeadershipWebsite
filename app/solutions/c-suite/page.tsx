@@ -50,32 +50,32 @@ export default function CSuitePage() {
             {[
               {
                 title: "CEO Advisory & Coaching",
-                desc: "Intensive, confidential advisory for CEOs navigating the loneliest job in business. Strategy, culture, board relationships, AI transformation, and personal leadership — addressed with uncompromising candor.",
+                desc: "The CEO role is unlike any other — and the support required to perform it well is unlike any other coaching engagement. We work with a small number of CEOs at any one time, providing intensive advisory that spans the full scope of the role: strategic direction, organizational culture, board relationships, investor dynamics, AI transformation, and the personal leadership challenges that rarely surface in any formal setting. Our CEO engagements are built on uncompromising candor, deep confidentiality, and the kind of trusted partnership that allows a CEO to think out loud without consequence.",
                 premium: true,
               },
               {
                 title: "Board Effectiveness",
-                desc: "Individual board member leadership development, board team effectiveness, committee governance, and board succession planning — delivering both individual and collective improvement.",
+                desc: "Boards are asked to govern organizations through complexity they did not face when most governance frameworks were written — AI disruption, geopolitical volatility, ESG accountability, and an accelerating pace of strategic change. We work with individual board members on leadership development and contribution effectiveness, and with boards as a collective on team dynamics, governance practice, committee structure, and the interpersonal patterns that determine whether a board adds value or extracts it. Our board work is confidential, rigorous, and designed to produce measurable improvement in both individual contribution and collective performance.",
                 premium: false,
               },
               {
                 title: "C-Suite Team Alignment",
-                desc: "When the executive team is misaligned, the organization follows. We facilitate deep alignment work — not just off-sites, but systemic behavioral change at the team level.",
+                desc: "The executive team is the most consequential team in any organization — and often the most dysfunctional. When C-suite leaders are misaligned on priorities, operating with unspoken tension, or avoiding the conversations that matter most, the dysfunction cascades through every layer below them. We facilitate deep C-suite alignment work that goes beyond the annual off-site: surfacing the real issues, building the psychological safety to address them, and creating the behavioral contracts and operating norms that allow the executive team to function as a genuine unit rather than a collection of functional leaders in the same room.",
                 premium: false,
               },
               {
                 title: "CEO & Board Succession",
-                desc: "The highest-stakes succession in any organization. We manage end-to-end CEO and C-suite succession planning with the confidentiality, rigor, and board-level sensitivity required.",
+                desc: "CEO succession is the highest-stakes decision a board makes — and the one most frequently handled with inadequate preparation, opaque criteria, and insufficient attention to internal candidate development. We work with boards and CHROs to design and manage end-to-end succession processes that are rigorous, transparent where appropriate, and structured to surface the right candidates rather than the most visible ones. Our succession engagements combine leadership assessment, structured development of internal finalists, external benchmarking, and board facilitation — carried out with the confidentiality and sensitivity the process demands.",
                 premium: true,
               },
               {
                 title: "Executive Transitions",
-                desc: "Intensive onboarding and first-90-days coaching for new CEOs, incoming C-suite executives, and board members stepping into new responsibilities.",
+                desc: "The first ninety days of a new executive role are among the most consequential — and most poorly supported — in any leadership career. Research consistently shows that new executives who receive structured transition support outperform those who don't, yet most organizations rely on informal onboarding that leaves critical relationship-building, cultural navigation, and early priority-setting to chance. We provide intensive transition coaching for incoming CEOs, new C-suite executives, and board members assuming new responsibilities — accelerating time to effectiveness, reducing early missteps, and building the relational foundations that determine long-term success in the role.",
                 premium: false,
               },
               {
                 title: "AI Strategy for the Boardroom",
-                desc: "Board and C-suite AI literacy programs, governance frameworks, and strategy advisory — equipping the boardroom to oversee AI transformation with informed confidence.",
+                desc: "Most boards are being asked to oversee AI transformation without the conceptual foundation to do it well — approving budgets, accepting risk frameworks, and engaging with management on AI strategy without the literacy to ask the right questions. We run board and C-suite AI programs that build genuine strategic fluency: not technical depth, but the judgment to evaluate AI investments, the governance frameworks to manage AI risk, and the strategic perspective to identify where AI creates durable competitive advantage versus where it creates expensive distraction. We also work directly with CEOs and CISOs on AI strategy advisory, providing an independent perspective on the opportunities and risks their organizations are navigating.",
                 premium: false,
               },
             ].map((item, i) => (

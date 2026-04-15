@@ -20,9 +20,45 @@ export const pageMetadata = {
 
 
 const AUDIENCE_MATRIX = [
-  { level: "Emerging Leaders", color: "rgba(93,171,121,0.12)", textColor: "#5dab79" },
-  { level: "Senior Leaders", color: "rgba(93,171,121,0.08)", textColor: "#5dab79" },
-  { level: "C-Suite & Board", color: "rgba(93,171,121,0.05)", textColor: "#5dab79" },
+  {
+    level: "Emerging Leaders",
+    color: "rgba(93,171,121,0.12)",
+    textColor: "#5dab79",
+    capabilities: [
+      "Assessment-Based Development",
+      "Cohort-Based Learning",
+      "Manager Effectiveness",
+      "Coaching Integration",
+      "AI Fluency for the Next Generation",
+      "Pipeline Connection",
+    ],
+  },
+  {
+    level: "Senior Leaders",
+    color: "rgba(93,171,121,0.08)",
+    textColor: "#5dab79",
+    capabilities: [
+      "Executive Presence Development",
+      "Strategic Thinking",
+      "Cross-Functional Leadership",
+      "Coaching for Senior Leaders",
+      "AI Strategy Literacy",
+      "C-Suite Preparation",
+    ],
+  },
+  {
+    level: "C-Suite & Board",
+    color: "rgba(93,171,121,0.05)",
+    textColor: "#5dab79",
+    capabilities: [
+      "CEO Advisory & Coaching",
+      "Board Effectiveness",
+      "C-Suite Team Alignment",
+      "CEO & Board Succession",
+      "Executive Transitions",
+      "AI Strategy for the Boardroom",
+    ],
+  },
 ]
 
 const AI_PHASE_INTEGRATION = [
@@ -450,17 +486,14 @@ export default function LifecyclePage() {
                 <h3 className="font-700 text-forest-900 text-xl mb-5" style={{ fontWeight: 700 }}>
                   {audience.level}
                 </h3>
-                <div className="space-y-3">
-                  {LIFECYCLE_PHASES.map((phase) => (
-                    <div key={phase.id} className="flex items-center gap-3">
+                <div className="space-y-2.5">
+                  {audience.capabilities.map((cap) => (
+                    <div key={cap} className="flex items-center gap-3">
                       <div
                         className="w-2 h-2 rounded-full shrink-0"
                         style={{ background: audience.textColor }}
                       />
-                      <span className="text-sm text-forest-700">
-                        <span className="text-forest-900 font-600" style={{ fontWeight: 600 }}>{phase.title}:</span>{" "}
-                        {phase.subtitle}
-                      </span>
+                      <span className="text-sm text-forest-800">{cap}</span>
                     </div>
                   ))}
                 </div>
