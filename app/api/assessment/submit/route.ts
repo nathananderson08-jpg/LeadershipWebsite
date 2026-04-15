@@ -4,8 +4,6 @@ import { Resend } from 'resend';
 import { createAdminClient } from '@/lib/portal/supabase-server';
 import { FIRM_NAME } from '@/lib/constants';
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -95,6 +93,7 @@ Respond ONLY with this JSON (no markdown fences, no preamble):
   "engagement_suggestion": "1-2 sentences: a specific, credible suggestion for how ${FIRM_NAME} could support their top priority — tied to their stated challenge, name a specific service type (e.g. CHRO advisory, leadership diagnostic, succession architecture)"
 }`;
 
+  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const msg = await anthropic.messages.create({
     model: 'claude-opus-4-6',
     max_tokens: 1800,
@@ -220,6 +219,7 @@ async function sendReportEmail(params: {
 </div>
 </body></html>`;
 
+  const resend = new Resend(process.env.RESEND_API_KEY);
   await resend.emails.send({
     from: `${FIRM_NAME} <onboarding@resend.dev>`,
     to: email,
