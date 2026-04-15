@@ -80,18 +80,10 @@ export function Header() {
 
             {/* CTA + Mobile toggle */}
             <div className="flex items-center gap-2">
-              <Link
-                href="/portal/internal"
-                className="hidden md:inline-flex items-center px-4 py-2 rounded-lg text-xs font-600 transition-colors text-forest-700 border border-forest-200 hover:border-forest-400 hover:text-forest-900 hover:bg-forest-50"
-                style={{ fontWeight: 600, letterSpacing: "0.04em" }}
-              >
+              <Link href="/portal/internal" className="hidden md:inline-flex btn btn-primary btn-sm">
                 Internal
               </Link>
-              <Link
-                href="/portal"
-                className="hidden md:inline-flex items-center px-4 py-2 rounded-lg text-xs font-600 transition-colors text-forest-700 border border-forest-200 hover:border-forest-400 hover:text-forest-900 hover:bg-forest-50"
-                style={{ fontWeight: 600, letterSpacing: "0.04em" }}
-              >
+              <Link href="/portal" className="hidden md:inline-flex btn btn-primary btn-sm">
                 Practitioner Hub
               </Link>
               <Button href="/contact" variant="primary" size="sm" className="hidden md:inline-flex">
