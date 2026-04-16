@@ -151,17 +151,22 @@ function polar(cx: number, cy: number, r: number, angleDeg: number) {
 
 function chevronArcPath(cx: number, cy: number, rIn: number, rOut: number, slotIndex: number) {
   const slotStart = slotIndex * 60
-  const arcStart = slotStart + 5
-  const arcEnd = slotStart + 55
-  const tipAngle = slotStart + 62 // tip extends past the slot end
+  const arcStart = slotStart + 8
+  const arcEnd = slotStart + 52
+  const tipAngle = slotStart + 30 // tip points toward center direction
 
   const rMid = (rIn + rOut) / 2
 
+  // Outer arc points
   const oStart = polar(cx, cy, rOut, arcStart)
   const oEnd = polar(cx, cy, rOut, arcEnd)
-  const tip = polar(cx, cy, rMid, tipAngle)
+  
+  // Inner arc points
   const iEnd = polar(cx, cy, rIn, arcEnd)
   const iStart = polar(cx, cy, rIn, arcStart)
+  
+  // Tip point (creates the arrow-like chevron)
+  const tip = polar(cx, cy, (rIn + rOut) / 2 + 8, tipAngle)
 
   const f = (n: number) => n.toFixed(2)
 
@@ -244,6 +249,37 @@ function CircularLifecycle() {
               </g>
             )
           })}
+
+          {/* Incoming recruitment arrow */}
+          <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+              <polygon points="0 0, 10 3, 0 6" fill="#5dab79" />
+            </marker>
+          </defs>
+          
+          {/* Curved arrow entering from bottom */}
+          <path
+            d="M 175 320 Q 175 240, 200 200"
+            stroke="#5dab79"
+            strokeWidth="2.5"
+            fill="none"
+            strokeLinecap="round"
+            markerEnd="url(#arrowhead)"
+            opacity="0.8"
+          />
+          
+          {/* "Recruitment" label on arrow */}
+          <text
+            x="195"
+            y="310"
+            fontSize="9"
+            fill="#5dab79"
+            fontWeight="700"
+            fontFamily="sans-serif"
+            letterSpacing="0.5"
+          >
+            Recruitment
+          </text>
 
           {/* Center circle */}
           <circle cx={cx} cy={cy} r={rIn - 6} fill="white" />
