@@ -148,44 +148,26 @@ export default function PortalLoginPage() {
         }} />
 
         <div className="relative z-10 flex flex-col items-center text-center">
-          {/* Logo — large */}
-          <div className="w-full max-w-sm mb-10">
+          {/* Logo — extra large */}
+          <div className="w-full max-w-lg mb-14">
             <Image
               src="/logo.png"
               alt="Apex & Origin"
-              width={400}
-              height={140}
+              width={560}
+              height={196}
               className="w-full h-auto object-contain"
               priority
             />
           </div>
 
-          {/* Eyebrow label */}
-          <div className="flex items-center gap-2 mb-12">
-            <div className="h-px w-8" style={{ background: 'var(--portal-gold-400)' }} />
-            <p className="text-[13px] font-semibold tracking-[0.12em] uppercase"
-              style={{ color: 'var(--portal-gold-600)' }}>
+          {/* Hub label — large */}
+          <div className="flex items-center gap-4">
+            <div className="h-px w-14" style={{ background: 'var(--portal-gold-400)' }} />
+            <p className="text-3xl font-semibold tracking-[0.14em] uppercase"
+              style={{ color: 'var(--portal-gold-600)', fontFamily: "'DM Serif Display', serif", letterSpacing: '0.08em' }}>
               Practitioner Hub
             </p>
-            <div className="h-px w-8" style={{ background: 'var(--portal-gold-400)' }} />
-          </div>
-
-          {/* Lifecycle steps */}
-          <div className="flex flex-col gap-3 w-full max-w-xs">
-            {['Assess', 'Coach', 'Develop', 'Transform', 'Sustain'].map((phase, i) => (
-              <div key={phase} className="flex items-center gap-3 px-4 py-3 rounded-xl portal-animate-fade-in"
-                style={{
-                  background: 'rgba(93,171,121,0.05)',
-                  border: '1px solid rgba(93,171,121,0.12)',
-                  animationDelay: `${i * 80}ms`,
-                }}>
-                <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0"
-                  style={{ background: 'linear-gradient(135deg, var(--portal-gold-600), var(--portal-gold-400))', color: '#ffffff' }}>
-                  {String(i + 1).padStart(2, '0')}
-                </div>
-                <span className="text-sm font-medium text-left" style={{ color: '#1a3a2a' }}>{phase}</span>
-              </div>
-            ))}
+            <div className="h-px w-14" style={{ background: 'var(--portal-gold-400)' }} />
           </div>
         </div>
       </div>
