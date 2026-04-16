@@ -779,7 +779,7 @@ export default function LifecyclePage() {
                         viewport={{ once: true }}
                         transition={{ delay: i * 0.1 }}
                         className="flex items-start gap-3 p-3 rounded-xl"
-                        style={{ background: "rgba(0,212,255,0.04)", border: "1px solid rgba(0,212,255,0.1)" }}
+                        style={{ background: "rgba(0,212,255,0.04)", border: "1px solid rgba(0,212,255,0.1)", minHeight: "72px" }}
                       >
                         <span className="text-xs font-700 px-2 py-1 rounded shrink-0" style={{ background: "rgba(0,212,255,0.12)", color: "#00d4ff", fontWeight: 700 }}>
                           {item.level}
