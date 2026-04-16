@@ -149,165 +149,109 @@ function polar(cx: number, cy: number, r: number, angleDeg: number) {
   return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }
 }
 
-/**
- * Creates a curved arrow segment path with arrowhead pointing clockwise.
- * The arrow has a notch at the back (tail) and a point at the front (head).
- */
-function createArrowSegment(
-  cx: number,
-  cy: number,
-  rIn: number,
-  rOut: number,
-  startAngle: number,
-  endAngle: number,
-) {
-  const f = (n: number) => n.toFixed(2)
-  const rMid = (rIn + rOut) / 2
-  const notchAngle = 8 // degrees for the back notch
-  const tipAngle = 10  // degrees for the front arrowhead
-
-  // Back notch point (at startAngle, mid-radius)
-  const notch = polar(cx, cy, rMid, startAngle)
-  
-  // Outer arc: from notch start to arrow tip
-  const outerStart = polar(cx, cy, rOut, startAngle + notchAngle)
-  const outerEnd = polar(cx, cy, rOut, endAngle - tipAngle)
-  
-  // Arrow tip (at endAngle, mid-radius)  
-  const tip = polar(cx, cy, rMid, endAngle)
-  
-  // Inner arc: from arrow tip back to notch
-  const innerEnd = polar(cx, cy, rIn, endAngle - tipAngle)
-  const innerStart = polar(cx, cy, rIn, startAngle + notchAngle)
-
-  const arcSpan = (endAngle - tipAngle) - (startAngle + notchAngle)
-  const largeArc = arcSpan > 180 ? 1 : 0
-
-  return [
-    `M${f(notch.x)},${f(notch.y)}`,
-    `L${f(outerStart.x)},${f(outerStart.y)}`,
-    `A${rOut},${rOut},0,${largeArc},1,${f(outerEnd.x)},${f(outerEnd.y)}`,
-    `L${f(tip.x)},${f(tip.y)}`,
-    `L${f(innerEnd.x)},${f(innerEnd.y)}`,
-    `A${rIn},${rIn},0,${largeArc},0,${f(innerStart.x)},${f(innerStart.y)}`,
-    "Z",
-  ].join(" ")
-}
-
 function CircularLifecycle() {
-  const cx = 200, cy = 200
-  const rIn = 75, rOut = 140
-  const rMid = (rIn + rOut) / 2
-
-  // Segments in clockwise order starting from top-right
-  // Index 0: Development (30° center), 1: Retention, 2: Succession, 3: Recruitment, 4: Assessment, 5: Training
-  const segments = [
-    { label: "Development", sub: "Deep growth &\ntransformation", color: "#2d5a3d", textColor: "#fff", startAngle: 0, endAngle: 60, primary: true },
-    { label: "Retention", sub: "Engagement\n& culture", color: "#7bbf95", textColor: "#1a3d2b", startAngle: 60, endAngle: 120, primary: false },
-    { label: "Succession", sub: "Pipeline\ncontinuity", color: "#7bbf95", textColor: "#1a3d2b", startAngle: 120, endAngle: 180, primary: false },
-    // Recruitment is the external entry arrow - skip in ring, render separately
-    { label: "Assessment", sub: "Diagnosing\ncapability", color: "#7bbf95", textColor: "#1a3d2b", startAngle: 240, endAngle: 300, primary: false },
-    { label: "Training", sub: "Building\nskills", color: "#7bbf95", textColor: "#1a3d2b", startAngle: 300, endAngle: 360, primary: false },
-  ]
-
   return (
     <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-      <div className="w-full max-w-[440px] mx-auto lg:mx-0 shrink-0">
-        <svg viewBox="0 0 400 400" className="w-full">
-          {/* Ring segments */}
-          {segments.map((seg) => {
-            const midAngle = (seg.startAngle + seg.endAngle) / 2
-            const labelPos = polar(cx, cy, rMid, midAngle)
-            const lines = seg.sub.split("\n")
+      <div className="w-full max-w-[500px] mx-auto lg:mx-0 shrink-0">
+        <svg viewBox="0 0 500 400" className="w-full">
+          {/* 
+            Ring of 5 arrow segments (clockwise from top):
+            - Training (top-left, 270° to 330°)
+            - Development (top-right, 330° to 30°) - PRIMARY/dark
+            - Retention (right, 30° to 90°)
+            - Succession (bottom, 90° to 150°)
+            - Assessment (left, 210° to 270°)
+            
+            Gap from 150° to 210° is where Recruitment arrow enters
+          */}
+          
+          {/* Training segment - top left */}
+          <path
+            d="M 190 115 
+               A 95 95 0 0 1 270 95
+               L 280 140
+               A 50 50 0 0 0 220 155
+               Z"
+            fill="#b8ddc5"
+          />
+          <text x="235" y="125" textAnchor="middle" fill="#1a3d2b" fontSize="11" fontWeight="700" fontFamily="sans-serif">Training</text>
+          <text x="235" y="138" textAnchor="middle" fill="#3d6b4f" fontSize="8" fontFamily="sans-serif">Building skills</text>
 
-            return (
-              <g key={seg.label}>
-                <path
-                  d={createArrowSegment(cx, cy, rIn, rOut, seg.startAngle, seg.endAngle)}
-                  fill={seg.color}
-                />
-                <text
-                  x={labelPos.x}
-                  y={labelPos.y - 8}
-                  textAnchor="middle"
-                  fill={seg.textColor}
-                  fontSize="11"
-                  fontWeight="700"
-                  fontFamily="sans-serif"
-                >
-                  {seg.label}
-                </text>
-                {lines.map((line, li) => (
-                  <text
-                    key={li}
-                    x={labelPos.x}
-                    y={labelPos.y + 6 + li * 11}
-                    textAnchor="middle"
-                    fill={seg.primary ? "rgba(255,255,255,0.7)" : "#3d6b4f"}
-                    fontSize="8"
-                    fontFamily="sans-serif"
-                  >
-                    {line}
-                  </text>
-                ))}
-                {seg.primary && (
-                  <text
-                    x={labelPos.x}
-                    y={labelPos.y + 34}
-                    textAnchor="middle"
-                    fill="rgba(255,255,255,0.5)"
-                    fontSize="6.5"
-                    fontWeight="700"
-                    letterSpacing="1"
-                    fontFamily="sans-serif"
-                  >
-                    OUR FOCUS
-                  </text>
-                )}
-              </g>
-            )
-          })}
+          {/* Development segment - top right (PRIMARY) */}
+          <path
+            d="M 280 95 
+               A 95 95 0 0 1 365 175
+               L 320 195
+               A 50 50 0 0 0 280 140
+               Z"
+            fill="#2d5a3d"
+          />
+          <text x="315" y="145" textAnchor="middle" fill="white" fontSize="11" fontWeight="700" fontFamily="sans-serif">Development</text>
+          <text x="315" y="158" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="8" fontFamily="sans-serif">Deep growth &amp;</text>
+          <text x="315" y="169" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="8" fontFamily="sans-serif">transformation</text>
+          <text x="315" y="183" textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize="6" fontWeight="700" letterSpacing="1" fontFamily="sans-serif">OUR FOCUS</text>
 
-          {/* External Recruitment arrow entering the ring */}
-          {/* This arrow comes from outside on the left side, pointing toward the gap between Succession (180°) and Assessment (240°) */}
-          <g>
-            {/* Arrow body - horizontal banner with arrowhead pointing right into the ring */}
-            <path
-              d="M 20 200 
-                 L 20 165 
-                 L 95 165 
-                 L 95 150 
-                 L 130 182.5 
-                 L 95 215 
-                 L 95 200 
-                 L 20 200
-                 Z"
-              fill="#c8d8d0"
-            />
-            {/* Recruitment label */}
-            <text x="58" y="178" textAnchor="middle" fill="#3d5a4a" fontSize="10" fontWeight="700" fontFamily="sans-serif">
-              Recruitment
-            </text>
-            <text x="58" y="191" textAnchor="middle" fill="#5a7a6a" fontSize="8" fontFamily="sans-serif">
-              Sourcing &amp; hiring
-            </text>
-          </g>
+          {/* Retention segment - right side */}
+          <path
+            d="M 365 185 
+               A 95 95 0 0 1 330 285
+               L 285 255
+               A 50 50 0 0 0 315 200
+               Z"
+            fill="#b8ddc5"
+          />
+          <text x="330" y="230" textAnchor="middle" fill="#1a3d2b" fontSize="11" fontWeight="700" fontFamily="sans-serif">Retention</text>
+          <text x="330" y="243" textAnchor="middle" fill="#3d6b4f" fontSize="8" fontFamily="sans-serif">Engagement</text>
+          <text x="330" y="254" textAnchor="middle" fill="#3d6b4f" fontSize="8" fontFamily="sans-serif">&amp; culture</text>
+
+          {/* Succession segment - bottom */}
+          <path
+            d="M 320 290 
+               A 95 95 0 0 1 200 310
+               L 210 260
+               A 50 50 0 0 0 280 250
+               Z"
+            fill="#b8ddc5"
+          />
+          <text x="260" y="280" textAnchor="middle" fill="#1a3d2b" fontSize="11" fontWeight="700" fontFamily="sans-serif">Succession</text>
+          <text x="260" y="293" textAnchor="middle" fill="#3d6b4f" fontSize="8" fontFamily="sans-serif">Pipeline continuity</text>
+
+          {/* Assessment segment - left side */}
+          <path
+            d="M 155 280 
+               A 95 95 0 0 1 155 160
+               L 195 175
+               A 50 50 0 0 0 195 250
+               Z"
+            fill="#b8ddc5"
+          />
+          <text x="165" y="215" textAnchor="middle" fill="#1a3d2b" fontSize="11" fontWeight="700" fontFamily="sans-serif">Assessment</text>
+          <text x="165" y="228" textAnchor="middle" fill="#3d6b4f" fontSize="8" fontFamily="sans-serif">Diagnosing</text>
+          <text x="165" y="239" textAnchor="middle" fill="#3d6b4f" fontSize="8" fontFamily="sans-serif">capability</text>
+
+          {/* External Recruitment Arrow - enters from top-left outside the ring */}
+          <path
+            d="M 30 60 
+               L 140 60 
+               L 140 45 
+               L 185 80 
+               L 140 115 
+               L 140 100 
+               L 30 100 
+               L 50 80
+               Z"
+            fill="#dde3e8"
+          />
+          <text x="95" y="75" textAnchor="middle" fill="#4a5a54" fontSize="11" fontWeight="700" fontFamily="sans-serif">Recruitment</text>
+          <text x="95" y="90" textAnchor="middle" fill="#6b7a74" fontSize="8" fontFamily="sans-serif">Sourcing &amp; hiring</text>
 
           {/* Center circle */}
-          <circle cx={cx} cy={cy} r={rIn - 8} fill="white" />
-          <circle cx={cx} cy={cy} r={rIn - 8} fill="none" stroke="#d1e8d9" strokeWidth="1.5" />
-          <text x={cx} y={cy - 14} textAnchor="middle" fontSize="7" fill="#5dab79" fontWeight="700" fontFamily="sans-serif" letterSpacing="1">
-            CONTINUOUS CYCLE
-          </text>
-          <text x={cx} y={cy + 2} textAnchor="middle" fontSize="12" fill="#1a3d2b" fontWeight="700" fontFamily="sans-serif">
-            Leadership
-          </text>
-          <text x={cx} y={cy + 16} textAnchor="middle" fontSize="12" fill="#1a3d2b" fontWeight="700" fontFamily="sans-serif">
-            Development
-          </text>
-          <text x={cx} y={cy + 30} textAnchor="middle" fontSize="8" fill="#5dab79" fontFamily="sans-serif">
-            is our core
-          </text>
+          <circle cx="260" cy="195" r="45" fill="white" />
+          <circle cx="260" cy="195" r="45" fill="none" stroke="#d1e8d9" strokeWidth="1.5" />
+          <text x="260" y="178" textAnchor="middle" fontSize="7" fill="#5dab79" fontWeight="700" fontFamily="sans-serif" letterSpacing="1">CONTINUOUS CYCLE</text>
+          <text x="260" y="193" textAnchor="middle" fontSize="11" fill="#1a3d2b" fontWeight="700" fontFamily="sans-serif">Leadership</text>
+          <text x="260" y="206" textAnchor="middle" fontSize="11" fill="#1a3d2b" fontWeight="700" fontFamily="sans-serif">Development</text>
+          <text x="260" y="220" textAnchor="middle" fontSize="8" fill="#5dab79" fontFamily="sans-serif">is our core</text>
         </svg>
       </div>
 
