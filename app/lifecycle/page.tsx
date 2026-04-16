@@ -151,11 +151,9 @@ function polar(cx: number, cy: number, r: number, angleDeg: number) {
 
 function chevronArcPath(cx: number, cy: number, rIn: number, rOut: number, slotIndex: number) {
   const slotStart = slotIndex * 60
-  const arcStart = slotStart + 8
-  const arcEnd = slotStart + 52
-  const tipAngle = slotStart + 30 // tip points toward center direction
-
-  const rMid = (rIn + rOut) / 2
+  const arcStart = slotStart + 6
+  const arcEnd = slotStart + 54
+  const tipAngle = slotStart + 30 // tip points inward
 
   // Outer arc points
   const oStart = polar(cx, cy, rOut, arcStart)
@@ -165,8 +163,9 @@ function chevronArcPath(cx: number, cy: number, rIn: number, rOut: number, slotI
   const iEnd = polar(cx, cy, rIn, arcEnd)
   const iStart = polar(cx, cy, rIn, arcStart)
   
-  // Tip point (creates the arrow-like chevron)
-  const tip = polar(cx, cy, (rIn + rOut) / 2 + 8, tipAngle)
+  // Tip point - creates a sharp inward-pointing chevron
+  const tipDistance = (rIn + rOut) / 2 + 6
+  const tip = polar(cx, cy, tipDistance, tipAngle)
 
   const f = (n: number) => n.toFixed(2)
 
@@ -252,27 +251,27 @@ function CircularLifecycle() {
 
           {/* Incoming recruitment arrow */}
           <defs>
-            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-              <polygon points="0 0, 10 3, 0 6" fill="#5dab79" />
+            <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+              <polygon points="0 0, 12 6, 0 12" fill="#5dab79" />
             </marker>
           </defs>
           
-          {/* Curved arrow entering from bottom */}
+          {/* Curved arrow entering from bottom-left */}
           <path
-            d="M 175 320 Q 175 240, 200 200"
+            d="M 120 330 Q 140 270, 170 210"
             stroke="#5dab79"
-            strokeWidth="2.5"
+            strokeWidth="3"
             fill="none"
             strokeLinecap="round"
             markerEnd="url(#arrowhead)"
-            opacity="0.8"
+            opacity="0.85"
           />
           
-          {/* "Recruitment" label on arrow */}
+          {/* Arrow label positioned near the arrow */}
           <text
-            x="195"
-            y="310"
-            fontSize="9"
+            x="110"
+            y="325"
+            fontSize="10"
             fill="#5dab79"
             fontWeight="700"
             fontFamily="sans-serif"
