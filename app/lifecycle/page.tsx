@@ -136,7 +136,7 @@ const MATRIX_ROW_DESCS: Record<string, string> = {
 // Order: Development at top, then clockwise natural sequence
 // Slots: 0=Development, 1=Retention, 2=Succession, 3=Recruitment, 4=Assessment, 5=Training
 const CYCLE_SEGMENTS = [
-  { label: "Development", desc: "Our domain", primary: true },
+  { label: "Leadership\nDevelopment", desc: "Deep growth &\ntransformation", primary: true },
   { label: "Retention", desc: "Engagement\n& culture", primary: false },
   { label: "Succession", desc: "Pipeline\ncontinuity", primary: false },
   { label: "Recruitment", desc: "Sourcing\n& hiring", primary: false },
@@ -183,59 +183,66 @@ function CircularLifecycle() {
   return (
     <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
       <div className="w-full max-w-[360px] mx-auto lg:mx-0 shrink-0">
-        <svg viewBox="0 0 350 350" className="w-full">
+        <svg viewBox="0 -5 350 355" className="w-full">
           {CYCLE_SEGMENTS.map((seg, i) => {
             const midAngle = i * 60 + 30
             const labelPos = polar(cx, cy, rMid, midAngle)
-            const lines = seg.desc.split("\n")
+            const descLines = seg.desc.split("\n")
+            const labelLines = seg.label.split("\n")
 
             const fill = seg.primary ? "#2d5a3d" : "#dde5db"
             const textColor = seg.primary ? "white" : "#6b7a6e"
-            const subColor = seg.primary ? "rgba(255,255,255,0.65)" : "#9aaa96"
+            const subColor = seg.primary ? "rgba(255,255,255,0.75)" : "#9aaa96"
+
+            // Explode primary segment outward along its midAngle direction
+            let groupTransform: string | undefined
+            if (seg.primary) {
+              const explodeOffset = 14
+              const rad = ((midAngle - 90) * Math.PI) / 180
+              const tx = (explodeOffset * Math.cos(rad)).toFixed(2)
+              const ty = (explodeOffset * Math.sin(rad)).toFixed(2)
+              groupTransform = `translate(${tx},${ty})`
+            }
+
+            const labelFS = seg.primary ? "12" : "10.5"
+            const descFS = seg.primary ? "9" : "8.5"
+            const labelLH = seg.primary ? 13 : 12
+
+            // Compute top of label block — preserves existing layout for non-primary
+            const totalLabelSpan = (labelLines.length - 1) * labelLH
+            const gap = descLines.length > 1 ? 12 : 6
+            const labelTopY = labelPos.y - totalLabelSpan - gap
 
             return (
-              <g key={seg.label}>
+              <g key={seg.label} transform={groupTransform}>
                 <path d={chevronArcPath(cx, cy, rIn, rOut, i)} fill={fill} />
-                {/* Segment label */}
-                <text
-                  x={labelPos.x}
-                  y={labelPos.y - (lines.length > 1 ? 12 : 6)}
-                  textAnchor="middle"
-                  fill={textColor}
-                  fontSize="10.5"
-                  fontWeight="700"
-                  fontFamily="sans-serif"
-                >
-                  {seg.label}
-                </text>
-                {lines.map((line, li) => (
+                {labelLines.map((line, li) => (
                   <text
-                    key={li}
+                    key={`label-${li}`}
                     x={labelPos.x}
-                    y={labelPos.y + 4 + li * 12}
+                    y={labelTopY + li * labelLH}
                     textAnchor="middle"
-                    fill={subColor}
-                    fontSize="8.5"
+                    fill={textColor}
+                    fontSize={labelFS}
+                    fontWeight="700"
                     fontFamily="sans-serif"
                   >
                     {line}
                   </text>
                 ))}
-                {/* "OUR FOCUS" badge on Development */}
-                {seg.primary && (
+                {descLines.map((line, li) => (
                   <text
+                    key={`desc-${li}`}
                     x={labelPos.x}
-                    y={labelPos.y + 34}
+                    y={labelPos.y + 4 + li * 12}
                     textAnchor="middle"
-                    fill="rgba(255,255,255,0.5)"
-                    fontSize="7"
-                    fontWeight="700"
+                    fill={subColor}
+                    fontSize={descFS}
                     fontFamily="sans-serif"
-                    letterSpacing="1.5"
                   >
-                    OUR FOCUS
+                    {line}
                   </text>
-                )}
+                ))}
               </g>
             )
           })}
