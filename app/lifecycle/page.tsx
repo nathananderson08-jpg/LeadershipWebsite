@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/Button"
 import { SectionHeading } from "@/components/ui/SectionHeading"
@@ -132,177 +133,19 @@ const MATRIX_ROW_DESCS: Record<string, string> = {
   Organization: "Systemic capability",
 }
 
-// ── Circular lifecycle SVG ────────────────────────────────────
-// Angles: 0° = top, clockwise.
-// Leadership Development spans 110° centered at top (305°→55°).
-// The 5 remaining segments share the rest uniformly at 46° each, with 3.33° gaps.
-const _GAP = 10 / 3        // ≈ 3.33° gap between segments
-const _LD = 110            // Leadership Development angular span
-const _SM = 46             // standard segment angular span
-
-const CYCLE_SEGMENTS = [
-  { label: "Leadership\nDevelopment", desc: "Deep growth &\ntransformation", primary: true,
-    start: 305, span: _LD },
-  { label: "Retention", desc: "Engagement\n& culture", primary: false,
-    start: 55 + _GAP, span: _SM },
-  { label: "Succession", desc: "Pipeline\ncontinuity", primary: false,
-    start: 55 + _GAP + (_SM + _GAP), span: _SM },
-  { label: "Recruitment", desc: "Sourcing\n& hiring", primary: false,
-    start: 55 + _GAP + (_SM + _GAP) * 2, span: _SM },
-  { label: "Assessment", desc: "Diagnosing\ncapability", primary: false,
-    start: 55 + _GAP + (_SM + _GAP) * 3, span: _SM },
-  { label: "Training", desc: "Building\nskills", primary: false,
-    start: 55 + _GAP + (_SM + _GAP) * 4, span: _SM },
-]
-
-function polar(cx: number, cy: number, r: number, angleDeg: number) {
-  const rad = ((angleDeg - 90) * Math.PI) / 180
-  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }
-}
-
-function chevronArcPath(cx: number, cy: number, rIn: number, rOut: number, startDeg: number, spanDeg: number) {
-  const arcStart = startDeg + 2          // 2° inset from segment edge
-  const arcEnd   = startDeg + spanDeg - 2
-  const tipAngle = startDeg + spanDeg + 5 // chevron tip extends clockwise past segment end
-  const rMid = (rIn + rOut) / 2
-  const laf  = (spanDeg - 4) > 180 ? 1 : 0  // large-arc-flag
-
-  const oStart = polar(cx, cy, rOut, arcStart)
-  const oEnd   = polar(cx, cy, rOut, arcEnd)
-  const tip    = polar(cx, cy, rMid, tipAngle)
-  const iEnd   = polar(cx, cy, rIn,  arcEnd)
-  const iStart = polar(cx, cy, rIn,  arcStart)
-
-  const f = (n: number) => n.toFixed(2)
-
-  return [
-    `M${f(oStart.x)},${f(oStart.y)}`,
-    `A${rOut},${rOut},0,${laf},1,${f(oEnd.x)},${f(oEnd.y)}`,
-    `L${f(tip.x)},${f(tip.y)}`,
-    `L${f(iEnd.x)},${f(iEnd.y)}`,
-    `A${rIn},${rIn},0,${laf},0,${f(iStart.x)},${f(iStart.y)}`,
-    "Z",
-  ].join(" ")
-}
 
 function CircularLifecycle() {
-  const cx = 175, cy = 175
-  const rIn = 80, rOut = 135        // standard segment radii
-  const rInLd = 70, rOutLd = 155    // Leadership Development — taller ring section
-  const explodeOffset = 16          // pixels the LD segment is pushed outward
-
-  const f = (n: number) => n.toFixed(2)
-
   return (
     <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-      <div className="w-full max-w-[380px] mx-auto lg:mx-0 shrink-0">
-        <svg viewBox="0 -20 350 370" className="w-full">
-          <defs>
-            {/* Small open-chevron arrowhead for cycle-direction indicators */}
-            <marker id="flow-arrow" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
-              <path d="M1,1 L6,3.5 L1,6" stroke="rgba(93,171,121,0.75)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-            </marker>
-          </defs>
-
-          {/* Cycle-direction arrows just outside the ring, flanking the LD segment */}
-          {([
-            [295, 309],
-            [51,  65],
-          ] as [number, number][]).map(([from, to], i) => {
-            const r = 163
-            const s = polar(cx, cy, r, from)
-            const e = polar(cx, cy, r, to)
-            return (
-              <path
-                key={i}
-                d={`M${f(s.x)},${f(s.y)} A${r},${r},0,0,1,${f(e.x)},${f(e.y)}`}
-                fill="none"
-                stroke="rgba(93,171,121,0.5)"
-                strokeWidth="2"
-                strokeLinecap="round"
-                markerEnd="url(#flow-arrow)"
-              />
-            )
-          })}
-
-          {CYCLE_SEGMENTS.map((seg) => {
-            const segRIn  = seg.primary ? rInLd  : rIn
-            const segROut = seg.primary ? rOutLd : rOut
-            const midAngle = seg.start + seg.span / 2
-            const rMid     = (segRIn + segROut) / 2
-            const labelPos = polar(cx, cy, rMid, midAngle)
-            const descLines  = seg.desc.split("\n")
-            const labelLines = seg.label.split("\n")
-
-            const fill      = seg.primary ? "#2d5a3d"              : "#dde5db"
-            const textColor = seg.primary ? "white"                : "#6b7a6e"
-            const subColor  = seg.primary ? "rgba(255,255,255,0.78)" : "#9aaa96"
-
-            // Explode LD outward along its midAngle direction
-            let groupTransform: string | undefined
-            if (seg.primary) {
-              const rad = ((midAngle - 90) * Math.PI) / 180
-              groupTransform = `translate(${f(explodeOffset * Math.cos(rad))},${f(explodeOffset * Math.sin(rad))})`
-            }
-
-            const labelFS = seg.primary ? "13" : "10"
-            const descFS  = seg.primary ? "9.5" : "8.5"
-            const labelLH = seg.primary ? 15   : 12
-
-            const totalLabelSpan = (labelLines.length - 1) * labelLH
-            const vGap    = descLines.length > 1 ? 12 : 6
-            const labelTopY = labelPos.y - totalLabelSpan - vGap
-
-            return (
-              <g key={seg.label} transform={groupTransform}>
-                <path d={chevronArcPath(cx, cy, segRIn, segROut, seg.start, seg.span)} fill={fill} />
-                {labelLines.map((line, li) => (
-                  <text
-                    key={`label-${li}`}
-                    x={labelPos.x}
-                    y={labelTopY + li * labelLH}
-                    textAnchor="middle"
-                    fill={textColor}
-                    fontSize={labelFS}
-                    fontWeight="700"
-                    fontFamily="sans-serif"
-                  >
-                    {line}
-                  </text>
-                ))}
-                {descLines.map((line, li) => (
-                  <text
-                    key={`desc-${li}`}
-                    x={labelPos.x}
-                    y={labelPos.y + 4 + li * 12}
-                    textAnchor="middle"
-                    fill={subColor}
-                    fontSize={descFS}
-                    fontFamily="sans-serif"
-                  >
-                    {line}
-                  </text>
-                ))}
-              </g>
-            )
-          })}
-
-          {/* Center circle */}
-          <circle cx={cx} cy={cy} r={rIn - 6} fill="white" />
-          <circle cx={cx} cy={cy} r={rIn - 6} fill="none" stroke="#d1e8d9" strokeWidth="1.5" />
-          <text x={cx} y={cy - 10} textAnchor="middle" fontSize="8" fill="#5dab79" fontWeight="700" fontFamily="sans-serif" letterSpacing="1">
-            CONTINUOUS CYCLE
-          </text>
-          <text x={cx} y={cy + 6} textAnchor="middle" fontSize="11" fill="#1a3d2b" fontWeight="700" fontFamily="sans-serif">
-            Leadership
-          </text>
-          <text x={cx} y={cy + 21} textAnchor="middle" fontSize="11" fill="#1a3d2b" fontWeight="700" fontFamily="sans-serif">
-            Development
-          </text>
-          <text x={cx} y={cy + 36} textAnchor="middle" fontSize="9" fill="#5dab79" fontFamily="sans-serif">
-            is our core
-          </text>
-        </svg>
+      <div className="w-full max-w-[400px] mx-auto lg:mx-0 shrink-0">
+        <Image
+          src="/chevron.png"
+          alt="Leadership Development Lifecycle — circular chevron diagram showing Leadership Development as the central focus within the broader talent cycle"
+          width={800}
+          height={800}
+          className="w-full h-auto"
+          priority
+        />
       </div>
 
       {/* Context text */}
