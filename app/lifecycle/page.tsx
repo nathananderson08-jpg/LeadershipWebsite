@@ -136,12 +136,12 @@ const MATRIX_ROW_DESCS: Record<string, string> = {
 // Order: Development at top, then clockwise natural sequence
 // Slots: 0=Development, 1=Retention, 2=Succession, 3=Recruitment, 4=Assessment, 5=Training
 const CYCLE_SEGMENTS = [
-  { label: "Development", desc: "Deep growth &\ntransformation", primary: true, focus: true },
-  { label: "Retention", desc: "Engagement\n& culture", primary: false, focus: true },
-  { label: "Succession", desc: "Pipeline\ncontinuity", primary: false, focus: true },
-  { label: "Recruitment", desc: "Sourcing\n& hiring", primary: false, focus: false },
-  { label: "Assessment", desc: "Diagnosing\ncapability", primary: false, focus: true },
-  { label: "Training", desc: "Building\nskills", primary: false, focus: true },
+  { label: "Development", desc: "Our domain", primary: true },
+  { label: "Retention", desc: "Engagement\n& culture", primary: false },
+  { label: "Succession", desc: "Pipeline\ncontinuity", primary: false },
+  { label: "Recruitment", desc: "Sourcing\n& hiring", primary: false },
+  { label: "Assessment", desc: "Diagnosing\ncapability", primary: false },
+  { label: "Training", desc: "Building\nskills", primary: false },
 ]
 
 function polar(cx: number, cy: number, r: number, angleDeg: number) {
@@ -189,14 +189,9 @@ function CircularLifecycle() {
             const labelPos = polar(cx, cy, rMid, midAngle)
             const lines = seg.desc.split("\n")
 
-            const fill = seg.primary
-              ? "#2d5a3d"
-              : seg.focus
-              ? "#b8ddc5"
-              : "#dde3e8"
-
-            const textColor = seg.primary ? "white" : seg.focus ? "#1a3d2b" : "#6b7280"
-            const subColor = seg.primary ? "rgba(255,255,255,0.65)" : seg.focus ? "#3d7a54" : "#9ca3af"
+            const fill = seg.primary ? "#2d5a3d" : "#dde5db"
+            const textColor = seg.primary ? "white" : "#6b7a6e"
+            const subColor = seg.primary ? "rgba(255,255,255,0.65)" : "#9aaa96"
 
             return (
               <g key={seg.label}>
@@ -263,31 +258,27 @@ function CircularLifecycle() {
         </svg>
       </div>
 
-      {/* Legend + context */}
-      <div className="flex-1 space-y-5">
+      {/* Context text */}
+      <div className="flex-1 space-y-6">
         <div>
-          <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-2" style={{ fontWeight: 700 }}>The Broader Picture</p>
+          <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-2" style={{ fontWeight: 700 }}>Our Domain</p>
           <h2 className="text-2xl font-700 text-forest-950 mb-3" style={{ fontWeight: 700 }}>
-            Where we operate in the talent lifecycle
+            Leadership development is one phase of a broader talent lifecycle.
           </h2>
           <p className="text-forest-800/70 leading-relaxed text-sm">
-            Organizations cycle continuously through six phases of talent management. We specialize in leadership development — and the adjacent phases that make it most effective. We go deeper in this segment than any generalist firm can.
+            Organizations cycle through six phases — from recruitment to succession. We don't claim to serve them all. We specialize completely in leadership development, and we go deeper in this segment than any generalist firm can.
           </p>
         </div>
-        <div className="space-y-3">
-          {[
-            { color: "#2d5a3d", label: "Core focus", desc: "Leadership development — our deepest expertise" },
-            { color: "#b8ddc5", label: "Adjacent capabilities", desc: "Assessment, training, retention, succession — we deliver these too" },
-            { color: "#dde3e8", label: "Outside our scope", desc: "Recruitment — we partner with specialists here" },
-          ].map(({ color, label, desc }) => (
-            <div key={label} className="flex items-start gap-3">
-              <div className="w-4 h-4 rounded shrink-0 mt-0.5" style={{ background: color }} />
-              <div>
-                <p className="text-sm font-600 text-forest-900" style={{ fontWeight: 600 }}>{label}</p>
-                <p className="text-xs text-forest-600/70">{desc}</p>
-              </div>
-            </div>
-          ))}
+        <div
+          className="p-5 rounded-xl"
+          style={{ background: "var(--color-forest-900)", border: "none" }}
+        >
+          <p className="text-xs font-700 uppercase tracking-widest mb-2" style={{ fontWeight: 700, color: "rgba(134,212,163,0.8)" }}>
+            What "end-to-end" means here
+          </p>
+          <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.72)" }}>
+            Within leadership development, we are your complete partner — from the first diagnostic through executive coaching, development programs, organizational transformation, and long-term succession. One team. One methodology. No handoffs.
+          </p>
         </div>
       </div>
     </div>
@@ -331,6 +322,75 @@ export default function LifecyclePage() {
       <section className="py-16 lg:py-20" style={{ background: "var(--color-forest-50)" }}>
         <div className="container-content">
           <CircularLifecycle />
+        </div>
+      </section>
+
+      {/* ── WHY END-TO-END ────────────────────────────────── */}
+      <section className="py-20" style={{ background: "linear-gradient(135deg, var(--color-navy-950) 0%, #040e1a 100%)" }}>
+        <div className="container-content">
+          <div className="max-w-3xl mx-auto text-center mb-14">
+            <p className="text-xs font-700 tracking-widest uppercase mb-4" style={{ fontWeight: 700, color: "rgba(134,212,163,0.7)" }}>
+              Why It Matters
+            </p>
+            <h2 className="display-md text-white mb-5">
+              Behavioral change can't survive a handoff.
+            </h2>
+            <p className="text-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.55)" }}>
+              Every other talent investment produces a discrete output — a hire, a credential, a promoted person. Leadership development's output is behavioral change, which only happens through sustained, connected reinforcement over months and years. The moment you fragment that across different vendors, the behavioral thread breaks at every seam.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[
+              {
+                number: "01",
+                title: "Every handoff is a memory wipe.",
+                body: "The assessment findings that should inform the coaching never arrive. The coaching discoveries that should shape the program never land. The program outcomes that should feed the transformation strategy get lost. Every time a new vendor enters, the context built by the last one walks out the door — and the leader starts over with someone who doesn't know them.",
+              },
+              {
+                number: "02",
+                title: "Trust is the medium. It's fragile.",
+                body: "The most important leadership development work happens when a leader is willing to be vulnerable — to examine a blind spot, challenge a deep pattern, confront something they've never said out loud. That level of openness takes months to build with an advisor. It evaporates when a new vendor takes over at the next phase. Providers who see only their phase never earn the depth that produces real change.",
+              },
+              {
+                number: "03",
+                title: "One partner owns the outcome.",
+                body: "In fragmented engagements, no one owns the result. The assessment firm says the data was sound. The coach says the coachee wasn't ready. The program vendor says the environment didn't support the change. One integrated partner has nowhere to point but back at themselves — which means they design for outcomes, not deliverables. That accountability changes everything.",
+              },
+            ].map((item, i) => (
+              <motion.div
+                key={item.number}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.12, duration: 0.6 }}
+                className="p-7 rounded-2xl"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+              >
+                <p className="text-xs font-700 mb-4" style={{ fontWeight: 700, color: "rgba(134,212,163,0.6)" }}>
+                  {item.number}
+                </p>
+                <h3 className="text-lg font-700 text-white mb-3" style={{ fontWeight: 700 }}>
+                  {item.title}
+                </h3>
+                <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
+                  {item.body}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <p className="text-base font-600 mb-6" style={{ fontWeight: 600, color: "rgba(255,255,255,0.7)" }}>
+              This is why we built one firm that holds the complete picture — and why clients who've tried fragmented models don't go back.
+            </p>
+            <Button href="/contact" variant="primary" size="lg">
+              Talk to Us About Your Leadership Development Needs
+            </Button>
+          </div>
         </div>
       </section>
 

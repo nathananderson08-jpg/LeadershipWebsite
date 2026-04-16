@@ -682,7 +682,7 @@ export function HomepageClient() {
         <div className="container-content">
           <SectionHeading
             eyebrow="Why We're Different"
-            title="One firm. Every phase. Every leader. Every scale."
+            title="The only firm built around how behavioral change actually works."
             subtitle={MESSAGING.challenge}
             className="mb-16"
           />
@@ -691,8 +691,8 @@ export function HomepageClient() {
               {[
                 {
                   number: "01",
-                  title: "Full Lifecycle Coverage",
-                  body: "We don't hand off between phases. One partner, one methodology, one seamless outcome — from the first assessment to the last succession plan.",
+                  title: "Built for Behavioral Change",
+                  body: "Every other talent investment produces a discrete output — a hire, a credential. Leadership development's output is behavioral change, which requires a connected thread across assessment, coaching, programs, transformation, and succession. We hold that thread. Every handoff to a new vendor breaks it.",
                   icon: "◈",
                 },
                 {

@@ -232,16 +232,17 @@ export const INDUSTRIES = [
 
 // ── Key messaging ────────────────────────────────────────────
 export const MESSAGING = {
-  primaryClaim: "The only leadership company delivering end-to-end solutions across the entire leadership development lifecycle.",
+  primaryClaim: "The only firm that treats leadership development as the connected system it actually is — not a sequence of programs from different vendors.",
   integrationMessage: "One partner, one methodology, one outcome.",
   lifecycleSpan: "From the first assessment to the last succession plan.",
   audienceSpan: "From first-time managers to the boardroom.",
   scaleSpan: "One executive or an entire organization.",
   connectionChain: "Assessment that feeds coaching. Coaching that reinforces leadership development. Development that enables transformation. Transformation that sustains through succession.",
-  differentiator: "We don't hand off between phases. We don't fragment the journey. We don't lose the thread.",
-  philosophy: "Leadership development should work as a system, not a series of disconnected events.",
+  differentiator: "Behavioral change can't survive a handoff. Every new vendor is a memory wipe — the context, data, and trust built in one phase have to be rebuilt from scratch in the next. We hold the whole picture.",
+  philosophy: "Leadership development only works as a system. The moment you fragment it across vendors, the behavioral change you paid for starts to unravel.",
+  whyEndToEnd: "Every other talent investment produces a discrete output: a hire, a credential, a promoted person. Leadership development's output is behavioral change — which only happens through sustained, connected reinforcement across assessment, coaching, programs, transformation, and succession. Fragment those phases across vendors, and the behavioral thread breaks at every seam.",
   aiUrgency: "AI isn't a feature. It's a fundamental shift in what leadership means.",
-  challenge: "The question isn't whether your leaders need to change. It's whether your leadership development partner can keep up.",
+  challenge: "The question isn't whether your leaders need to change. It's whether your leadership development partner can hold the thread long enough for the change to stick.",
 }
 
 // ── Sample articles ──────────────────────────────────────────
