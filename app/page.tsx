@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { HomepageClient } from "./HomepageClient"
-import { FIRM_NAME } from "@/lib/constants"
+import { FIRM_NAME, FIRM_DOMAIN, FAQ_ITEMS } from "@/lib/constants"
 
 export const metadata: Metadata = {
   title: `End-to-End Leadership Development Solutions | ${FIRM_NAME}`,
@@ -27,6 +27,27 @@ export const metadata: Metadata = {
   },
 }
 
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": FAQ_ITEMS.map((item) => ({
+    "@type": "Question",
+    "name": item.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": item.a,
+    },
+  })),
+}
+
 export default function HomePage() {
-  return <HomepageClient />
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <HomepageClient />
+    </>
+  )
 }

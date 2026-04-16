@@ -8,7 +8,7 @@ import { MetricCounter } from "@/components/ui/MetricCounter"
 import { SectionHeading } from "@/components/ui/SectionHeading"
 import { AIBadge } from "@/components/ui/AIBadge"
 import { CTABanner } from "@/components/sections/CTABanner"
-import { METRICS, LIFECYCLE_PHASES, SOLUTIONS, SAMPLE_ARTICLES, MESSAGING, LIFECYCLE_FRAMEWORK_NAME } from "@/lib/constants"
+import { METRICS, LIFECYCLE_PHASES, SOLUTIONS, SAMPLE_ARTICLES, MESSAGING, LIFECYCLE_FRAMEWORK_NAME, FAQ_ITEMS } from "@/lib/constants"
 
 // ── Video background hero ────────────────────────────────────
 function HeroBackground() {
@@ -508,6 +508,84 @@ function AssessmentCTA() {
   )
 }
 
+// ── FAQ ───────────────────────────────────────────────────────
+function HomepageFAQ() {
+  const [open, setOpen] = useState<number | null>(0)
+
+  return (
+    <section className="py-20" style={{ background: "var(--color-forest-50)" }}>
+      <div className="container-content">
+        <div className="max-w-3xl mx-auto">
+          <SectionHeading
+            eyebrow="Common Questions"
+            title="What buyers ask when evaluating leadership development partners"
+            subtitle="The questions we hear from CHROs, CEOs, and People leaders — answered directly."
+            className="mb-12"
+          />
+
+          <div className="space-y-3">
+            {FAQ_ITEMS.map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.04, duration: 0.4 }}
+              >
+                <div
+                  className="rounded-xl border overflow-hidden transition-all duration-200"
+                  style={{
+                    borderColor: open === i ? "var(--color-forest-300)" : "rgba(93,171,121,0.2)",
+                    background: open === i ? "white" : "rgba(255,255,255,0.6)",
+                    boxShadow: open === i ? "0 4px 24px rgba(45,90,61,0.08)" : "none",
+                  }}
+                >
+                  <button
+                    className="w-full text-left px-6 py-5 flex items-start justify-between gap-4"
+                    onClick={() => setOpen(open === i ? null : i)}
+                    aria-expanded={open === i}
+                  >
+                    <span className="font-700 text-forest-900 text-base leading-snug" style={{ fontWeight: 700 }}>
+                      {item.q}
+                    </span>
+                    <span
+                      className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-sm font-700 mt-0.5 transition-all duration-200"
+                      style={{
+                        fontWeight: 700,
+                        background: open === i ? "var(--color-forest-600)" : "var(--color-forest-100)",
+                        color: open === i ? "white" : "var(--color-forest-600)",
+                        transform: open === i ? "rotate(45deg)" : "rotate(0deg)",
+                      }}
+                    >
+                      +
+                    </span>
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {open === i && (
+                      <motion.div
+                        key="body"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                        style={{ overflow: "hidden" }}
+                      >
+                        <p className="px-6 pb-6 text-sm leading-relaxed" style={{ color: "var(--color-forest-800)", opacity: 0.75 }}>
+                          {item.a}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ── Main Export ──────────────────────────────────────────────
 export function HomepageClient() {
   return (
@@ -748,6 +826,9 @@ export function HomepageClient() {
 
       {/* ── INSIGHTS ─────────────────────────────���────────── */}
       <InsightsPreview />
+
+      {/* ── FAQ ───────────────────────────────────────────── */}
+      <HomepageFAQ />
 
       {/* ── FREE ASSESSMENT ───────────────────────────────── */}
       <AssessmentCTA />
