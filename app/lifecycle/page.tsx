@@ -149,109 +149,117 @@ function polar(cx: number, cy: number, r: number, angleDeg: number) {
   return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }
 }
 
+function chevronArcPath(cx: number, cy: number, rIn: number, rOut: number, slotIndex: number) {
+  const slotStart = slotIndex * 60
+  const arcStart = slotStart + 5
+  const arcEnd = slotStart + 55
+  const tipAngle = slotStart + 62 // tip extends past the slot end
+
+  const rMid = (rIn + rOut) / 2
+
+  const oStart = polar(cx, cy, rOut, arcStart)
+  const oEnd = polar(cx, cy, rOut, arcEnd)
+  const tip = polar(cx, cy, rMid, tipAngle)
+  const iEnd = polar(cx, cy, rIn, arcEnd)
+  const iStart = polar(cx, cy, rIn, arcStart)
+
+  const f = (n: number) => n.toFixed(2)
+
+  return [
+    `M${f(oStart.x)},${f(oStart.y)}`,
+    `A${rOut},${rOut},0,0,1,${f(oEnd.x)},${f(oEnd.y)}`,
+    `L${f(tip.x)},${f(tip.y)}`,
+    `L${f(iEnd.x)},${f(iEnd.y)}`,
+    `A${rIn},${rIn},0,0,0,${f(iStart.x)},${f(iStart.y)}`,
+    "Z",
+  ].join(" ")
+}
+
 function CircularLifecycle() {
+  const cx = 175, cy = 175
+  const rIn = 82, rOut = 148
+  const rMid = (rIn + rOut) / 2
+
   return (
     <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-      <div className="w-full max-w-[500px] mx-auto lg:mx-0 shrink-0">
-        <svg viewBox="0 0 500 400" className="w-full">
-          {/* 
-            Ring of 5 arrow segments (clockwise from top):
-            - Training (top-left, 270° to 330°)
-            - Development (top-right, 330° to 30°) - PRIMARY/dark
-            - Retention (right, 30° to 90°)
-            - Succession (bottom, 90° to 150°)
-            - Assessment (left, 210° to 270°)
-            
-            Gap from 150° to 210° is where Recruitment arrow enters
-          */}
-          
-          {/* Training segment - top left */}
-          <path
-            d="M 190 115 
-               A 95 95 0 0 1 270 95
-               L 280 140
-               A 50 50 0 0 0 220 155
-               Z"
-            fill="#b8ddc5"
-          />
-          <text x="235" y="125" textAnchor="middle" fill="#1a3d2b" fontSize="11" fontWeight="700" fontFamily="sans-serif">Training</text>
-          <text x="235" y="138" textAnchor="middle" fill="#3d6b4f" fontSize="8" fontFamily="sans-serif">Building skills</text>
+      <div className="w-full max-w-[360px] mx-auto lg:mx-0 shrink-0">
+        <svg viewBox="0 0 350 350" className="w-full">
+          {CYCLE_SEGMENTS.map((seg, i) => {
+            const midAngle = i * 60 + 30
+            const labelPos = polar(cx, cy, rMid, midAngle)
+            const lines = seg.desc.split("\n")
 
-          {/* Development segment - top right (PRIMARY) */}
-          <path
-            d="M 280 95 
-               A 95 95 0 0 1 365 175
-               L 320 195
-               A 50 50 0 0 0 280 140
-               Z"
-            fill="#2d5a3d"
-          />
-          <text x="315" y="145" textAnchor="middle" fill="white" fontSize="11" fontWeight="700" fontFamily="sans-serif">Development</text>
-          <text x="315" y="158" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="8" fontFamily="sans-serif">Deep growth &amp;</text>
-          <text x="315" y="169" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="8" fontFamily="sans-serif">transformation</text>
-          <text x="315" y="183" textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize="6" fontWeight="700" letterSpacing="1" fontFamily="sans-serif">OUR FOCUS</text>
+            const fill = seg.primary
+              ? "#2d5a3d"
+              : seg.focus
+              ? "#b8ddc5"
+              : "#dde3e8"
 
-          {/* Retention segment - right side */}
-          <path
-            d="M 365 185 
-               A 95 95 0 0 1 330 285
-               L 285 255
-               A 50 50 0 0 0 315 200
-               Z"
-            fill="#b8ddc5"
-          />
-          <text x="330" y="230" textAnchor="middle" fill="#1a3d2b" fontSize="11" fontWeight="700" fontFamily="sans-serif">Retention</text>
-          <text x="330" y="243" textAnchor="middle" fill="#3d6b4f" fontSize="8" fontFamily="sans-serif">Engagement</text>
-          <text x="330" y="254" textAnchor="middle" fill="#3d6b4f" fontSize="8" fontFamily="sans-serif">&amp; culture</text>
+            const textColor = seg.primary ? "white" : seg.focus ? "#1a3d2b" : "#6b7280"
+            const subColor = seg.primary ? "rgba(255,255,255,0.65)" : seg.focus ? "#3d7a54" : "#9ca3af"
 
-          {/* Succession segment - bottom */}
-          <path
-            d="M 320 290 
-               A 95 95 0 0 1 200 310
-               L 210 260
-               A 50 50 0 0 0 280 250
-               Z"
-            fill="#b8ddc5"
-          />
-          <text x="260" y="280" textAnchor="middle" fill="#1a3d2b" fontSize="11" fontWeight="700" fontFamily="sans-serif">Succession</text>
-          <text x="260" y="293" textAnchor="middle" fill="#3d6b4f" fontSize="8" fontFamily="sans-serif">Pipeline continuity</text>
-
-          {/* Assessment segment - left side */}
-          <path
-            d="M 155 280 
-               A 95 95 0 0 1 155 160
-               L 195 175
-               A 50 50 0 0 0 195 250
-               Z"
-            fill="#b8ddc5"
-          />
-          <text x="165" y="215" textAnchor="middle" fill="#1a3d2b" fontSize="11" fontWeight="700" fontFamily="sans-serif">Assessment</text>
-          <text x="165" y="228" textAnchor="middle" fill="#3d6b4f" fontSize="8" fontFamily="sans-serif">Diagnosing</text>
-          <text x="165" y="239" textAnchor="middle" fill="#3d6b4f" fontSize="8" fontFamily="sans-serif">capability</text>
-
-          {/* External Recruitment Arrow - enters from top-left outside the ring */}
-          <path
-            d="M 30 60 
-               L 140 60 
-               L 140 45 
-               L 185 80 
-               L 140 115 
-               L 140 100 
-               L 30 100 
-               L 50 80
-               Z"
-            fill="#dde3e8"
-          />
-          <text x="95" y="75" textAnchor="middle" fill="#4a5a54" fontSize="11" fontWeight="700" fontFamily="sans-serif">Recruitment</text>
-          <text x="95" y="90" textAnchor="middle" fill="#6b7a74" fontSize="8" fontFamily="sans-serif">Sourcing &amp; hiring</text>
+            return (
+              <g key={seg.label}>
+                <path d={chevronArcPath(cx, cy, rIn, rOut, i)} fill={fill} />
+                {/* Segment label */}
+                <text
+                  x={labelPos.x}
+                  y={labelPos.y - (lines.length > 1 ? 12 : 6)}
+                  textAnchor="middle"
+                  fill={textColor}
+                  fontSize="10.5"
+                  fontWeight="700"
+                  fontFamily="sans-serif"
+                >
+                  {seg.label}
+                </text>
+                {lines.map((line, li) => (
+                  <text
+                    key={li}
+                    x={labelPos.x}
+                    y={labelPos.y + 4 + li * 12}
+                    textAnchor="middle"
+                    fill={subColor}
+                    fontSize="8.5"
+                    fontFamily="sans-serif"
+                  >
+                    {line}
+                  </text>
+                ))}
+                {/* "OUR FOCUS" badge on Development */}
+                {seg.primary && (
+                  <text
+                    x={labelPos.x}
+                    y={labelPos.y + 34}
+                    textAnchor="middle"
+                    fill="rgba(255,255,255,0.5)"
+                    fontSize="7"
+                    fontWeight="700"
+                    fontFamily="sans-serif"
+                    letterSpacing="1.5"
+                  >
+                    OUR FOCUS
+                  </text>
+                )}
+              </g>
+            )
+          })}
 
           {/* Center circle */}
-          <circle cx="260" cy="195" r="45" fill="white" />
-          <circle cx="260" cy="195" r="45" fill="none" stroke="#d1e8d9" strokeWidth="1.5" />
-          <text x="260" y="178" textAnchor="middle" fontSize="7" fill="#5dab79" fontWeight="700" fontFamily="sans-serif" letterSpacing="1">CONTINUOUS CYCLE</text>
-          <text x="260" y="193" textAnchor="middle" fontSize="11" fill="#1a3d2b" fontWeight="700" fontFamily="sans-serif">Leadership</text>
-          <text x="260" y="206" textAnchor="middle" fontSize="11" fill="#1a3d2b" fontWeight="700" fontFamily="sans-serif">Development</text>
-          <text x="260" y="220" textAnchor="middle" fontSize="8" fill="#5dab79" fontFamily="sans-serif">is our core</text>
+          <circle cx={cx} cy={cy} r={rIn - 6} fill="white" />
+          <circle cx={cx} cy={cy} r={rIn - 6} fill="none" stroke="#d1e8d9" strokeWidth="1.5" />
+          <text x={cx} y={cy - 10} textAnchor="middle" fontSize="8" fill="#5dab79" fontWeight="700" fontFamily="sans-serif" letterSpacing="1">
+            CONTINUOUS CYCLE
+          </text>
+          <text x={cx} y={cy + 6} textAnchor="middle" fontSize="11" fill="#1a3d2b" fontWeight="700" fontFamily="sans-serif">
+            Leadership
+          </text>
+          <text x={cx} y={cy + 21} textAnchor="middle" fontSize="11" fill="#1a3d2b" fontWeight="700" fontFamily="sans-serif">
+            Development
+          </text>
+          <text x={cx} y={cy + 36} textAnchor="middle" fontSize="9" fill="#5dab79" fontFamily="sans-serif">
+            is our core
+          </text>
         </svg>
       </div>
 
@@ -262,433 +270,166 @@ function CircularLifecycle() {
           <h2 className="text-2xl font-700 text-forest-950 mb-3" style={{ fontWeight: 700 }}>
             Where we operate in the talent lifecycle
           </h2>
-          <p className="text-forest-800/70 leading-relaxed text-sm">
+          <p className="text-base text-forest-700 mb-4">
             Organizations cycle continuously through six phases of talent management. We specialize in leadership development — and the adjacent phases that make it most effective. We go deeper in this segment than any generalist firm can.
           </p>
         </div>
+
+        {/* Legend */}
         <div className="space-y-3">
-          {[
-            { color: "#2d5a3d", label: "Core focus", desc: "Leadership development — our deepest expertise" },
-            { color: "#b8ddc5", label: "Adjacent capabilities", desc: "Assessment, training, retention, succession — we deliver these too" },
-            { color: "#dde3e8", label: "Outside our scope", desc: "Recruitment — we partner with specialists here" },
-          ].map(({ color, label, desc }) => (
-            <div key={label} className="flex items-start gap-3">
-              <div className="w-4 h-4 rounded shrink-0 mt-0.5" style={{ background: color }} />
-              <div>
-                <p className="text-sm font-600 text-forest-900" style={{ fontWeight: 600 }}>{label}</p>
-                <p className="text-xs text-forest-600/70">{desc}</p>
-              </div>
+          <div className="flex items-start gap-3">
+            <div className="w-4 h-4 rounded-full mt-1" style={{ backgroundColor: "#2d5a3d" }}></div>
+            <div>
+              <p className="text-sm font-700 text-forest-950">Core focus</p>
+              <p className="text-xs text-forest-600">Leadership development — our deepest expertise</p>
             </div>
-          ))}
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="w-4 h-4 rounded-full mt-1" style={{ backgroundColor: "#b8ddc5" }}></div>
+            <div>
+              <p className="text-sm font-700 text-forest-950">Adjacent capabilities</p>
+              <p className="text-xs text-forest-600">Assessment, training, retention, succession — we deliver these too</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="w-4 h-4 rounded-full mt-1" style={{ backgroundColor: "#dde3e8" }}></div>
+            <div>
+              <p className="text-sm font-700 text-forest-950">Outside our scope</p>
+              <p className="text-xs text-forest-600">Recruitment — we partner with specialists here</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
-// ── Main page ─────────────────────────────────────────────────
 export default function LifecyclePage() {
-  const [activeCell, setActiveCell] = useState<string | null>(null)
-
-  const toggle = (key: string) => setActiveCell(prev => (prev === key ? null : key))
-
-  const activeCellData = activeCell ? FRAMEWORK_CELLS[activeCell] : null
-  const [activeRow, activeType] = activeCell ? activeCell.split("-") : [null, null]
+  const [selectedCell, setSelectedCell] = useState<string | null>(null)
+  const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null)
 
   return (
-    <>
-      {/* ── HERO ──────────────────────────────────────────── */}
-      <section
-        className="relative pt-40 pb-24"
-        style={{ background: "linear-gradient(160deg, var(--color-forest-50) 0%, var(--color-warm-50) 100%)" }}
-      >
-        <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(at 70% 30%, rgba(93,171,121,0.12) 0px, transparent 60%)" }} />
-        <div className="container-content relative z-10 text-center max-w-4xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
-            <p className="text-sm font-700 tracking-[0.15em] uppercase text-forest-600 mb-5" style={{ fontWeight: 700 }}>
-              {LIFECYCLE_FRAMEWORK_NAME}
-            </p>
-            <h1 className="display-lg text-forest-950 mb-6">
-              Best in class.{" "}
-              <span style={{ color: "var(--color-forest-600)" }}>Within the segment that matters most.</span>
-            </h1>
-            <p className="text-xl text-forest-800/70 leading-relaxed max-w-2xl mx-auto">
-              Every organization manages talent across a full lifecycle — from recruiting to succession. We operate within the leadership development segment and deliver the deepest, most integrated capability in the market.
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── CIRCULAR TALENT LIFECYCLE ─────────────────────── */}
-      <section className="py-16 lg:py-20" style={{ background: "var(--color-forest-50)" }}>
-        <div className="container-content">
-          <CircularLifecycle />
-        </div>
-      </section>
-
-      {/* ── CORE FRAMEWORK MATRIX ─────────────────────────── */}
-      <section className="section-padding" style={{ background: "white" }}>
-        <div className="container-content">
-          <SectionHeading
-            eyebrow="Our Framework"
-            title="Every level. Every type of change."
-            subtitle="Our work spans three levels of leadership and two modes of development. Select any quadrant to explore the challenges we address."
-            className="mb-10"
-          />
-
-          {/* Grid */}
-          <div className="overflow-x-auto">
-            <div className="min-w-[520px]">
-              {/* Header */}
-              <div className="grid gap-3 mb-3" style={{ gridTemplateColumns: "140px 1fr 1fr" }}>
-                <div />
-                <div className="text-center px-4 py-3 rounded-xl" style={{ background: "var(--color-forest-50)", border: "1px solid var(--color-forest-200)" }}>
-                  <p className="text-sm font-700 text-forest-900" style={{ fontWeight: 700 }}>Foundational</p>
-                  <p className="text-xs text-forest-600/70 mt-0.5">Skills, capabilities & knowledge</p>
-                </div>
-                <div className="text-center px-4 py-3 rounded-xl" style={{ background: "var(--color-navy-950)", border: "1px solid rgba(193,154,91,0.2)" }}>
-                  <p className="text-sm font-700 text-white" style={{ fontWeight: 700 }}>Transformational</p>
-                  <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.45)" }}>Identity, mindset & deep change</p>
-                </div>
-              </div>
-
-              {/* Rows */}
-              {MATRIX_ROWS.map((level, rowIdx) => (
-                <motion.div
-                  key={level}
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: rowIdx * 0.08 }}
-                  className="grid gap-3 mb-3"
-                  style={{ gridTemplateColumns: "140px 1fr 1fr" }}
-                >
-                  {/* Row label */}
-                  <div className="p-4 rounded-xl flex flex-col justify-center" style={{ background: "var(--color-forest-900)" }}>
-                    <p className="text-sm font-700 text-white" style={{ fontWeight: 700 }}>{level}</p>
-                    <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.4)" }}>{MATRIX_ROW_DESCS[level]}</p>
-                  </div>
-
-                  {/* Foundational cell */}
-                  {(["Foundational", "Transformational"] as const).map((type) => {
-                    const key = `${level}-${type}`
-                    const isActive = activeCell === key
-                    const isFoundational = type === "Foundational"
-                    const data = FRAMEWORK_CELLS[key]
-                    return (
-                      <button
-                        key={type}
-                        onClick={() => toggle(key)}
-                        className="text-left p-4 rounded-xl transition-all duration-200 group"
-                        style={{
-                          background: isActive
-                            ? isFoundational ? "var(--color-forest-50)" : "var(--color-navy-950)"
-                            : "var(--color-warm-50)",
-                          border: isActive
-                            ? isFoundational ? "2px solid var(--color-forest-500)" : "2px solid var(--color-gold-500)"
-                            : "1px solid var(--color-warm-200)",
-                          outline: "none",
-                        }}
-                      >
-                        <p
-                          className="text-xs font-700 uppercase tracking-wider mb-1.5"
-                          style={{
-                            fontWeight: 700,
-                            color: isActive && !isFoundational
-                              ? "var(--color-gold-400)"
-                              : isFoundational
-                              ? "var(--color-forest-600)"
-                              : "var(--color-navy-600)",
-                          }}
-                        >
-                          {type}
-                        </p>
-                        <p
-                          className="text-sm font-600 leading-snug mb-3"
-                          style={{
-                            fontWeight: 600,
-                            color: isActive && !isFoundational ? "white" : "var(--color-forest-950)",
-                          }}
-                        >
-                          {data.headline}
-                        </p>
-                        <p
-                          className="text-xs font-500 flex items-center gap-1"
-                          style={{
-                            color: isActive
-                              ? isFoundational ? "var(--color-forest-600)" : "var(--color-gold-400)"
-                              : "var(--color-forest-500)",
-                          }}
-                        >
-                          {isActive ? (
-                            <><span className="text-base leading-none">↑</span> Close</>
-                          ) : (
-                            <><span className="text-base leading-none">↓</span> See 4 scenarios</>
-                          )}
-                        </p>
-                      </button>
-                    )
-                  })}
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* ── Detail panel — full width below grid ── */}
-          <AnimatePresence mode="wait">
-            {activeCellData && activeRow && activeType && (
-              <motion.div
-                key={activeCell}
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                className="mt-3 rounded-2xl overflow-hidden"
-                style={{
-                  border: activeType === "Foundational"
-                    ? "1.5px solid var(--color-forest-300)"
-                    : "1.5px solid rgba(193,154,91,0.4)",
-                  background: activeType === "Foundational" ? "var(--color-forest-50)" : "#05090f",
-                }}
-              >
-                {/* Panel header */}
-                <div
-                  className="px-6 py-4 flex items-start justify-between gap-4"
-                  style={{
-                    borderBottom: activeType === "Foundational"
-                      ? "1px solid var(--color-forest-200)"
-                      : "1px solid rgba(255,255,255,0.08)",
-                  }}
-                >
-                  <div>
-                    <p
-                      className="text-xs font-700 uppercase tracking-widest mb-1"
-                      style={{
-                        fontWeight: 700,
-                        color: activeType === "Foundational" ? "var(--color-forest-500)" : "var(--color-gold-400)",
-                      }}
-                    >
-                      {activeRow} × {activeType}
-                    </p>
-                    <h3
-                      className="text-lg font-700"
-                      style={{
-                        fontWeight: 700,
-                        color: activeType === "Foundational" ? "var(--color-forest-950)" : "white",
-                      }}
-                    >
-                      {activeCellData.headline}
-                    </h3>
-                    <p
-                      className="text-sm mt-1"
-                      style={{ color: activeType === "Foundational" ? "var(--color-forest-700)" : "rgba(255,255,255,0.5)" }}
-                    >
-                      {activeCellData.intro}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setActiveCell(null)}
-                    className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-lg mt-1 transition-opacity hover:opacity-60"
-                    style={{
-                      background: activeType === "Foundational" ? "var(--color-forest-100)" : "rgba(255,255,255,0.08)",
-                      color: activeType === "Foundational" ? "var(--color-forest-700)" : "rgba(255,255,255,0.6)",
-                    }}
-                  >
-                    ×
-                  </button>
-                </div>
-
-                {/* Scenario cards */}
-                <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {activeCellData.scenarios.map((scenario) => (
-                    <div
-                      key={scenario.title}
-                      className="p-5 rounded-xl"
-                      style={{
-                        background: activeType === "Foundational" ? "white" : "rgba(255,255,255,0.04)",
-                        border: activeType === "Foundational"
-                          ? "1px solid var(--color-warm-100)"
-                          : "1px solid rgba(255,255,255,0.07)",
-                      }}
-                    >
-                      <p
-                        className="text-sm font-700 mb-2"
-                        style={{ fontWeight: 700, color: activeType === "Foundational" ? "var(--color-navy-900)" : "white" }}
-                      >
-                        {scenario.title}
-                      </p>
-                      <p
-                        className="text-xs italic mb-4 leading-relaxed"
-                        style={{ color: activeType === "Foundational" ? "var(--color-forest-600)" : "var(--color-gold-400)" }}
-                      >
-                        "{scenario.quote}"
-                      </p>
-                      <div className="space-y-2.5">
-                        <div>
-                          <p
-                            className="text-[10px] font-700 uppercase tracking-wider mb-1"
-                            style={{
-                              fontWeight: 700,
-                              color: activeType === "Foundational" ? "var(--color-forest-500)" : "rgba(255,255,255,0.3)",
-                            }}
-                          >
-                            What's Happening
-                          </p>
-                          <p
-                            className="text-xs leading-relaxed"
-                            style={{ color: activeType === "Foundational" ? "#525252" : "rgba(255,255,255,0.55)" }}
-                          >
-                            {scenario.happening}
-                          </p>
-                        </div>
-                        <div>
-                          <p
-                            className="text-[10px] font-700 uppercase tracking-wider mb-1"
-                            style={{
-                              fontWeight: 700,
-                              color: activeType === "Foundational" ? "var(--color-forest-500)" : "rgba(255,255,255,0.3)",
-                            }}
-                          >
-                            Why It Matters
-                          </p>
-                          <p
-                            className="text-xs leading-relaxed"
-                            style={{ color: activeType === "Foundational" ? "#525252" : "rgba(255,255,255,0.55)" }}
-                          >
-                            {scenario.matters}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <p className="text-center text-sm text-forest-700/50 mt-8 max-w-2xl mx-auto">
-            Every offering integrates with adjacent solutions — creating a coherent development system, not a collection of standalone programs.
+    <main className="min-h-screen bg-gradient-to-b from-neutral-50 to-white">
+      {/* Hero */}
+      <section className="pt-16 pb-12 px-4 md:px-8">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-3">Framework</p>
+          <h1 className="text-4xl md:text-5xl font-700 text-forest-950 mb-4">
+            The talent lifecycle
+          </h1>
+          <p className="text-lg text-forest-700 max-w-2xl">
+            Every organization cycles through predictable phases of talent management. We've built our practice around the segment where organizations are most stuck — and where we can drive the most impact.
           </p>
         </div>
       </section>
 
-      {/* ── DIFFERENTIATOR PULL QUOTE ─────────────────────── */}
-      <section className="py-14" style={{ background: "var(--color-warm-white)", borderTop: "1px solid var(--color-warm-100)" }}>
-        <div className="container-content max-w-3xl mx-auto text-center">
-          <motion.p
-            className="text-2xl font-600 text-navy-900 leading-relaxed"
-            style={{ fontWeight: 600 }}
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <span style={{ color: "var(--color-gold-600)" }}>"</span>
-            {MESSAGING.differentiator}
-            <span style={{ color: "var(--color-gold-600)" }}>"</span>
-          </motion.p>
+      {/* Circular lifecycle + legend */}
+      <section className="py-12 px-4 md:px-8 border-t border-b border-neutral-200">
+        <div className="max-w-6xl mx-auto">
+          <CircularLifecycle />
         </div>
       </section>
 
-      {/* ── AUDIENCE CARDS ────────────────────────────────── */}
-      <section className="section-padding" style={{ background: "var(--color-warm-white)" }}>
-        <div className="container-content">
-          <SectionHeading
-            eyebrow="Lifecycle × Audience"
-            title="The same framework. Every level."
-            subtitle="Our framework isn't one-size-fits-all — it's calibrated to the specific challenges, context, and needs of leaders at every stage of their career."
-            className="mb-14"
-          />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {AUDIENCE_MATRIX.map((audience, i) => (
-              <motion.div
-                key={audience.level}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.12, duration: 0.5 }}
-                className="p-7 rounded-2xl border border-forest-200 bg-white"
-                style={{ background: audience.color }}
-              >
-                <h3 className="font-700 text-forest-900 text-xl mb-5" style={{ fontWeight: 700 }}>{audience.level}</h3>
-                <div className="space-y-2.5">
-                  {audience.capabilities.map((cap) => (
-                    <div key={cap} className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full shrink-0" style={{ background: audience.textColor }} />
-                      <span className="text-sm text-forest-800">{cap}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-6 pt-5 border-t border-forest-200">
-                  <Link
-                    href={i === 0 ? "/solutions/emerging-leaders" : i === 1 ? "/solutions/senior-leaders" : "/solutions/c-suite"}
-                    className="text-sm font-600 text-forest-600 hover:text-forest-800 transition-colors"
-                    style={{ fontWeight: 600 }}
+      {/* The Framework Matrix */}
+      <section className="py-16 px-4 md:px-8">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-3">Diagnostic</p>
+          <h2 className="text-3xl md:text-4xl font-700 text-forest-950 mb-12">
+            Where do you fit in the leadership landscape?
+          </h2>
+
+          {/* Matrix grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {["Individual", "Team", "Organization"].map((row) =>
+              MATRIX_ROWS.map((axis) => {
+                const cellKey = `${axis}-${row}`
+                const cellData = FRAMEWORK_CELLS[cellKey]
+                const isSelected = selectedCell === cellKey
+
+                if (!cellData) return null
+
+                return (
+                  <motion.button
+                    key={cellKey}
+                    onClick={() => {
+                      setSelectedCell(isSelected ? null : cellKey)
+                      setSelectedScenario(null)
+                    }}
+                    className={`p-6 rounded-lg text-left border-2 transition-all cursor-pointer ${
+                      isSelected
+                        ? "border-forest-600 bg-forest-50"
+                        : "border-neutral-200 bg-white hover:border-forest-300"
+                    }`}
+                    whileHover={{ scale: 1.02 }}
                   >
-                    Explore {audience.level} solutions →
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── AI CALLOUT ────────────────────────────────────── */}
-      <section className="py-20" style={{ background: "linear-gradient(135deg, #020817 0%, #040e1a 100%)" }}>
-        <div className="container-content">
-          <div className="max-w-4xl mx-auto">
-            <div className="p-10 rounded-2xl border border-ai-500/20" style={{ background: "linear-gradient(135deg, rgba(0,212,255,0.06) 0%, rgba(0,212,255,0.02) 100%)" }}>
-              <div className="flex flex-col md:flex-row gap-8 items-start">
-                <div className="flex-1">
-                  <AIBadge className="mb-4" />
-                  <h2 className="display-md text-white mb-4">AI transformation cuts across every dimension</h2>
-                  <p className="text-white/60 leading-relaxed mb-6">
-                    AI isn't a standalone initiative — it's a cross-cutting capability that reshapes what great leadership looks like at every level, in every mode of development.
-                  </p>
-                  <Button href="/solutions/ai-transformation" variant="ai" size="lg">
-                    Explore AI Leadership Transformation
-                  </Button>
-                </div>
-                <div className="md:w-72">
-                  <div className="space-y-3">
-                    {[
-                      { level: "Individual", detail: "AI fluency, AI strategy coaching, AI readiness diagnostics" },
-                      { level: "Team", detail: "Human-AI collaboration, AI-augmented team effectiveness" },
-                      { level: "Organization", detail: "AI adoption change management, AI governance, AI culture" },
-                    ].map((item, i) => (
+                    <h3 className="font-700 text-forest-950 mb-2">{axis}</h3>
+                    <p className="text-xs text-forest-600 font-500">{MATRIX_ROW_DESCS[axis]}</p>
+                    {isSelected && (
                       <motion.div
-                        key={item.level}
-                        initial={{ opacity: 0, x: 20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.1 }}
-                        className="flex items-start gap-3 p-3 rounded-xl"
-                        style={{ background: "rgba(0,212,255,0.04)", border: "1px solid rgba(0,212,255,0.1)" }}
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="mt-3 pt-3 border-t border-forest-200"
                       >
-                        <span className="text-xs font-700 px-2 py-1 rounded shrink-0" style={{ background: "rgba(0,212,255,0.12)", color: "#00d4ff", fontWeight: 700 }}>
-                          {item.level}
-                        </span>
-                        <span className="text-xs text-white/50 leading-relaxed">{item.detail}</span>
+                        <p className="text-sm text-forest-700 font-600 mb-2">{cellData.headline}</p>
+                        <p className="text-sm text-forest-700 mb-3">{cellData.intro}</p>
+                        <div className="space-y-2">
+                          {cellData.scenarios.map((scenario) => (
+                            <button
+                              key={scenario.title}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setSelectedScenario(selectedScenario?.title === scenario.title ? null : scenario)
+                              }}
+                              className="text-left text-xs font-600 text-forest-600 hover:text-forest-900 hover:underline block"
+                            >
+                              {scenario.title}
+                            </button>
+                          ))}
+                        </div>
                       </motion.div>
-                    ))}
+                    )}
+                  </motion.button>
+                )
+              })
+            )}
+          </div>
+
+          {/* Scenario detail */}
+          <AnimatePresence>
+            {selectedScenario && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="p-8 rounded-lg bg-forest-50 border-2 border-forest-200"
+              >
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div>
+                    <h4 className="text-xl font-700 text-forest-950 mb-3">{selectedScenario.title}</h4>
+                    <div className="border-l-4 border-forest-600 pl-4 py-2">
+                      <p className="italic text-forest-700 text-sm">"{selectedScenario.quote}"</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-xs font-700 text-forest-600 uppercase tracking-widest mb-1">What&apos;s happening</p>
+                      <p className="text-sm text-forest-700">{selectedScenario.happening}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-700 text-forest-600 uppercase tracking-widest mb-1">Why it matters</p>
+                      <p className="text-sm text-forest-700">{selectedScenario.matters}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </section>
 
-      {/* ── CTA BANNER ────────────────────────────────────── */}
-      <CTABanner
-        headline="Let's map your leadership development needs."
-        subtext="Every organization is at a different stage. We'll help you understand where you are, where you need to go, and how to get there."
-        primaryLabel="Start the Conversation"
-        primaryHref="/contact"
-        secondaryLabel="View All Solutions"
-        secondaryHref="/solutions"
-      />
-    </>
+      {/* CTA */}
+      <CTABanner />
+    </main>
   )
 }
