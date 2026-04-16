@@ -3,9 +3,8 @@ import { Resend } from 'resend';
 import { createAdminClient } from '@/lib/portal/supabase-server';
 import { FIRM_NAME } from '@/lib/constants';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(req: NextRequest) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
   try {
     const { to_email, to_name, subject, body, prospect_id, account_id, sender_name } = await req.json();
 

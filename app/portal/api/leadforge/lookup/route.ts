@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { findOrganization, searchPeopleByOrgId, searchPeopleAtCompany, enrichPeopleByIds, emailConfidenceFromStatus, type ApolloPerson } from '@/lib/integrations/apollo';
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 export interface LookupPerson {
   full_name: string;
   title: string;
@@ -57,7 +55,8 @@ function apolloToLookupPerson(p: ApolloPerson): LookupPerson {
 
 async function getRelevanceFromClaude(
   people: LookupPerson[],
-  companyName: string
+  companyName: string,
+  anthropic: import('@anthropic-ai/sdk').default
 ): Promise<LookupPerson[]> {
   if (!people.length) return people;
 
@@ -92,6 +91,7 @@ Respond ONLY with a JSON array of objects in this exact format:
 }
 
 export async function POST(req: NextRequest) {
+  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   try {
     const { query } = await req.json();
     if (!query?.trim()) {
