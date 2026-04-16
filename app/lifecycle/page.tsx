@@ -150,146 +150,88 @@ function polar(cx: number, cy: number, r: number, angleDeg: number) {
 }
 
 /**
- * Builds a thick arc-arrow segment path.
- * Each segment spans (slotIndex * 60 + gap) → (slotIndex * 60 + 60 - gap) degrees.
- * At the end of the arc, an arrowhead is formed by widening the ring outward/inward
- * to a point at the midline, like a large chevron arrow cap.
+ * Creates a curved arrow segment path with arrowhead pointing clockwise.
+ * The arrow has a notch at the back (tail) and a point at the front (head).
  */
-function arcArrowPath(
+function createArrowSegment(
   cx: number,
   cy: number,
   rIn: number,
   rOut: number,
-  startDeg: number,
-  endDeg: number,
-  arrowDepth: number, // how many degrees the arrowhead notch covers
+  startAngle: number,
+  endAngle: number,
 ) {
-  const f = (n: number) => n.toFixed(3)
+  const f = (n: number) => n.toFixed(2)
   const rMid = (rIn + rOut) / 2
+  const notchAngle = 8 // degrees for the back notch
+  const tipAngle = 10  // degrees for the front arrowhead
 
-  // The arc runs from startDeg to (endDeg - arrowDepth)
-  const arcEnd = endDeg - arrowDepth
+  // Back notch point (at startAngle, mid-radius)
+  const notch = polar(cx, cy, rMid, startAngle)
+  
+  // Outer arc: from notch start to arrow tip
+  const outerStart = polar(cx, cy, rOut, startAngle + notchAngle)
+  const outerEnd = polar(cx, cy, rOut, endAngle - tipAngle)
+  
+  // Arrow tip (at endAngle, mid-radius)  
+  const tip = polar(cx, cy, rMid, endAngle)
+  
+  // Inner arc: from arrow tip back to notch
+  const innerEnd = polar(cx, cy, rIn, endAngle - tipAngle)
+  const innerStart = polar(cx, cy, rIn, startAngle + notchAngle)
 
-  const o1 = polar(cx, cy, rOut, startDeg)
-  const o2 = polar(cx, cy, rOut, arcEnd)
-  const tip = polar(cx, cy, rMid, endDeg)   // pointy tip at mid-radius
-  const i2 = polar(cx, cy, rIn, arcEnd)
-  const i1 = polar(cx, cy, rIn, startDeg)
-
-  const largeArc = arcEnd - startDeg > 180 ? 1 : 0
+  const arcSpan = (endAngle - tipAngle) - (startAngle + notchAngle)
+  const largeArc = arcSpan > 180 ? 1 : 0
 
   return [
-    `M${f(o1.x)},${f(o1.y)}`,
-    `A${rOut},${rOut},0,${largeArc},1,${f(o2.x)},${f(o2.y)}`,
+    `M${f(notch.x)},${f(notch.y)}`,
+    `L${f(outerStart.x)},${f(outerStart.y)}`,
+    `A${rOut},${rOut},0,${largeArc},1,${f(outerEnd.x)},${f(outerEnd.y)}`,
     `L${f(tip.x)},${f(tip.y)}`,
-    `L${f(i2.x)},${f(i2.y)}`,
-    `A${rIn},${rIn},0,${largeArc},0,${f(i1.x)},${f(i1.y)}`,
+    `L${f(innerEnd.x)},${f(innerEnd.y)}`,
+    `A${rIn},${rIn},0,${largeArc},0,${f(innerStart.x)},${f(innerStart.y)}`,
     "Z",
   ].join(" ")
 }
 
-/**
- * Builds the external recruitment banner — a rectangular arrow shape
- * that sits outside the ring and points inward toward where the Recruitment
- * segment meets the Assessment segment (the gap between slot 3 and slot 4).
- * Entry angle is at the start of slot 4 (Assessment) = index 4 * 60 = 240 deg.
- */
-function externalRecruitmentArrow(
-  cx: number,
-  cy: number,
-  rOut: number,
-) {
-  // Entry point: the gap just before Assessment (slot 4), which is at 240°
-  // We want the arrow tip to be just outside rOut at ~240°
-  const entryAngleDeg = 243
-  const f = (n: number) => n.toFixed(3)
-  const rOuter = rOut + 2
-
-  // The tip of the inward arrow meets the ring edge
-  const tip = polar(cx, cy, rOuter, entryAngleDeg)
-
-  // The arrow body extends outward — we build a parallelogram/banner shape
-  // that extends further out from the ring. The arrow points clockwise-inward.
-  const arrowW = 34  // half-width of the banner
-  const arrowLen = 72 // length of the banner body extending outward
-
-  // Direction vector at the entry angle (tangent going outward)
-  const entryRad = ((entryAngleDeg - 90) * Math.PI) / 180
-  const nx = Math.cos(entryRad)
-  const ny = Math.sin(entryRad)
-  // Perpendicular (tangent) direction
-  const tx = -ny
-  const ty = nx
-
-  // Notch depth on the tail end of the arrow (the V-notch at the back)
-  const notchDepth = 12
-
-  const tipX = tip.x
-  const tipY = tip.y
-
-  // Two shoulder points of the arrowhead
-  const s1x = tipX - tx * arrowW
-  const s1y = tipY - ty * arrowW
-  const s2x = tipX + tx * arrowW
-  const s2y = tipY + ty * arrowW
-
-  // Back corners of the rectangle
-  const b1x = s1x - nx * arrowLen
-  const b1y = s1y - ny * arrowLen
-  const b2x = s2x - nx * arrowLen
-  const b2y = s2y - ny * arrowLen
-
-  // V-notch center point at the tail
-  const notchX = tipX - nx * (arrowLen + notchDepth)
-  const notchY = tipY - ny * (arrowLen + notchDepth)
-
-  return `M${f(tipX)},${f(tipY)} L${f(s1x)},${f(s1y)} L${f(b1x)},${f(b1y)} L${f(notchX)},${f(notchY)} L${f(b2x)},${f(b2y)} L${f(s2x)},${f(s2y)} Z`
-}
-
 function CircularLifecycle() {
-  const cx = 190, cy = 190
-  const rIn = 88, rOut = 155
+  const cx = 200, cy = 200
+  const rIn = 75, rOut = 140
   const rMid = (rIn + rOut) / 2
-  const gap = 5       // degrees of gap between segments
-  const arrowDepth = 9 // degrees for the arrowhead tip
+
+  // Segments in clockwise order starting from top-right
+  // Index 0: Development (30° center), 1: Retention, 2: Succession, 3: Recruitment, 4: Assessment, 5: Training
+  const segments = [
+    { label: "Development", sub: "Deep growth &\ntransformation", color: "#2d5a3d", textColor: "#fff", startAngle: 0, endAngle: 60, primary: true },
+    { label: "Retention", sub: "Engagement\n& culture", color: "#7bbf95", textColor: "#1a3d2b", startAngle: 60, endAngle: 120, primary: false },
+    { label: "Succession", sub: "Pipeline\ncontinuity", color: "#7bbf95", textColor: "#1a3d2b", startAngle: 120, endAngle: 180, primary: false },
+    // Recruitment is the external entry arrow - skip in ring, render separately
+    { label: "Assessment", sub: "Diagnosing\ncapability", color: "#7bbf95", textColor: "#1a3d2b", startAngle: 240, endAngle: 300, primary: false },
+    { label: "Training", sub: "Building\nskills", color: "#7bbf95", textColor: "#1a3d2b", startAngle: 300, endAngle: 360, primary: false },
+  ]
 
   return (
     <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-      <div className="w-full max-w-[420px] mx-auto lg:mx-0 shrink-0">
-        <svg viewBox="0 0 420 380" className="w-full">
-          <defs>
-            {/* Subtle drop shadow for depth */}
-            <filter id="segShadow" x="-10%" y="-10%" width="120%" height="120%">
-              <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#000" floodOpacity="0.12" />
-            </filter>
-          </defs>
-
-          {CYCLE_SEGMENTS.map((seg, i) => {
-            // Slot 3 = Recruitment → render as external arrow instead
-            if (i === 3) return null
-
-            const startDeg = i * 60 + gap
-            const endDeg   = (i + 1) * 60 - gap + arrowDepth  // +arrowDepth so tip extends to slot boundary
-            const midAngle = i * 60 + 30
-            const labelPos = polar(cx, cy, rMid + 2, midAngle)
-            const lines = seg.desc.split("\n")
-
-            const fill = seg.primary ? "#2d5a3d" : seg.focus ? "#7bbf95" : "#c8d8d0"
-            const textColor = seg.primary ? "white" : "#1a3d2b"
-            const subColor  = seg.primary ? "rgba(255,255,255,0.7)" : "#3d6b4f"
+      <div className="w-full max-w-[440px] mx-auto lg:mx-0 shrink-0">
+        <svg viewBox="0 0 400 400" className="w-full">
+          {/* Ring segments */}
+          {segments.map((seg) => {
+            const midAngle = (seg.startAngle + seg.endAngle) / 2
+            const labelPos = polar(cx, cy, rMid, midAngle)
+            const lines = seg.sub.split("\n")
 
             return (
-              <g key={seg.label} filter="url(#segShadow)">
+              <g key={seg.label}>
                 <path
-                  d={arcArrowPath(cx, cy, rIn, rOut, startDeg, endDeg, arrowDepth)}
-                  fill={fill}
+                  d={createArrowSegment(cx, cy, rIn, rOut, seg.startAngle, seg.endAngle)}
+                  fill={seg.color}
                 />
                 <text
                   x={labelPos.x}
-                  y={labelPos.y - (lines.length > 1 ? 10 : 5)}
+                  y={labelPos.y - 8}
                   textAnchor="middle"
-                  fill={textColor}
-                  fontSize="10"
+                  fill={seg.textColor}
+                  fontSize="11"
                   fontWeight="700"
                   fontFamily="sans-serif"
                 >
@@ -299,9 +241,9 @@ function CircularLifecycle() {
                   <text
                     key={li}
                     x={labelPos.x}
-                    y={labelPos.y + 5 + li * 11}
+                    y={labelPos.y + 6 + li * 11}
                     textAnchor="middle"
-                    fill={subColor}
+                    fill={seg.primary ? "rgba(255,255,255,0.7)" : "#3d6b4f"}
                     fontSize="8"
                     fontFamily="sans-serif"
                   >
@@ -311,13 +253,13 @@ function CircularLifecycle() {
                 {seg.primary && (
                   <text
                     x={labelPos.x}
-                    y={labelPos.y + 30}
+                    y={labelPos.y + 34}
                     textAnchor="middle"
-                    fill="rgba(255,255,255,0.45)"
+                    fill="rgba(255,255,255,0.5)"
                     fontSize="6.5"
                     fontWeight="700"
+                    letterSpacing="1"
                     fontFamily="sans-serif"
-                    letterSpacing="1.5"
                   >
                     OUR FOCUS
                   </text>
@@ -326,69 +268,44 @@ function CircularLifecycle() {
             )
           })}
 
-          {/* External Recruitment arrow — enters ring from outside before Assessment */}
-          {(() => {
-            const arrowPath = externalRecruitmentArrow(cx, cy, rOut)
-            // Label: find center of the arrow body
-            // Entry angle 243°, body extends outward
-            const entryAngleDeg = 243
-            const entryRad = ((entryAngleDeg - 90) * Math.PI) / 180
-            const nx = Math.cos(entryRad)
-            const ny = Math.sin(entryRad)
-            const tip = polar(cx, cy, rOut + 2, entryAngleDeg)
-            const labelX = tip.x - nx * 40
-            const labelY = tip.y - ny * 40
-            return (
-              <g filter="url(#segShadow)">
-                <path d={arrowPath} fill="#c8d8d0" />
-                <text
-                  x={labelX}
-                  y={labelY - 6}
-                  textAnchor="middle"
-                  fill="#4a6b5a"
-                  fontSize="10"
-                  fontWeight="700"
-                  fontFamily="sans-serif"
-                >
-                  Recruitment
-                </text>
-                <text
-                  x={labelX}
-                  y={labelY + 6}
-                  textAnchor="middle"
-                  fill="#6b8c7a"
-                  fontSize="8"
-                  fontFamily="sans-serif"
-                >
-                  Sourcing
-                </text>
-                <text
-                  x={labelX}
-                  y={labelY + 16}
-                  textAnchor="middle"
-                  fill="#6b8c7a"
-                  fontSize="8"
-                  fontFamily="sans-serif"
-                >
-                  &amp; hiring
-                </text>
-              </g>
-            )
-          })()}
+          {/* External Recruitment arrow entering the ring */}
+          {/* This arrow comes from outside on the left side, pointing toward the gap between Succession (180°) and Assessment (240°) */}
+          <g>
+            {/* Arrow body - horizontal banner with arrowhead pointing right into the ring */}
+            <path
+              d="M 20 200 
+                 L 20 165 
+                 L 95 165 
+                 L 95 150 
+                 L 130 182.5 
+                 L 95 215 
+                 L 95 200 
+                 L 20 200
+                 Z"
+              fill="#c8d8d0"
+            />
+            {/* Recruitment label */}
+            <text x="58" y="178" textAnchor="middle" fill="#3d5a4a" fontSize="10" fontWeight="700" fontFamily="sans-serif">
+              Recruitment
+            </text>
+            <text x="58" y="191" textAnchor="middle" fill="#5a7a6a" fontSize="8" fontFamily="sans-serif">
+              Sourcing &amp; hiring
+            </text>
+          </g>
 
           {/* Center circle */}
           <circle cx={cx} cy={cy} r={rIn - 8} fill="white" />
           <circle cx={cx} cy={cy} r={rIn - 8} fill="none" stroke="#d1e8d9" strokeWidth="1.5" />
-          <text x={cx} y={cy - 12} textAnchor="middle" fontSize="7.5" fill="#5dab79" fontWeight="700" fontFamily="sans-serif" letterSpacing="1">
+          <text x={cx} y={cy - 14} textAnchor="middle" fontSize="7" fill="#5dab79" fontWeight="700" fontFamily="sans-serif" letterSpacing="1">
             CONTINUOUS CYCLE
           </text>
-          <text x={cx} y={cy + 4} textAnchor="middle" fontSize="11.5" fill="#1a3d2b" fontWeight="700" fontFamily="sans-serif">
+          <text x={cx} y={cy + 2} textAnchor="middle" fontSize="12" fill="#1a3d2b" fontWeight="700" fontFamily="sans-serif">
             Leadership
           </text>
-          <text x={cx} y={cy + 19} textAnchor="middle" fontSize="11.5" fill="#1a3d2b" fontWeight="700" fontFamily="sans-serif">
+          <text x={cx} y={cy + 16} textAnchor="middle" fontSize="12" fill="#1a3d2b" fontWeight="700" fontFamily="sans-serif">
             Development
           </text>
-          <text x={cx} y={cy + 34} textAnchor="middle" fontSize="8.5" fill="#5dab79" fontFamily="sans-serif">
+          <text x={cx} y={cy + 30} textAnchor="middle" fontSize="8" fill="#5dab79" fontFamily="sans-serif">
             is our core
           </text>
         </svg>
