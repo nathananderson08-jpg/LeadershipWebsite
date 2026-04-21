@@ -124,8 +124,13 @@ Each comment should:
 Label them Option A, B, C with a note on what type of post each fits best.`;
     }
 
+    // Use Haiku for short-form content; Opus for research and long-form synthesis
+    const model = (content_type === 'micro_research' || content_type === 'executive_summary')
+      ? 'claude-opus-4-6'
+      : 'claude-haiku-4-5-20251001';
+
     const message = await client.messages.create({
-      model: 'claude-opus-4-6',
+      model,
       max_tokens: 1500,
       messages: [{ role: 'user', content: prompt }],
     });

@@ -11,49 +11,48 @@ export async function POST(req: NextRequest) {
     const { action, prospect, activity } = await req.json();
 
     if (action === 'sync_prospect') {
-      // 1. Upsert contact
-      const { contact, created } = await upsertContact({
-        full_name: prospect.full_name,
-        email: prospect.email,
-        title: prospect.title,
-        company: prospect.account?.company_name,
-        linkedin_url: prospect.linkedin_url,
-        pipeline_stage: prospect.pipeline_stage,
-        warmth_score: prospect.warmth_score,
-        trigger_context: prospect.trigger_context,
-      });
-
-      let companyId: string | null = null;
-      let dealId: string | null = null;
-
-      // 2. Upsert company if we have one
-      if (prospect.account?.company_name) {
-        const company = await upsertCompany(
-          prospect.account.company_name,
-          prospect.account.domain
-        );
-        companyId = company.id;
-        await associateContactToCompany(contact.id, company.id);
-      }
-
-      // 3. Upsert deal
       const dealName = `${prospect.full_name}${prospect.account?.company_name ? ` · ${prospect.account.company_name}` : ''}`;
-      const deal = await upsertDeal({
-        name: dealName,
-        pipeline_stage: prospect.pipeline_stage ?? 'identified',
-        contact_name: prospect.full_name,
-        company_name: prospect.account?.company_name,
-      });
-      dealId = deal.id;
-      await associateDealToContact(deal.id, contact.id);
-      if (companyId) await associateDealToCompany(deal.id, companyId);
 
-      // 4. Log trigger context as a note if newly created
-      if (created && prospect.trigger_context) {
-        await createNote(contact.id, `Why target: ${prospect.trigger_context}`);
-      }
+      // Phase 1: upsert contact + upsert company in parallel
+      const [{ contact, created }, companyResult] = await Promise.all([
+        upsertContact({
+          full_name: prospect.full_name,
+          email: prospect.email,
+          title: prospect.title,
+          company: prospect.account?.company_name,
+          linkedin_url: prospect.linkedin_url,
+          pipeline_stage: prospect.pipeline_stage,
+          warmth_score: prospect.warmth_score,
+          trigger_context: prospect.trigger_context,
+        }),
+        prospect.account?.company_name
+          ? upsertCompany(prospect.account.company_name, prospect.account.domain)
+          : Promise.resolve(null),
+      ]);
 
-      return NextResponse.json({ contact_id: contact.id, deal_id: dealId, company_id: companyId, created });
+      const companyId = companyResult?.id ?? null;
+
+      // Phase 2: upsert deal + associate contact→company in parallel
+      const [deal] = await Promise.all([
+        upsertDeal({
+          name: dealName,
+          pipeline_stage: prospect.pipeline_stage ?? 'identified',
+          contact_name: prospect.full_name,
+          company_name: prospect.account?.company_name,
+        }),
+        companyId ? associateContactToCompany(contact.id, companyId) : Promise.resolve(),
+      ]);
+
+      // Phase 3: all associations + note in parallel
+      await Promise.all([
+        associateDealToContact(deal.id, contact.id),
+        companyId ? associateDealToCompany(deal.id, companyId) : Promise.resolve(),
+        created && prospect.trigger_context
+          ? createNote(contact.id, `Why target: ${prospect.trigger_context}`)
+          : Promise.resolve(),
+      ]);
+
+      return NextResponse.json({ contact_id: contact.id, deal_id: deal.id, company_id: companyId, created });
     }
 
     if (action === 'update_stage') {

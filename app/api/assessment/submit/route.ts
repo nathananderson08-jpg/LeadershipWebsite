@@ -4,6 +4,9 @@ import { Resend } from 'resend';
 import { createAdminClient } from '@/lib/portal/supabase-server';
 import { FIRM_NAME } from '@/lib/constants';
 
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -93,9 +96,8 @@ Respond ONLY with this JSON (no markdown fences, no preamble):
   "engagement_suggestion": "1-2 sentences: a specific, credible suggestion for how ${FIRM_NAME} could support their top priority — tied to their stated challenge, name a specific service type (e.g. CHRO advisory, leadership diagnostic, succession architecture)"
 }`;
 
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const msg = await anthropic.messages.create({
-    model: 'claude-opus-4-6',
+    model: 'claude-haiku-4-5-20251001',
     max_tokens: 1800,
     messages: [{ role: 'user', content: prompt }],
   });
@@ -219,7 +221,6 @@ async function sendReportEmail(params: {
 </div>
 </body></html>`;
 
-  const resend = new Resend(process.env.RESEND_API_KEY);
   await resend.emails.send({
     from: `${FIRM_NAME} <onboarding@resend.dev>`,
     to: email,
@@ -241,23 +242,18 @@ export async function POST(req: NextRequest) {
 
     const emailLower = email.trim().toLowerCase();
 
-    // Generate report first (slowest operation)
-    const report = await generateReport({ company_name, industry, headcount_range, full_name, title, challenge, focus_areas });
-
-    // Write to LeadForge via admin client (bypasses RLS)
+    // Phase 1: run report generation + both DB lookups in parallel
     const supabase = createAdminClient();
+    const [report, { data: existingAccount }, { data: existingProspect }] = await Promise.all([
+      generateReport({ company_name, industry, headcount_range, full_name, title, challenge, focus_areas }),
+      supabase.from('leadforge_accounts').select('id').ilike('company_name', company_name.trim()).maybeSingle(),
+      supabase.from('leadforge_prospects').select('id').eq('email', emailLower).maybeSingle(),
+    ]);
 
-    // Find or create account
+    // Phase 2: resolve account ID
     let accountId: string;
-    const { data: existingAccount } = await supabase
-      .from('leadforge_accounts')
-      .select('id')
-      .ilike('company_name', company_name.trim())
-      .maybeSingle();
-
     if (existingAccount) {
       accountId = existingAccount.id;
-      // Backfill any missing fields
       const patch: Record<string, any> = {};
       if (industry) patch.industry = industry;
       const hc = headcountFromRange(headcount_range);
@@ -279,13 +275,8 @@ export async function POST(req: NextRequest) {
       accountId = newAccount.id;
     }
 
-    // Find or create prospect (keyed on email)
+    // Phase 3: resolve prospect ID
     let prospectId: string;
-    const { data: existingProspect } = await supabase
-      .from('leadforge_prospects')
-      .select('id')
-      .eq('email', emailLower)
-      .maybeSingle();
 
     if (existingProspect) {
       prospectId = existingProspect.id;
@@ -314,24 +305,24 @@ export async function POST(req: NextRequest) {
       prospectId = newProspect.id;
     }
 
-    // Save report as content item
-    await supabase.from('leadforge_content').insert({
-      prospect_id: prospectId,
-      content_type: 'assessment_report',
-      title: `Leadership Readiness Assessment — ${company_name}`,
-      body: JSON.stringify(report),
-      status: 'approved',
-    });
-
-    // Create trigger event
-    await supabase.from('leadforge_trigger_events').insert({
-      account_id: accountId,
-      event_type: 'inbound_lead',
-      description: `${full_name.trim()}${title ? ` (${title})` : ''} completed a free Leadership Readiness Assessment on the website. Primary challenge: "${challenge ?? 'not specified'}". High-intent inbound — recommend outreach within 24 hours.`,
-      priority: 'high',
-      detected_at: new Date().toISOString(),
-      response_status: 'pending',
-    });
+    // Phase 4: save content + trigger event in parallel
+    await Promise.all([
+      supabase.from('leadforge_content').insert({
+        prospect_id: prospectId,
+        content_type: 'assessment_report',
+        title: `Leadership Readiness Assessment — ${company_name}`,
+        body: JSON.stringify(report),
+        status: 'approved',
+      }),
+      supabase.from('leadforge_trigger_events').insert({
+        account_id: accountId,
+        event_type: 'inbound_lead',
+        description: `${full_name.trim()}${title ? ` (${title})` : ''} completed a free Leadership Readiness Assessment on the website. Primary challenge: "${challenge ?? 'not specified'}". High-intent inbound — recommend outreach within 24 hours.`,
+        priority: 'high',
+        detected_at: new Date().toISOString(),
+        response_status: 'pending',
+      }),
+    ]);
 
     // Fire-and-forget email (don't let it fail the response)
     sendReportEmail({ full_name: full_name.trim(), email: emailLower, company_name: company_name.trim(), report }).catch(err => {

@@ -1,21 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { unstable_cache } from 'next/cache';
 import { createAdminClient } from '@/lib/portal/supabase-server';
 
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+const getCachedKBItems = unstable_cache(
+  async () => {
+    const supabase = createAdminClient();
+    const { data } = await supabase
+      .from('leadforge_knowledge_base')
+      .select('category, title, content')
+      .order('updated_at', { ascending: false });
+    return data ?? [];
+  },
+  ['leadforge-kb-items'],
+  { revalidate: 60 }
+);
+
 export async function POST(req: NextRequest) {
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   try {
     const { messages } = await req.json();
     if (!messages?.length) return NextResponse.json({ error: 'messages required' }, { status: 400 });
 
-    // Load all KB items server-side — this is Claude's persistent memory
-    const supabase = createAdminClient();
-    const { data: kbItems } = await supabase
-      .from('leadforge_knowledge_base')
-      .select('*')
-      .order('updated_at', { ascending: false });
+    const kbItems = await getCachedKBItems();
 
-    const kbContext = kbItems && kbItems.length > 0
+    const kbContext = kbItems.length > 0
       ? kbItems.map((item: any) => `[${item.category.toUpperCase()}] ${item.title}\n${item.content}`).join('\n\n---\n\n')
       : 'No knowledge base entries have been added yet.';
 

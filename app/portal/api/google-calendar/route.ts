@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
     const supabase = createAdminClient();
     const { data: program, error: progErr } = await supabase
       .from('programs')
-      .select('*')
+      .select('id, name, description, start_date, end_date, location, google_event_id')
       .eq('id', program_id)
       .single();
 
