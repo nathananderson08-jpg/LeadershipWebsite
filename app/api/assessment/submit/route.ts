@@ -4,8 +4,18 @@ import { Resend } from 'resend';
 import { createAdminClient } from '@/lib/portal/supabase-server';
 import { FIRM_NAME } from '@/lib/constants';
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const resend = new Resend(process.env.RESEND_API_KEY);
+let _anthropic: Anthropic | null = null;
+let _resend: InstanceType<typeof Resend> | null = null;
+
+function getAnthropic() {
+  if (!_anthropic) _anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  return _anthropic;
+}
+
+function getResend() {
+  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
+  return _resend;
+}
 
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -96,7 +106,7 @@ Respond ONLY with this JSON (no markdown fences, no preamble):
   "engagement_suggestion": "1-2 sentences: a specific, credible suggestion for how ${FIRM_NAME} could support their top priority — tied to their stated challenge, name a specific service type (e.g. CHRO advisory, leadership diagnostic, succession architecture)"
 }`;
 
-  const msg = await anthropic.messages.create({
+  const msg = await getAnthropic().messages.create({
     model: 'claude-haiku-4-5-20251001',
     max_tokens: 1800,
     messages: [{ role: 'user', content: prompt }],
@@ -221,7 +231,7 @@ async function sendReportEmail(params: {
 </div>
 </body></html>`;
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: `${FIRM_NAME} <onboarding@resend.dev>`,
     to: email,
     subject: `Your Leadership Readiness Report — ${company_name}`,

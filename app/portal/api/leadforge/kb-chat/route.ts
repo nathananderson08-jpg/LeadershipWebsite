@@ -3,7 +3,11 @@ import Anthropic from '@anthropic-ai/sdk';
 import { unstable_cache } from 'next/cache';
 import { createAdminClient } from '@/lib/portal/supabase-server';
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+let _anthropic: Anthropic | null = null;
+function getAnthropic() {
+  if (!_anthropic) _anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  return _anthropic;
+}
 
 const getCachedKBItems = unstable_cache(
   async () => {
@@ -51,7 +55,7 @@ When you surface something worth adding to the knowledge base, flag it clearly w
 
 Be direct, intellectually rigorous, and think like a senior advisor — not a chatbot. Challenge assumptions. Connect dots across entries. Surface what's missing.`;
 
-    const msg = await anthropic.messages.create({
+    const msg = await getAnthropic().messages.create({
       model: 'claude-opus-4-6',
       max_tokens: 2048,
       system,
