@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   ArrowLeft, Building2, ExternalLink, Users, Zap, TrendingUp,
-  Edit2, Check, X, Sparkles, AlertTriangle, Search,
+  Edit2, Check, X, Sparkles, AlertTriangle, Search, Newspaper,
 } from 'lucide-react';
 import { createPortalClient } from '@/lib/portal/supabase';
 import {
@@ -36,6 +36,9 @@ const EVENT_TYPE_LABELS: Record<string, string> = {
   ma:             'M&A',
   culture_signal: 'Culture Signal',
   growth_signal:  'Growth Signal',
+  ai_signal:      'AI Signal',
+  news_signal:    'News Signal',
+  inbound_lead:   'Inbound Lead',
 };
 
 const inputStyle = {
@@ -97,6 +100,10 @@ export default function AccountDetailPage() {
   const [enrichError, setEnrichError] = useState<string | null>(null);
   const [enrichDone, setEnrichDone] = useState(false);
 
+  const [scanningNews, setScanningNews] = useState(false);
+  const [newsScanError, setNewsScanError] = useState<string | null>(null);
+  const [newsScanCount, setNewsScanCount] = useState<number | null>(null);
+
   const runEnrichment = useCallback(async () => {
     if (!account) return;
     setEnriching(true);
@@ -128,6 +135,27 @@ export default function AccountDetailPage() {
       setEnriching(false);
     }
   }, [account, id, updateAccount]);
+
+  const runNewsScan = useCallback(async () => {
+    if (!account) return;
+    setScanningNews(true);
+    setNewsScanError(null);
+    setNewsScanCount(null);
+    try {
+      const res = await fetch('/portal/api/leadforge/news-enrich', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ account_id: id, company_name: account.company_name }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'News scan failed.');
+      setNewsScanCount(data.count ?? 0);
+    } catch (err: any) {
+      setNewsScanError(err.message ?? 'News scan failed.');
+    } finally {
+      setScanningNews(false);
+    }
+  }, [account, id]);
 
   // Auto-enrich on first load if missing industry or headcount
   useEffect(() => {
@@ -188,6 +216,19 @@ export default function AccountDetailPage() {
               {!enriching && !enrichDone && (
                 <button onClick={runEnrichment} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 12px', border: '1px solid var(--portal-border-default)', borderRadius: 7, background: 'none', fontSize: 12, color: 'var(--portal-text-secondary)', cursor: 'pointer' }}>
                   <Sparkles size={11} /> Enrich
+                </button>
+              )}
+              {/* News scan */}
+              {scanningNews && <span style={{ fontSize: 12, color: 'var(--portal-text-tertiary)' }}>Scanning news…</span>}
+              {newsScanError && <span style={{ fontSize: 12, color: '#f59e0b' }}>{newsScanError}</span>}
+              {newsScanCount !== null && !scanningNews && (
+                <span style={{ fontSize: 12, color: '#4ade80', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Check size={11} /> {newsScanCount} signal{newsScanCount !== 1 ? 's' : ''} found
+                </span>
+              )}
+              {!scanningNews && newsScanCount === null && (
+                <button onClick={runNewsScan} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 12px', border: '1px solid var(--portal-border-default)', borderRadius: 7, background: 'none', fontSize: 12, color: 'var(--portal-text-secondary)', cursor: 'pointer' }}>
+                  <Newspaper size={11} /> Scan News
                 </button>
               )}
             </div>
