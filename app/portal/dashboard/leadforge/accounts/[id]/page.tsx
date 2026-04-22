@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   ArrowLeft, Building2, ExternalLink, Users, Zap, TrendingUp,
-  Edit2, Check, X, Sparkles, AlertTriangle, Search, Newspaper,
+  Edit2, Check, X, Sparkles, AlertTriangle, Search, Newspaper, BookOpen, RefreshCw,
 } from 'lucide-react';
 import { createPortalClient } from '@/lib/portal/supabase';
 import {
@@ -104,6 +104,12 @@ export default function AccountDetailPage() {
   const [newsScanError, setNewsScanError] = useState<string | null>(null);
   const [newsScanCount, setNewsScanCount] = useState<number | null>(null);
 
+  const [brief, setBrief] = useState<Record<string, string> | null>(null);
+  const [briefGeneratedAt, setBriefGeneratedAt] = useState<string | null>(null);
+  const [briefSignalCount, setBriefSignalCount] = useState<number>(0);
+  const [generatingBrief, setGeneratingBrief] = useState(false);
+  const [briefError, setBriefError] = useState<string | null>(null);
+
   const runEnrichment = useCallback(async () => {
     if (!account) return;
     setEnriching(true);
@@ -156,6 +162,53 @@ export default function AccountDetailPage() {
       setScanningNews(false);
     }
   }, [account, id]);
+
+  const runBrief = useCallback(async () => {
+    setGeneratingBrief(true);
+    setBriefError(null);
+    try {
+      const res = await fetch('/portal/api/leadforge/account-brief', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ account_id: id }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Brief generation failed.');
+      if (data.brief) {
+        setBrief(data.brief);
+        setBriefGeneratedAt(data.generated_at);
+        setBriefSignalCount(data.signal_count ?? 0);
+        // Cache in sessionStorage so it survives navigation within the session
+        sessionStorage.setItem(`account-brief-${id}`, JSON.stringify({
+          brief: data.brief,
+          generated_at: data.generated_at,
+          signal_count: data.signal_count ?? 0,
+        }));
+      } else {
+        setBriefError(data.message ?? 'No signals yet — run a news scan first.');
+      }
+    } catch (err: any) {
+      setBriefError(err.message ?? 'Brief generation failed.');
+    } finally {
+      setGeneratingBrief(false);
+    }
+  }, [id]);
+
+  // Restore brief from sessionStorage on load (avoids re-generating on every visit)
+  useEffect(() => {
+    try {
+      const cached = sessionStorage.getItem(`account-brief-${id}`);
+      if (cached) {
+        const { brief: b, generated_at, signal_count } = JSON.parse(cached);
+        const ageHours = (Date.now() - new Date(generated_at).getTime()) / (1000 * 60 * 60);
+        if (ageHours < 24) {
+          setBrief(b);
+          setBriefGeneratedAt(generated_at);
+          setBriefSignalCount(signal_count ?? 0);
+        }
+      }
+    } catch { /* sessionStorage unavailable */ }
+  }, [id]);
 
   // Auto-enrich on first load if missing industry or headcount
   useEffect(() => {
@@ -262,6 +315,77 @@ export default function AccountDetailPage() {
           <EditableField label="ICP Fit" value={account.icp_fit} onSave={save('icp_fit')} placeholder="e.g. High" />
           <EditableField label="Key Challenges" value={account.key_challenges} onSave={save('key_challenges')} placeholder="e.g. Post-merger integration" />
         </div>
+      </div>
+
+      {/* Intelligence Brief */}
+      <div style={{ background: 'var(--portal-bg-secondary)', border: '1px solid var(--portal-border-default)', borderRadius: 16, overflow: 'hidden' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 20px', borderBottom: brief ? '1px solid var(--portal-border-default)' : 'none' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <BookOpen size={16} color="var(--portal-accent)" />
+            <h2 style={{ fontSize: 15, fontWeight: 700, color: 'var(--portal-text-primary)', margin: 0 }}>Partner Brief</h2>
+            {brief && briefSignalCount > 0 && (
+              <span style={{ fontSize: 12, color: 'var(--portal-text-tertiary)' }}>based on {briefSignalCount} signal{briefSignalCount !== 1 ? 's' : ''}</span>
+            )}
+            {brief && brief.signal_recency && (
+              <span style={{
+                fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 999,
+                background: brief.signal_recency === 'high' ? 'rgba(74,222,128,0.1)' : brief.signal_recency === 'medium' ? 'rgba(245,158,11,0.1)' : 'rgba(148,163,184,0.1)',
+                color: brief.signal_recency === 'high' ? '#4ade80' : brief.signal_recency === 'medium' ? '#f59e0b' : '#94a3b8',
+              }}>
+                {brief.signal_recency === 'high' ? 'Fresh intel' : brief.signal_recency === 'medium' ? 'Mixed intel' : 'Older intel'}
+              </span>
+            )}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            {briefGeneratedAt && (
+              <span style={{ fontSize: 11, color: 'var(--portal-text-tertiary)' }}>
+                {new Date(briefGeneratedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+              </span>
+            )}
+            <button
+              onClick={runBrief}
+              disabled={generatingBrief}
+              style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 13px', border: '1px solid var(--portal-border-default)', borderRadius: 8, background: 'none', fontSize: 12, color: 'var(--portal-text-secondary)', cursor: generatingBrief ? 'default' : 'pointer', opacity: generatingBrief ? 0.6 : 1 }}>
+              <RefreshCw size={11} style={{ animation: generatingBrief ? 'spin 1s linear infinite' : 'none' }} />
+              {generatingBrief ? 'Generating…' : brief ? 'Refresh' : 'Generate Brief'}
+            </button>
+          </div>
+        </div>
+
+        {briefError && (
+          <div style={{ padding: '16px 20px' }}>
+            <p style={{ fontSize: 13, color: '#f59e0b', margin: 0 }}>{briefError}</p>
+          </div>
+        )}
+
+        {brief && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
+            {[
+              { key: 'situation', label: 'Current Situation' },
+              { key: 'leadership_thesis', label: 'Leadership Thesis' },
+              { key: 'entry_point', label: 'Entry Point' },
+              { key: 'watch_outs', label: 'Watch-Outs' },
+            ].map(({ key, label }, i) => (
+              brief[key] && (
+                <div key={key} style={{
+                  padding: '16px 20px',
+                  borderTop: '1px solid var(--portal-border-default)',
+                  borderRight: i % 2 === 0 ? '1px solid var(--portal-border-default)' : 'none',
+                }}>
+                  <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--portal-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 6px' }}>{label}</p>
+                  <p style={{ fontSize: 13, color: 'var(--portal-text-secondary)', margin: 0, lineHeight: 1.6 }}>{brief[key]}</p>
+                </div>
+              )
+            ))}
+          </div>
+        )}
+
+        {!brief && !briefError && !generatingBrief && (
+          <div style={{ padding: '24px 20px', textAlign: 'center' }}>
+            <p style={{ fontSize: 13, color: 'var(--portal-text-tertiary)', margin: '0 0 4px' }}>No brief generated yet.</p>
+            <p style={{ fontSize: 12, color: 'var(--portal-text-tertiary)', margin: 0, opacity: 0.7 }}>Run a news scan first, then generate the brief to get a time-weighted partner briefing.</p>
+          </div>
+        )}
       </div>
 
       {/* Prospects */}
