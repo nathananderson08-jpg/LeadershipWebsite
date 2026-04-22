@@ -146,7 +146,7 @@ If there are no meaningful signals, return: { "signals": [], "summary": "No sign
     );
     return !recentEvents.some(e => {
       const existingWords = (e.description ?? '').toLowerCase().split(/\s+/);
-      const overlap = existingWords.filter(w => newWords.has(w)).length;
+      const overlap = existingWords.filter((w: string) => newWords.has(w)).length;
       return overlap >= 3;
     });
   });
