@@ -15,11 +15,13 @@ import {
   Heart,
   ExternalLink,
   Target,
+  QrCode,
 } from 'lucide-react';
 
 const adminNavItems = [
   { href: '/portal/dashboard/programs', label: 'Active Programs', icon: Layers, description: 'Pipeline overview', section: 'Programs' },
   { href: '/portal/dashboard/programs/new', label: 'Create Program', icon: Sparkles, description: 'Design a new program', section: null },
+  { href: '/portal/dashboard/programs/landing-pages', label: 'Program Pages', icon: QrCode, description: 'Participant registration pages', section: null },
   { href: '/portal/dashboard/staffing', label: 'Program Staffing', icon: Compass, description: 'Invitations & confirmations', section: null },
   { href: '/portal/dashboard/calendar', label: 'Program Calendar', icon: Calendar, description: 'Schedule at a glance', section: null },
   { href: '/portal/dashboard/manage-team', label: 'Practitioner Network', icon: Heart, description: 'Roles & capabilities', section: null },
@@ -40,7 +42,9 @@ export function Sidebar() {
   const isActive = (href: string) => {
     if (href === '/portal/dashboard/programs') {
       return pathname === '/portal/dashboard/programs' ||
-        (pathname.startsWith('/portal/dashboard/programs/') && pathname !== '/portal/dashboard/programs/new');
+        (pathname.startsWith('/portal/dashboard/programs/') &&
+          pathname !== '/portal/dashboard/programs/new' &&
+          !pathname.startsWith('/portal/dashboard/programs/landing-pages'));
     }
     if (href === '/portal/dashboard/practitioners/dashboard') {
       return pathname === '/portal/dashboard/practitioners/dashboard';
