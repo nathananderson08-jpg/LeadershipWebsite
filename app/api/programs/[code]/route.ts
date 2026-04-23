@@ -3,9 +3,10 @@ import { createAdminClient } from '@/lib/portal/supabase-server';
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
-  const code = params.code.toUpperCase();
+  const { code: rawCode } = await params;
+  const code = rawCode.toUpperCase();
   const supabase = createAdminClient();
 
   const { data, error } = await supabase
