@@ -83,6 +83,9 @@ export function Header() {
               <Link href="/portal" className="hidden md:inline-flex btn btn-primary btn-sm">
                 Internal
               </Link>
+              <Link href="/programs" className="hidden md:inline-flex btn btn-primary btn-sm">
+                My Program
+              </Link>
               <Button href="/contact" variant="primary" size="sm" className="hidden md:inline-flex">
                 Contact Us
               </Button>
