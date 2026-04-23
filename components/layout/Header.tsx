@@ -80,11 +80,8 @@ export function Header() {
 
             {/* CTA + Mobile toggle */}
             <div className="flex items-center gap-2">
-              <Link href="/portal/internal" className="hidden md:inline-flex btn btn-primary btn-sm">
-                Internal
-              </Link>
               <Link href="/portal" className="hidden md:inline-flex btn btn-primary btn-sm">
-                Practitioner Hub
+                Internal
               </Link>
               <Button href="/contact" variant="primary" size="sm" className="hidden md:inline-flex">
                 Contact Us
