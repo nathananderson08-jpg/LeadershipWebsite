@@ -18,6 +18,7 @@ import {
   QrCode,
   Mail,
   FileText,
+  Briefcase,
 } from 'lucide-react';
 
 const adminNavItems = [
@@ -30,6 +31,7 @@ const adminNavItems = [
   { href: '/portal/dashboard/leadforge', label: 'LeadForge', icon: Target, description: 'Prospect intelligence', section: 'Intelligence' },
   { href: '/portal/dashboard/newsletter', label: 'Newsletter', icon: Mail, description: 'Subscribers & drafts', section: 'Content' },
   { href: '/portal/dashboard/content', label: 'Content Manager', icon: FileText, description: 'Insights Hub articles', section: null },
+  { href: '/portal/dashboard/careers', label: 'Open Roles', icon: Briefcase, description: 'Manage careers page', section: null },
 ];
 
 const practitionerNavItems = [

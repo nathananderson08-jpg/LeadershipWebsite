@@ -7,7 +7,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading"
 import { Button } from "@/components/ui/Button"
 import { ALL_ARTICLES } from "@/lib/insights-data"
 
-const CATEGORIES = ["All", "AI & Leadership", "Assessment", "Coaching", "Succession", "Culture", "Healthcare", "Technology", "Financial Services"]
+const CATEGORIES = ["All", "AI & Leadership", "Assessment", "Coaching", "Succession", "Culture & Transformation", "Leader Development", "Governance & Board", "Executive Development", "Leadership Strategy"]
 const CONTENT_TYPES = ["All", "Articles", "Research"]
 
 const TYPE_MAP: Record<string, string> = { Articles: "article", Research: "research" }

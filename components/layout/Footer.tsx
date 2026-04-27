@@ -32,9 +32,6 @@ const FOOTER_COLUMNS = [
     heading: "Resources",
     links: [
       { label: "Insights Hub", href: "/insights" },
-      { label: "Articles", href: "/insights/articles" },
-      { label: "Research", href: "/insights/research" },
-      { label: "Events", href: "/insights/events" },
       { label: "Our Platform", href: "/platform" },
       { label: "Impact & Results", href: "/results" },
     ],

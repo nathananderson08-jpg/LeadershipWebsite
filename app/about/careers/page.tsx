@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { SectionHeading } from "@/components/ui/SectionHeading"
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs"
@@ -13,16 +14,25 @@ const VALUES = [
   { title: "Ambitious Impact", desc: "We exist to change how organizations develop leaders — and to create measurable, lasting impact in the people and organizations we work with. We don't do incremental." },
 ]
 
-const OPEN_ROLES = [
-  { title: "Executive Coach (ICF PCC or MCC)", department: "Coaching Practice", location: "Remote — Global", type: "Full-time" },
-  { title: "Senior Associate — Assessment Practice", department: "Assessment", location: "New York / London", type: "Full-time" },
-  { title: "Program Design Lead", department: "Learning & Development", location: "Remote — Americas", type: "Full-time" },
-  { title: "AI Leadership Consultant", department: "AI Transformation", location: "Remote — Global", type: "Full-time" },
-  { title: "Head of Client Success", department: "Client Partnerships", location: "New York", type: "Full-time" },
-  { title: "Associate Consultant — Organizational Transformation", department: "Transformation", location: "London / New York", type: "Full-time" },
-]
+interface OpenRole {
+  id: string
+  title: string
+  department: string
+  location: string
+  type: string
+  description?: string
+}
 
 export default function CareersPage() {
+  const [openRoles, setOpenRoles] = useState<OpenRole[]>([])
+
+  useEffect(() => {
+    fetch('/api/careers/roles')
+      .then(r => r.json())
+      .then(d => setOpenRoles(d.roles ?? []))
+      .catch(() => {})
+  }, [])
+
   return (
     <>
       <section
@@ -61,7 +71,7 @@ export default function CareersPage() {
         <div className="container-content">
           <p className="text-xs font-700 tracking-widest uppercase text-forest-600 mb-8 text-center" style={{ fontWeight: 700 }}>Benefits</p>
           <div className="flex flex-wrap gap-4 justify-center">
-            {["Competitive compensation + equity", "Flexible & remote-first", "Professional certification support (ICF, HOGAN, etc.)", "Annual learning & development budget", "Global team retreats", "Health & wellbeing benefits", "Meaningful client work from day one", "Access to leading researchers & practitioners"].map((benefit) => (
+            {["Competitive compensation", "Flexible & remote-first", "Professional certification support (ICF, HOGAN, etc.)", "Meaningful client work from day one", "Access to leading researchers & practitioners"].map((benefit) => (
               <span key={benefit} className="px-5 py-2.5 rounded-full text-sm font-600 text-forest-800 bg-white border border-forest-200" style={{ fontWeight: 600 }}>
                 ✓ {benefit}
               </span>
@@ -73,35 +83,42 @@ export default function CareersPage() {
       {/* Open Roles */}
       <section className="section-padding" style={{ background: "white" }}>
         <div className="container-content">
-          <SectionHeading eyebrow="Open Roles" title="Current opportunities" subtitle="We're growing. Explore our current openings — or reach out if you don't see your role listed." className="mb-14" />
-          <div className="space-y-3">
-            {OPEN_ROLES.map((role, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -16 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-xl hover:bg-warm-50 transition-colors cursor-pointer group"
-                style={{ border: "1px solid var(--color-warm-100)" }}
-              >
-                <div>
-                  <h3 className="font-700 text-navy-900 text-lg mb-1 group-hover:text-gold-700 transition-colors" style={{ fontWeight: 700 }}>{role.title}</h3>
-                  <div className="flex items-center gap-3 text-sm text-neutral-400">
-                    <span>{role.department}</span>
-                    <span>·</span>
-                    <span>{role.location}</span>
-                    <span>·</span>
-                    <span>{role.type}</span>
+          <SectionHeading eyebrow="Open Roles" title="Current opportunities" subtitle="We hire for permanent and contractor roles. Explore our current openings — or reach out if you don't see your role listed." className="mb-14" />
+          {openRoles.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-neutral-400">No open roles listed at the moment. Check back soon — or send a speculative application below.</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {openRoles.map((role, i) => (
+                <motion.div
+                  key={role.id}
+                  initial={{ opacity: 0, x: -16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-xl hover:bg-warm-50 transition-colors cursor-pointer group"
+                  style={{ border: "1px solid var(--color-warm-100)" }}
+                >
+                  <div>
+                    <h3 className="font-700 text-navy-900 text-lg mb-1 group-hover:text-gold-700 transition-colors" style={{ fontWeight: 700 }}>{role.title}</h3>
+                    <div className="flex items-center gap-3 text-sm text-neutral-400 flex-wrap">
+                      <span>{role.department}</span>
+                      <span>·</span>
+                      <span>{role.location}</span>
+                      <span>·</span>
+                      <span>{role.type}</span>
+                    </div>
+                    {role.description && <p className="text-sm text-neutral-500 mt-2 max-w-xl">{role.description}</p>}
                   </div>
-                </div>
-                <Button variant="secondary" size="sm">Apply →</Button>
-              </motion.div>
-            ))}
-          </div>
+                  <Button variant="secondary" size="sm">Apply →</Button>
+                </motion.div>
+              ))}
+            </div>
+          )}
           <div className="mt-10 p-8 rounded-2xl text-center" style={{ background: "var(--color-warm-50)", border: "1px solid var(--color-warm-100)" }}>
             <p className="font-700 text-navy-900 mb-2" style={{ fontWeight: 700 }}>Don&apos;t see your role?</p>
-            <p className="text-neutral-500 text-sm mb-5">If you believe you can contribute to our mission, we want to hear from you. Send your CV and a note about what you&apos;d bring.</p>
+            <p className="text-neutral-500 text-sm mb-5">We work with full-time employees and specialist contractors. If you believe you can contribute to our mission, we want to hear from you.</p>
             <Button href="mailto:careers@leadershipfirm.com" variant="primary">Send a Speculative Application</Button>
           </div>
         </div>
