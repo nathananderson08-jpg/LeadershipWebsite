@@ -158,7 +158,7 @@ export default function PortalLoginPage() {
             <div className="h-px w-14" style={{ background: 'var(--portal-gold-400)' }} />
             <p className="text-3xl font-semibold uppercase"
               style={{ color: 'var(--portal-gold-600)', fontFamily: "'DM Serif Display', serif", letterSpacing: '0.08em' }}>
-              Staff Portal
+              Internal Portal
             </p>
             <div className="h-px w-14" style={{ background: 'var(--portal-gold-400)' }} />
           </div>
