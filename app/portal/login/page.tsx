@@ -3,14 +3,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createPortalClient } from '@/lib/portal/supabase';
-import { CheckCircle, Shield, Users } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import Image from 'next/image';
 
-type PortalType = 'internal' | 'practitioner';
 type AuthMode = 'login' | 'signup';
 
 export default function PortalLoginPage() {
-  const [portalType, setPortalType] = useState<PortalType>('internal');
   const [mode, setMode] = useState<AuthMode>('login');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -22,38 +20,37 @@ export default function PortalLoginPage() {
   const router = useRouter();
   const supabase = createPortalClient();
 
-  const reset = () => {
-    setError('');
-    setSuccess(false);
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
-    setFullName('');
-  };
-
-  const switchPortalType = (type: PortalType) => {
-    setPortalType(type);
-    setMode('login');
-    reset();
-  };
-
   const switchMode = (newMode: AuthMode) => {
     setMode(newMode);
     setError('');
     setSuccess(false);
+    setFullName('');
+    setPassword('');
+    setConfirmPassword('');
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) { setError(error.message); setLoading(false); return; }
-    router.replace(
-      portalType === 'internal'
-        ? '/portal/dashboard/programs'
-        : '/portal/dashboard/practitioners/dashboard'
-    );
+
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    if (signInError) { setError(signInError.message); setLoading(false); return; }
+
+    // Determine redirect based on profile role
+    const userId = data.user?.id;
+    if (userId) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userId)
+        .maybeSingle();
+
+      const isAdmin = profile?.role === 'admin' || profile?.role === 'primary_admin';
+      router.replace(isAdmin ? '/portal/dashboard/programs' : '/portal/dashboard/practitioners/dashboard');
+    } else {
+      router.replace('/portal/dashboard/practitioners/dashboard');
+    }
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -94,7 +91,7 @@ export default function PortalLoginPage() {
       .from('profiles').select('id').eq('email', email.toLowerCase().trim()).maybeSingle();
 
     if (!profileCheck) {
-      setError('This email has not been invited to the Practitioner Portal. Please contact your administrator.');
+      setError('This email has not been invited to the portal. Please contact your administrator.');
       setLoading(false);
       return;
     }
@@ -112,18 +109,24 @@ export default function PortalLoginPage() {
     borderRadius: '12px',
     fontSize: '15px',
     width: '100%',
+    outline: 'none',
   };
 
-  const inputFocusStyle = {
-    outline: 'none',
-    borderColor: 'rgba(184,145,59,0.5)',
-    boxShadow: '0 0 0 3px rgba(184,145,59,0.08)',
+  const focusProps = {
+    onFocus: (e: React.FocusEvent<HTMLInputElement>) => {
+      e.target.style.borderColor = 'rgba(184,145,59,0.5)';
+      e.target.style.boxShadow = '0 0 0 3px rgba(184,145,59,0.08)';
+    },
+    onBlur: (e: React.FocusEvent<HTMLInputElement>) => {
+      e.target.style.borderColor = 'rgba(184,145,59,0.2)';
+      e.target.style.boxShadow = 'none';
+    },
   };
 
   if (success) {
     return (
       <div className="flex min-h-screen items-center justify-center p-6" style={{ background: '#f5f9f7' }}>
-        <div className="text-center max-w-md portal-animate-scale-in">
+        <div className="text-center max-w-md">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6"
             style={{ background: 'linear-gradient(135deg, rgba(193,154,91,0.15), rgba(93,171,121,0.1))', border: '1px solid rgba(193,154,91,0.2)' }}>
             <CheckCircle size={32} style={{ color: 'var(--portal-gold-600)' }} />
@@ -153,15 +156,10 @@ export default function PortalLoginPage() {
           </div>
           <div className="flex items-center gap-4">
             <div className="h-px w-14" style={{ background: 'var(--portal-gold-400)' }} />
-            <div className="flex items-center gap-2.5">
-              {portalType === 'internal'
-                ? <Shield size={20} style={{ color: 'var(--portal-gold-600)' }} />
-                : <Users size={20} style={{ color: 'var(--portal-gold-600)' }} />}
-              <p className="text-3xl font-semibold uppercase"
-                style={{ color: 'var(--portal-gold-600)', fontFamily: "'DM Serif Display', serif", letterSpacing: '0.08em' }}>
-                {portalType === 'internal' ? 'Internal Portal' : 'Practitioner Hub'}
-              </p>
-            </div>
+            <p className="text-3xl font-semibold uppercase"
+              style={{ color: 'var(--portal-gold-600)', fontFamily: "'DM Serif Display', serif", letterSpacing: '0.08em' }}>
+              Staff Portal
+            </p>
             <div className="h-px w-14" style={{ background: 'var(--portal-gold-400)' }} />
           </div>
         </div>
@@ -171,82 +169,38 @@ export default function PortalLoginPage() {
       <div className="flex-1 flex items-center justify-center p-8 lg:p-16" style={{ background: '#f5f9f7' }}>
         <div className="w-full max-w-md portal-animate-fade-in">
 
-          {/* Portal type toggle */}
-          <div className="flex rounded-xl mb-8 p-1"
-            style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(93,171,121,0.15)', backdropFilter: 'blur(4px)' }}>
-            {(['internal', 'practitioner'] as const).map(type => (
-              <button key={type} onClick={() => switchPortalType(type)}
-                className="flex-1 rounded-lg text-sm font-semibold py-3 transition-all flex items-center justify-center gap-2"
-                style={{
-                  background: portalType === type ? 'linear-gradient(135deg, var(--portal-gold-600), var(--portal-gold-500))' : 'transparent',
-                  color: portalType === type ? '#ffffff' : '#6b9a7d',
-                  boxShadow: portalType === type ? '0 2px 8px rgba(184,145,59,0.25)' : 'none',
-                }}>
-                {type === 'internal' ? <Shield size={13} /> : <Users size={13} />}
-                {type === 'internal' ? 'Internal Site' : 'Practitioner Hub'}
-              </button>
-            ))}
-          </div>
-
-          {/* Sign in / Create account sub-tabs — Practitioner only */}
-          {portalType === 'practitioner' && (
-            <div className="flex rounded-xl mb-8 p-1"
-              style={{ background: 'rgba(255,255,255,0.5)', border: '1px solid rgba(93,171,121,0.1)' }}>
-              {(['login', 'signup'] as const).map(m => (
-                <button key={m} onClick={() => switchMode(m)}
-                  className="flex-1 rounded-lg text-sm font-semibold py-2.5 transition-all"
-                  style={{
-                    background: mode === m ? 'rgba(93,171,121,0.12)' : 'transparent',
-                    color: mode === m ? '#3d6b4f' : '#6b9a7d',
-                  }}>
-                  {m === 'login' ? 'Sign In' : 'Create Account'}
-                </button>
-              ))}
-            </div>
-          )}
-
           <div className="mb-8">
             <h2 className="text-3xl mb-2" style={{ color: '#1a3a2a', fontFamily: "'DM Serif Display', serif", letterSpacing: '-0.02em' }}>
-              {portalType === 'internal' ? 'Staff sign in' : mode === 'login' ? 'Welcome back' : 'Get started'}
+              {mode === 'login' ? 'Welcome back' : 'Create your account'}
             </h2>
             <p className="text-sm" style={{ color: '#6b9a7d' }}>
-              {portalType === 'internal'
-                ? 'Authorized Apex & Origin personnel only'
-                : mode === 'login' ? 'Sign in to your practitioner account' : 'Create your practitioner account'}
+              {mode === 'login' ? 'Sign in to continue to your portal' : 'Set up your practitioner account'}
             </p>
           </div>
 
-          <form onSubmit={portalType === 'internal' || mode === 'login' ? handleLogin : handleSignUp} className="space-y-5">
-            {portalType === 'practitioner' && mode === 'signup' && (
-              <div className="portal-animate-fade-in">
+          <form onSubmit={mode === 'login' ? handleLogin : handleSignUp} className="space-y-5">
+            {mode === 'signup' && (
+              <div>
                 <label className="block text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--portal-gold-600)' }}>Full Name</label>
                 <input type="text" value={fullName} onChange={e => setFullName(e.target.value)}
-                  style={inputStyle} placeholder="Your full name" required
-                  onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
-                  onBlur={e => { e.target.style.borderColor = 'rgba(184,145,59,0.2)'; e.target.style.boxShadow = 'none'; e.target.style.outline = 'none'; }} />
+                  style={inputStyle} placeholder="Your full name" required {...focusProps} />
               </div>
             )}
             <div>
               <label className="block text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--portal-gold-600)' }}>Email</label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-                style={inputStyle} placeholder={portalType === 'internal' ? 'you@apexandorigin.com' : 'you@company.com'} required
-                onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
-                onBlur={e => { e.target.style.borderColor = 'rgba(184,145,59,0.2)'; e.target.style.boxShadow = 'none'; e.target.style.outline = 'none'; }} />
+                style={inputStyle} placeholder="you@company.com" required {...focusProps} />
             </div>
             <div>
               <label className="block text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--portal-gold-600)' }}>Password</label>
               <input type="password" value={password} onChange={e => setPassword(e.target.value)}
-                style={inputStyle} placeholder={portalType === 'practitioner' && mode === 'signup' ? 'Min. 6 characters' : '••••••••'} required
-                onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
-                onBlur={e => { e.target.style.borderColor = 'rgba(184,145,59,0.2)'; e.target.style.boxShadow = 'none'; e.target.style.outline = 'none'; }} />
+                style={inputStyle} placeholder={mode === 'signup' ? 'Min. 6 characters' : '••••••••'} required {...focusProps} />
             </div>
-            {portalType === 'practitioner' && mode === 'signup' && (
-              <div className="portal-animate-fade-in">
+            {mode === 'signup' && (
+              <div>
                 <label className="block text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--portal-gold-600)' }}>Confirm Password</label>
                 <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
-                  style={inputStyle} placeholder="Confirm your password" required
-                  onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
-                  onBlur={e => { e.target.style.borderColor = 'rgba(184,145,59,0.2)'; e.target.style.boxShadow = 'none'; e.target.style.outline = 'none'; }} />
+                  style={inputStyle} placeholder="Confirm your password" required {...focusProps} />
               </div>
             )}
             {error && (
@@ -258,11 +212,26 @@ export default function PortalLoginPage() {
             <button type="submit" disabled={loading}
               className="w-full portal-btn portal-btn-gold disabled:opacity-50"
               style={{ marginTop: '8px', width: '100%', justifyContent: 'center', padding: '1rem', fontSize: '0.9375rem' }}>
-              {loading ? 'Signing in…' : portalType === 'internal' ? 'Sign In' : mode === 'login' ? 'Sign In' : 'Create Account'}
+              {loading ? (mode === 'login' ? 'Signing in…' : 'Creating account…') : (mode === 'login' ? 'Sign In' : 'Create Account')}
             </button>
           </form>
 
-          <div className="mt-8 pt-6" style={{ borderTop: '1px solid rgba(93,171,121,0.15)' }}>
+          <div className="mt-8 pt-6 space-y-3" style={{ borderTop: '1px solid rgba(93,171,121,0.15)' }}>
+            {mode === 'login' ? (
+              <p className="text-[12px] text-center" style={{ color: '#6b9a7d' }}>
+                New practitioner?{' '}
+                <button onClick={() => switchMode('signup')} className="hover:underline font-medium" style={{ color: 'var(--portal-gold-600)' }}>
+                  Create an account
+                </button>
+              </p>
+            ) : (
+              <p className="text-[12px] text-center" style={{ color: '#6b9a7d' }}>
+                Already have an account?{' '}
+                <button onClick={() => switchMode('login')} className="hover:underline font-medium" style={{ color: 'var(--portal-gold-600)' }}>
+                  Sign in
+                </button>
+              </p>
+            )}
             <p className="text-[12px] text-center" style={{ color: '#6b9a7d' }}>
               Here for a leadership program?{' '}
               <a href="/programs" className="hover:underline font-medium" style={{ color: 'var(--portal-gold-600)' }}>
