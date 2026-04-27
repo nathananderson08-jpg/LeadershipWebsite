@@ -5,40 +5,22 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { SectionHeading } from "@/components/ui/SectionHeading"
 import { Button } from "@/components/ui/Button"
-import { SAMPLE_ARTICLES } from "@/lib/constants"
+import { ALL_ARTICLES } from "@/lib/insights-data"
 
 const CATEGORIES = ["All", "AI & Leadership", "Assessment", "Coaching", "Succession", "Culture", "Healthcare", "Technology", "Financial Services"]
-const CONTENT_TYPES = ["All", "Articles", "Research", "Media", "Events"]
+const CONTENT_TYPES = ["All", "Articles", "Research"]
 
-const ALL_ARTICLES = [
-  ...SAMPLE_ARTICLES,
-  {
-    slug: "culture-change-leadership",
-    title: "Culture Change Is a Leadership Problem, Not a Process Problem",
-    category: "Culture",
-    readTime: "7 min read",
-    date: "2025-01-25",
-    excerpt: "Organizations invest in culture change programs and get culture compliance, not culture transformation. The reason is almost always the same.",
-    author: "Robert Kimani",
-    authorTitle: "Managing Director, Organizational Transformation",
-  },
-  {
-    slug: "succession-board-oversight",
-    title: "What Boards Get Wrong About CEO Succession — and How to Fix It",
-    category: "Succession",
-    readTime: "9 min read",
-    date: "2025-01-10",
-    excerpt: "Board succession planning is treated as a governance exercise. It should be treated as the most important strategic decision the board makes.",
-    author: "Diana Torres",
-    authorTitle: "Head of Succession & Talent Strategy",
-  },
-]
+const TYPE_MAP: Record<string, string> = { Articles: "article", Research: "research" }
 
 export default function InsightsPage() {
   const [activeType, setActiveType] = useState("All")
   const [activeCategory, setActiveCategory] = useState("All")
 
-  const filtered = ALL_ARTICLES.filter((a) => activeCategory === "All" || a.category === activeCategory)
+  const filtered = ALL_ARTICLES.filter((a) => {
+    const typeMatch = activeType === "All" || a.type === TYPE_MAP[activeType]
+    const catMatch = activeCategory === "All" || a.category === activeCategory
+    return typeMatch && catMatch
+  })
 
   return (
     <>
@@ -99,39 +81,50 @@ export default function InsightsPage() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((article, i) => (
-              <motion.article
-                key={article.slug}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.07 }}
-              >
-                <Link href={`/insights/${article.slug}`} className="block h-full card-base card-light group">
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-xs font-700 px-3 py-1 rounded-full" style={{ background: "var(--color-gold-100)", color: "var(--color-gold-700)", fontWeight: 700 }}>
-                      {article.category}
-                    </span>
-                    <span className="text-xs text-neutral-400">{article.readTime}</span>
-                  </div>
-                  <h3 className="font-700 text-navy-900 text-lg leading-snug mb-3 group-hover:text-gold-700 transition-colors" style={{ fontWeight: 700 }}>
-                    {article.title}
-                  </h3>
-                  <p className="text-sm text-neutral-500 leading-relaxed mb-5">{article.excerpt}</p>
-                  <div className="flex items-center gap-3 mt-auto">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-700 text-white bg-navy-700" style={{ fontWeight: 700 }}>
-                      {article.author.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+          {filtered.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-neutral-400 text-lg">No articles yet in this category. Check back soon.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filtered.map((article, i) => (
+                <motion.article
+                  key={article.slug}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.05 }}
+                >
+                  <Link href={`/insights/${article.slug}`} className="block h-full card-base card-light group">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="text-xs font-700 px-3 py-1 rounded-full" style={{ background: "var(--color-gold-100)", color: "var(--color-gold-700)", fontWeight: 700 }}>
+                        {article.category}
+                      </span>
+                      {article.type === 'research' && (
+                        <span className="text-xs font-700 px-2 py-0.5 rounded-full" style={{ background: "var(--color-navy-100)", color: "var(--color-navy-700)", fontWeight: 700 }}>
+                          Research
+                        </span>
+                      )}
+                      <span className="text-xs text-neutral-400">{article.readTime}</span>
                     </div>
-                    <div>
-                      <p className="text-xs font-600 text-navy-900" style={{ fontWeight: 600 }}>{article.author}</p>
-                      <p className="text-xs text-neutral-400">{article.date}</p>
+                    <h3 className="font-700 text-navy-900 text-lg leading-snug mb-3 group-hover:text-gold-700 transition-colors" style={{ fontWeight: 700 }}>
+                      {article.title}
+                    </h3>
+                    <p className="text-sm text-neutral-500 leading-relaxed mb-5">{article.excerpt}</p>
+                    <div className="flex items-center gap-3 mt-auto">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-700 text-white bg-navy-700" style={{ fontWeight: 700 }}>
+                        {article.author.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                      </div>
+                      <div>
+                        <p className="text-xs font-600 text-navy-900" style={{ fontWeight: 600 }}>{article.author}</p>
+                        <p className="text-xs text-neutral-400">{article.date}</p>
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              </motion.article>
-            ))}
-          </div>
+                  </Link>
+                </motion.article>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </>

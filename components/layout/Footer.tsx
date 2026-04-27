@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { useState } from "react"
 import { FIRM_NAME, SOCIAL } from "@/lib/constants"
 
 const FOOTER_COLUMNS = [
@@ -51,6 +52,25 @@ const FOOTER_COLUMNS = [
 ]
 
 export function Footer() {
+  const [subEmail, setSubEmail] = useState('')
+  const [subState, setSubState] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!subEmail) return
+    setSubState('loading')
+    try {
+      const res = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: subEmail }),
+      })
+      setSubState(res.ok ? 'done' : 'error')
+    } catch {
+      setSubState('error')
+    }
+  }
+
   return (
     <footer style={{ background: "var(--color-forest-950)" }}>
       {/* Main footer content */}
@@ -109,24 +129,30 @@ export function Footer() {
                 Get our latest thinking on leadership development, AI transformation, and organizational excellence.
               </p>
             </div>
-            <form
-              className="flex gap-3 w-full max-w-md"
-              onSubmit={(e) => e.preventDefault()}
-            >
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-lg text-sm bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-gold-500 transition-colors"
-                aria-label="Email address"
-              />
-              <button
-                type="submit"
-                className="btn btn-primary shrink-0"
-                style={{ paddingLeft: "1.25rem", paddingRight: "1.25rem" }}
-              >
-                Subscribe
-              </button>
-            </form>
+            {subState === 'done' ? (
+              <p className="text-sm text-gold-400 font-medium">You're subscribed. Welcome to the list.</p>
+            ) : (
+              <form className="flex gap-3 w-full max-w-md" onSubmit={handleSubscribe}>
+                <input
+                  type="email"
+                  value={subEmail}
+                  onChange={e => setSubEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="flex-1 px-4 py-3 rounded-lg text-sm bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-gold-500 transition-colors"
+                  aria-label="Email address"
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={subState === 'loading'}
+                  className="btn btn-primary shrink-0"
+                  style={{ paddingLeft: "1.25rem", paddingRight: "1.25rem" }}
+                >
+                  {subState === 'loading' ? 'Subscribing…' : 'Subscribe'}
+                </button>
+              </form>
+            )}
+            {subState === 'error' && <p className="text-xs text-red-400 mt-1">Something went wrong. Please try again.</p>}
           </div>
         </div>
       </div>

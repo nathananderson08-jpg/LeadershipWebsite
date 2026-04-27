@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next"
-import { FIRM_DOMAIN, SAMPLE_ARTICLES } from "@/lib/constants"
+import { FIRM_DOMAIN } from "@/lib/constants"
+import { ALL_ARTICLES } from "@/lib/insights-data"
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = FIRM_DOMAIN
@@ -46,7 +47,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === "/" ? 1.0 : route.includes("lifecycle") || route.includes("ai-transformation") ? 0.9 : 0.7,
   }))
 
-  const articleEntries: MetadataRoute.Sitemap = SAMPLE_ARTICLES.map((article) => ({
+  const articleEntries: MetadataRoute.Sitemap = ALL_ARTICLES.map((article) => ({
     url: `${baseUrl}/insights/${article.slug}`,
     lastModified: new Date(article.date),
     changeFrequency: "monthly",

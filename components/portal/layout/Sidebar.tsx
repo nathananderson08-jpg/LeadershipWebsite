@@ -16,6 +16,8 @@ import {
   ExternalLink,
   Target,
   QrCode,
+  Mail,
+  FileText,
 } from 'lucide-react';
 
 const adminNavItems = [
@@ -26,6 +28,8 @@ const adminNavItems = [
   { href: '/portal/dashboard/calendar', label: 'Program Calendar', icon: Calendar, description: 'Schedule at a glance', section: null },
   { href: '/portal/dashboard/manage-team', label: 'Practitioner Network', icon: Heart, description: 'Roles & capabilities', section: null },
   { href: '/portal/dashboard/leadforge', label: 'LeadForge', icon: Target, description: 'Prospect intelligence', section: 'Intelligence' },
+  { href: '/portal/dashboard/newsletter', label: 'Newsletter', icon: Mail, description: 'Subscribers & drafts', section: 'Content' },
+  { href: '/portal/dashboard/content', label: 'Content Manager', icon: FileText, description: 'Insights Hub articles', section: null },
 ];
 
 const practitionerNavItems = [
